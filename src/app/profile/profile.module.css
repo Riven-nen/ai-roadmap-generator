@@ -1,0 +1,165 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.profileInfo {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.avatar {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #a855f7, #3b82f6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 700;
+  border: 4px solid #1e2233;
+}
+
+.name { font-size: 1.875rem; font-weight: 700; }
+.role { color: #94a3b8; font-size: 1rem; margin-top: 4px; margin-bottom: 12px; }
+
+.badges { display: flex; gap: 8px; }
+.badgePurple {
+  background-color: rgba(168, 85, 247, 0.2);
+  color: #c084fc;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+.badgeBlue {
+  background-color: rgba(56, 189, 248, 0.2);
+  color: #38bdf8;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.editBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background-color: #1e2233;
+  border: 1px solid #2a2f45;
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 0.875rem;
+  transition: background-color 0.2s;
+}
+
+.editBtn:hover { background-color: #2a2f45; }
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.statCard {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.statIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+}
+
+.iconPurple { background-color: rgba(168, 85, 247, 0.1); color: #c084fc; }
+.iconBlue { background-color: rgba(56, 189, 248, 0.1); color: #38bdf8; }
+.iconYellow { background-color: rgba(234, 179, 8, 0.1); color: #eab308; }
+.iconGreen { background-color: rgba(34, 197, 94, 0.1); color: #22c55e; }
+
+.statLabel { color: #94a3b8; font-size: 0.875rem; }
+.statValue { font-size: 1.5rem; font-weight: 700; margin-top: 4px; }
+
+.mainGrid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 32px;
+  align-items: start;
+}
+
+.skillsList { display: flex; flex-direction: column; gap: 20px; }
+
+.skillItem { display: flex; flex-direction: column; gap: 8px; }
+
+.skillHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.skillNameContainer { display: flex; align-items: center; gap: 12px; }
+.skillName { font-weight: 600; }
+.skillCategory {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  background-color: #2a2f45;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.skillPercent { color: #c084fc; font-size: 0.875rem; font-weight: 600; }
+
+.progressBarBg {
+  height: 6px;
+  background-color: #2a2f45;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progressBarFill {
+  height: 100%;
+  background-color: #c084fc;
+  border-radius: 3px;
+}
+
+.achievementsList { display: flex; flex-direction: column; gap: 12px; }
+
+.achievementItem {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background-color: #131620;
+  border-radius: 12px;
+  border: 1px solid #2a2f45;
+}
+
+.achIconWrapper {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #2a2f45;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+}
+
+.achTitle { font-weight: 500; font-size: 0.875rem; }

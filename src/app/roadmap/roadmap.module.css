@@ -1,0 +1,163 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.title {
+  font-size: 1.875rem;
+  font-weight: 700;
+}
+
+.highlight { color: #c084fc; }
+.subtitle { color: #94a3b8; margin-top: 4px; }
+
+.statsRow {
+  display: flex;
+  gap: 32px;
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.statValue { font-size: 1.5rem; font-weight: 700; }
+.statLabel { font-size: 0.75rem; color: #94a3b8; }
+.textPurple { color: #c084fc; }
+.textBlue { color: #38bdf8; }
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  background-color: #1e2233;
+  padding: 4px;
+  border-radius: 9999px;
+  width: fit-content;
+}
+
+.tab {
+  padding: 8px 24px;
+  border-radius: 9999px;
+  color: #94a3b8;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.activeTab {
+  background-color: #2a2f45;
+  color: #ffffff;
+}
+
+.semesterBanner {
+  background-color: #1e2233;
+  border: 1px solid #2a2f45;
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.semesterTitle { font-size: 1.125rem; font-weight: 600; }
+.semesterCredits { color: #94a3b8; font-size: 0.875rem; margin-top: 4px; }
+.bannerIcon { font-size: 1.5rem; color: #c084fc; }
+
+.coursesGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.courseCard { display: flex; flex-direction: column; }
+
+.courseHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.courseIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+}
+
+.iconGreen { background-color: rgba(34, 197, 94, 0.2); color: #22c55e; }
+.iconPink { background-color: rgba(236, 72, 153, 0.2); color: #ec4899; }
+.iconBlue { background-color: rgba(59, 130, 246, 0.2); color: #3b82f6; }
+
+.checkIcon {
+  color: #22c55e;
+  background-color: rgba(34, 197, 94, 0.1);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+}
+
+.courseTitle { font-size: 1.125rem; font-weight: 600; margin-bottom: 4px; }
+.courseCode { color: #94a3b8; font-size: 0.875rem; margin-bottom: 24px; }
+
+.courseMeta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+  color: #94a3b8;
+  margin-bottom: 16px;
+}
+
+.completedBadge {
+  color: #22c55e;
+  background-color: rgba(34, 197, 94, 0.1);
+  padding: 4px 8px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+}
+
+.gradeRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.gradeLabel { color: #94a3b8; font-size: 0.875rem; }
+.gradeValue { color: #22c55e; font-weight: 700; font-size: 1.125rem; }
+
+.tagsContainer { display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; }
+.tag {
+  font-size: 0.75rem;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  border: 1px solid #2a2f45;
+  color: #cbd5e1;
+}
+
+.footerText {
+  text-align: center;
+  color: #64748b;
+  font-size: 0.875rem;
+  margin-top: 16px;
+  padding-top: 24px;
+  border-top: 1px solid #1e2233;
+}

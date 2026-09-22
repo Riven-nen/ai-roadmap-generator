@@ -1,0 +1,148 @@
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  align-items: center;
+}
+
+.header {
+  text-align: center;
+  max-width: 700px;
+  margin-top: 24px;
+}
+
+.title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.highlight {
+  background: linear-gradient(to right, #c084fc, #38bdf8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+  color: #94a3b8;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.searchCard {
+  width: 100%;
+  background: linear-gradient(180deg, #1e2233 0%, #161927 100%);
+}
+
+.searchBox {
+  display: flex;
+  align-items: center;
+  background-color: #0f111a;
+  border: 1px solid #2a2f45;
+  border-radius: 12px;
+  padding: 8px;
+  margin-bottom: 24px;
+}
+
+.searchIcon {
+  color: #64748b;
+  margin: 0 12px;
+  font-size: 1.25rem;
+}
+
+.searchInput {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-size: 0.875rem;
+  outline: none;
+}
+
+.discoverBtn {
+  background: linear-gradient(to right, #a855f7, #3b82f6);
+  color: #ffffff;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: opacity 0.2s;
+}
+
+.discoverBtn:hover {
+  opacity: 0.9;
+}
+
+.quickSearchLabel {
+  color: #94a3b8;
+  font-size: 0.875rem;
+  margin-bottom: 12px;
+}
+
+.quickSearchTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.quickTag {
+  background-color: transparent;
+  border: 1px solid #2a2f45;
+  color: #cbd5e1;
+  padding: 6px 16px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  transition: all 0.2s;
+}
+
+.quickTag:hover {
+  background-color: #2a2f45;
+  color: #ffffff;
+}
+
+.featuresGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  width: 100%;
+}
+
+.featureCard {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 24px;
+}
+
+.featureIcon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin-bottom: 24px;
+}
+
+.iconPurple { background-color: rgba(168, 85, 247, 0.1); color: #c084fc; }
+.iconBlue { background-color: rgba(56, 189, 248, 0.1); color: #38bdf8; }
+.iconGreen { background-color: rgba(34, 197, 94, 0.1); color: #22c55e; }
+
+.featureTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.featureDesc {
+  color: #94a3b8;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
