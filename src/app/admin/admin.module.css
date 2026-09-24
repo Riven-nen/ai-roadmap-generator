@@ -1,0 +1,182 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.title { font-size: 1.875rem; font-weight: 700; }
+.highlight { color: #c084fc; }
+.subtitle { color: var(--text-muted); margin-top: 4px; }
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.statCard { padding: 24px; }
+.statLabel { color: var(--text-muted); font-size: 0.875rem; }
+.statValue { font-size: 2rem; font-weight: 700; margin-top: 8px; }
+
+.actionsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.actionLink { text-decoration: none; color: inherit; }
+
+.actionCard {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 32px;
+  transition: transform 0.15s ease;
+  cursor: pointer;
+}
+
+.actionCard:hover { transform: translateY(-2px); }
+
+.actionIcon { font-size: 2rem; margin-bottom: 8px; }
+.actionTitle { font-size: 1.25rem; font-weight: 600; }
+.actionDesc { color: var(--text-muted); font-size: 0.875rem; }
+
+.studentGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.avatarCircle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #a855f7, #3b82f6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th, .table td {
+  text-align: left;
+  padding: 12px 8px;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.875rem;
+}
+
+.table th {
+  color: var(--text-muted);
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+}
+
+.form {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.select {
+  flex: 1;
+  padding: 12px;
+  background-color: var(--bg-main);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  color: var(--text-main);
+  outline: none;
+}
+
+.primaryBtn {
+  padding: 12px 24px;
+  border-radius: 10px;
+  background: linear-gradient(to right, var(--accent-purple), var(--accent-blue));
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.primaryBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.editLink {
+  color: #c084fc;
+  font-size: 0.875rem;
+  text-decoration: none;
+}
+
+.editLink:hover { text-decoration: underline; }
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.field { display: flex; flex-direction: column; gap: 6px; }
+.fieldFull { grid-column: span 2; }
+
+.fieldLabel {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.input {
+  padding: 12px;
+  background-color: var(--bg-main);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  color: var(--text-main);
+  font-family: inherit;
+  font-size: 0.875rem;
+  outline: none;
+}
+
+.input:focus { border-color: var(--accent-purple); }
+
+.formActions {
+  grid-column: span 2;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  margin-bottom: 16px;
+  transition: color 0.15s ease;
+}
+
+.backLink:hover {
+  color: var(--text-main);
+}
+
+.backArrow {
+  font-size: 1rem;
+}
