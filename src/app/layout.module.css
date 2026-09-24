@@ -117,3 +117,10 @@
   overflow-y: auto;
   padding: 32px;
 }
+
+.navItemActive {
+  background-color: var(--bg-card);
+  color: var(--text-main);
+  border-left: 3px solid var(--accent-purple);
+  padding-left: 13px;
+}

@@ -1,43 +1,49 @@
 import Card from "@/components/Card";
+import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 import styles from "./profile.module.css";
 
-export default function Profile() {
+export default async function Profile() {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) redirect("/login");
+
+  const [profileRes, skillsRes, achievementsRes] = await Promise.all([
+    supabase.from("profiles").select("*").eq("id", user.id).single(),
+    supabase.from("skills").select("*").eq("user_id", user.id).order("progress", { ascending: false }),
+    supabase.from("achievements").select("*").eq("user_id", user.id).order("unlocked_at", { ascending: false }),
+  ]);
+
+  const profile = profileRes.data;
+  const skills = skillsRes.data ?? [];
+  const achievements = achievementsRes.data ?? [];
+
+  if (!profile) {
+    return <div>Profile not found.</div>;
+  }
+
   const stats = [
-    { label: "Total Study Hours", value: "256h", icon: "📅", color: styles.iconPurple },
+    { label: "Total Study Hours", value: `${profile.study_hours}h`, icon: "📅", color: styles.iconPurple },
     { label: "Completed Courses", value: "12", icon: "📖", color: styles.iconBlue },
-    { label: "Current Streak", value: "15 days", icon: "⚡", color: styles.iconYellow },
-    { label: "Overall Progress", value: "68%", icon: "📈", color: styles.iconGreen },
-  ];
-
-  const skills = [
-    { name: "HTML", category: "Frontend", progress: 95 },
-    { name: "CSS", category: "Frontend", progress: 90 },
-    { name: "JavaScript", category: "Frontend", progress: 85 },
-    { name: "React", category: "Frontend", progress: 75 },
-    { name: "Python", category: "Backend", progress: 70 },
-    { name: "Git", category: "Tools", progress: 80 },
-    { name: "SQL", category: "Database", progress: 65 },
-  ];
-
-  const achievements = [
-    { title: "7 Day Streak", icon: "⚡" },
-    { title: "5 Courses Completed", icon: "📖" },
-    { title: "10 Skills Mastered", icon: "🎯" },
-    { title: "Top Learner", icon: "🏆" },
-    { title: "Fast Learner", icon: "📈" },
+    { label: "Current Streak", value: `${profile.current_streak} days`, icon: "⚡", color: styles.iconYellow },
+    { label: "Overall Progress", value: `${profile.overall_progress}%`, icon: "📈", color: styles.iconGreen },
   ];
 
   return (
     <div className={styles.container}>
       <div className={styles.header}>
         <div className={styles.profileInfo}>
-          <div className={styles.avatar}>JD</div>
+          <div className={styles.avatar}>{profile.avatar_initials}</div>
           <div>
-            <h1 className={styles.name}>John Doe</h1>
-            <p className={styles.role}>Computer Science Student</p>
+            <h1 className={styles.name}>{profile.full_name}</h1>
+            <p className={styles.role}>{profile.role}</p>
             <div className={styles.badges}>
               <span className={styles.badgePurple}>Front-End Developer</span>
-              <span className={styles.badgeBlue}>Level 5</span>
+              <span className={styles.badgeBlue}>Level {profile.level}</span>
             </div>
           </div>
         </div>
@@ -59,8 +65,8 @@ export default function Profile() {
       <div className={styles.mainGrid}>
         <Card title="🎯 Skills Acquired">
           <div className={styles.skillsList}>
-            {skills.map((skill, i) => (
-              <div key={i} className={styles.skillItem}>
+            {skills.map((skill) => (
+              <div key={skill.id} className={styles.skillItem}>
                 <div className={styles.skillHeader}>
                   <div className={styles.skillNameContainer}>
                     <span className={styles.skillName}>{skill.name}</span>
@@ -69,10 +75,10 @@ export default function Profile() {
                   <span className={styles.skillPercent}>{skill.progress}%</span>
                 </div>
                 <div className={styles.progressBarBg}>
-                  <div 
-                    className={styles.progressBarFill} 
+                  <div
+                    className={styles.progressBarFill}
                     style={{ width: `${skill.progress}%` }}
-                  ></div>
+                  />
                 </div>
               </div>
             ))}
@@ -81,8 +87,8 @@ export default function Profile() {
 
         <Card title="🏆 Achievements">
           <div className={styles.achievementsList}>
-            {achievements.map((ach, i) => (
-              <div key={i} className={styles.achievementItem}>
+            {achievements.map((ach) => (
+              <div key={ach.id} className={styles.achievementItem}>
                 <div className={styles.achIconWrapper}>{ach.icon}</div>
                 <span className={styles.achTitle}>{ach.title}</span>
               </div>
