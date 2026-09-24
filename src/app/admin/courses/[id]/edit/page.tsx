@@ -2,7 +2,7 @@ import Link from "next/link";
 import Card from "@/components/Card";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import styles from "../admin.module.css";
+import styles from "../../../admin.module.css";
 
 export default async function AdminCourses() {
   const supabase = await createClient();
