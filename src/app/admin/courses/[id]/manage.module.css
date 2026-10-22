@@ -1,0 +1,110 @@
+.container {
+  padding: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+  color: white;
+}
+
+.header {
+  margin-bottom: 32px;
+}
+
+.backLink {
+  color: #94a3b8;
+  text-decoration: none;
+  font-size: 0.9rem;
+  display: inline-block;
+  margin-bottom: 16px;
+}
+
+.backLink:hover {
+  color: #c084fc;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+
+.sectionTitle {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #c084fc;
+  border-bottom: 1px solid #2a2f45;
+  padding-bottom: 8px;
+}
+
+.topicGroup {
+  margin-bottom: 16px;
+}
+
+.topicCard {
+  background: #1e2233;
+  border: 1px solid #2a2f45;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.childCard {
+  margin-left: 32px;
+  background: #131620;
+  border-color: #334155;
+}
+
+.formPanel {
+  background: #131620;
+  padding: 24px;
+  border-radius: 16px;
+  border: 1px solid #2a2f45;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #94a3b8;
+  margin-bottom: -8px;
+}
+
+.input {
+  background: #1e2233;
+  border: 1px solid #2a2f45;
+  color: white;
+  padding: 12px;
+  border-radius: 8px;
+  outline: none;
+  font-family: inherit;
+}
+
+.input:focus {
+  border-color: #c084fc;
+}
+
+.submitBtn {
+  background: linear-gradient(to right, #a855f7, #3b82f6);
+  color: white;
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.submitBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

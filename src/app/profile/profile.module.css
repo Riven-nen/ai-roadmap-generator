@@ -4,6 +4,7 @@
   display: flex;
   flex-direction: column;
   gap: 32px;
+  padding: 40px;
 }
 
 .header {
@@ -19,8 +20,8 @@
 }
 
 .avatar {
-  width: 96px;
-  height: 96px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
   background: linear-gradient(135deg, #a855f7, #3b82f6);
   display: flex;
@@ -29,43 +30,61 @@
   font-size: 2rem;
   font-weight: 700;
   border: 4px solid #1e2233;
+  box-shadow: 0 8px 24px rgba(168, 85, 247, 0.2);
 }
 
-.name { font-size: 1.875rem; font-weight: 700; }
-.role { color: #94a3b8; font-size: 1rem; margin-top: 4px; margin-bottom: 12px; }
+.name {
+  font-size: 2rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 4px;
+}
 
-.badges { display: flex; gap: 8px; }
+.role {
+  color: #94a3b8;
+  font-size: 1rem;
+  margin-bottom: 12px;
+  text-transform: capitalize;
+}
+
+.badges {
+  display: flex;
+  gap: 8px;
+}
+
 .badgePurple {
-  background-color: rgba(168, 85, 247, 0.2);
+  background-color: rgba(168, 85, 247, 0.15);
   color: #c084fc;
   padding: 4px 12px;
   border-radius: 9999px;
   font-size: 0.75rem;
-  font-weight: 500;
+  font-weight: 600;
 }
+
 .badgeBlue {
-  background-color: rgba(56, 189, 248, 0.2);
+  background-color: rgba(56, 189, 248, 0.15);
   color: #38bdf8;
   padding: 4px 12px;
   border-radius: 9999px;
   font-size: 0.75rem;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .editBtn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 20px;
   background-color: #1e2233;
   border: 1px solid #2a2f45;
+  color: white;
+  padding: 10px 20px;
   border-radius: 8px;
-  color: #ffffff;
-  font-size: 0.875rem;
-  transition: background-color 0.2s;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
 }
 
-.editBtn:hover { background-color: #2a2f45; }
+.editBtn:hover {
+  background-color: #2a2f45;
+}
 
 .statsGrid {
   display: grid;
@@ -77,6 +96,7 @@
   display: flex;
   align-items: center;
   gap: 16px;
+  padding: 24px;
 }
 
 .statIcon {
@@ -86,7 +106,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.25rem;
+  font-size: 1.5rem;
 }
 
 .iconPurple { background-color: rgba(168, 85, 247, 0.1); color: #c084fc; }
@@ -94,8 +114,17 @@
 .iconYellow { background-color: rgba(234, 179, 8, 0.1); color: #eab308; }
 .iconGreen { background-color: rgba(34, 197, 94, 0.1); color: #22c55e; }
 
-.statLabel { color: #94a3b8; font-size: 0.875rem; }
-.statValue { font-size: 1.5rem; font-weight: 700; margin-top: 4px; }
+.statLabel {
+  color: #94a3b8;
+  font-size: 0.85rem;
+  margin-bottom: 4px;
+}
+
+.statValue {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+}
 
 .mainGrid {
   display: grid;
@@ -104,9 +133,18 @@
   align-items: start;
 }
 
-.skillsList { display: flex; flex-direction: column; gap: 20px; }
+.skillsList {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-top: 8px;
+}
 
-.skillItem { display: flex; flex-direction: column; gap: 8px; }
+.skillItem {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
 
 .skillHeader {
   display: flex;
@@ -114,32 +152,37 @@
   align-items: center;
 }
 
-.skillNameContainer { display: flex; align-items: center; gap: 12px; }
-.skillName { font-weight: 600; }
-.skillCategory {
-  font-size: 0.75rem;
-  color: #94a3b8;
-  background-color: #2a2f45;
-  padding: 2px 8px;
-  border-radius: 4px;
+.skillName {
+  font-weight: 600;
+  font-size: 1rem;
+  color: white;
 }
 
-.skillPercent { color: #c084fc; font-size: 0.875rem; font-weight: 600; }
+.skillPercent {
+  color: #c084fc;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
 
 .progressBarBg {
-  height: 6px;
+  height: 8px;
   background-color: #2a2f45;
-  border-radius: 3px;
+  border-radius: 4px;
   overflow: hidden;
 }
 
 .progressBarFill {
   height: 100%;
-  background-color: #c084fc;
-  border-radius: 3px;
+  border-radius: 4px;
+  transition: width 0.3s ease, background 0.3s ease;
 }
 
-.achievementsList { display: flex; flex-direction: column; gap: 12px; }
+.achievementsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+}
 
 .achievementItem {
   display: flex;
@@ -162,4 +205,8 @@
   font-size: 1.25rem;
 }
 
-.achTitle { font-weight: 500; font-size: 0.875rem; }
+.achTitle {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: white;
+}

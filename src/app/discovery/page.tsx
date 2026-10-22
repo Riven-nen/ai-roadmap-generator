@@ -1,176 +1,101 @@
-/* eslint-disable react/no-unescaped-entities */
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
-import Card from "@/components/Card";
+import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
+import Card from "@/components/Card";
 import styles from "./discovery.module.css";
 
-type Course = {
+type CareerPath = {
   id: string;
   title: string;
   description: string;
-  level: string;
-  duration_weeks: number;
-  rating: number;
-  tags: string[];
-  icon: string;
-  icon_bg: string;
+  career_requirements: { domain: string; required_score: number }[];
 };
 
 export default function Discovery() {
-  const [query, setQuery] = useState("");
-  const [results, setResults] = useState<Course[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [searched, setSearched] = useState(false);
+  const [careers, setCareers] = useState<CareerPath[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const quickSearches = [
-    "HTML", "Python", "Java", "JavaScript", "Database",
-    "Networking", "UI Design", "React",
-  ];
+  useEffect(() => {
+    async function fetchCareers() {
+      console.log("--- FETCH STARTED ---");
+      const supabase = createClient();
+      
+      const { data: paths, error: pathError } = await supabase.from("career_paths").select("*");
+      
+      console.log("PATH DATA:", paths);
+      console.log("PATH ERROR:", pathError);
 
-  async function handleSearch(term: string) {
-    const searchTerm = term.trim();
-    if (!searchTerm) return;
+      if (pathError || !paths) {
+        setLoading(false);
+        return;
+      }
 
-    setQuery(searchTerm);
-    setLoading(true);
-    setSearched(true);
+      const { data: reqs, error: reqError } = await supabase.from("career_requirements").select("*");
+      
+      console.log("REQ DATA:", reqs);
+      console.log("REQ ERROR:", reqError);
 
-    const supabase = createClient();
+      const combined = paths.map(path => ({
+        ...path,
+        career_requirements: (reqs || []).filter(r => r.career_id === path.id)
+      }));
 
-    const { data } = await supabase
-      .from("courses")
-      .select("*")
-      .or(
-        `title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,tags.cs.{${searchTerm}}`
-      );
+      console.log("COMBINED DATA:", combined);
+      console.log("--- FETCH ENDED ---");
 
-    setResults(data ?? []);
-    setLoading(false);
-  }
+      setCareers(combined);
+      setLoading(false);
+    }
+    fetchCareers();
+  }, []);
+
+  if (loading) return <div style={{ color: "white", padding: 40 }}>Loading Matrix...</div>;
 
   return (
     <div className={styles.container}>
       <div className={styles.header}>
         <h1 className={styles.title}>
-          Discover Your <span className={styles.highlight}>Perfect Career</span>
+          Explore <span className={styles.highlight}>Career Paths</span>
         </h1>
         <p className={styles.subtitle}>
-          Enter a skill, subject, or programming language you know, and we'll
-          show you the perfect career paths
+          See exactly what domains you need to master for your target career.
         </p>
       </div>
 
-      <Card className={styles.searchCard}>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleSearch(query);
-          }}
-          className={styles.searchBox}
-        >
-          <span className={styles.searchIcon}>🔍</span>
-          <input
-            type="text"
-            placeholder="e.g., HTML, Python, JavaScript, Database, UI Design..."
-            className={styles.searchInput}
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
-          <button type="submit" className={styles.discoverBtn} disabled={loading}>
-            {loading ? "Searching..." : "✨ Discover"}
-          </button>
-        </form>
-
-        <div className={styles.quickSearchContainer}>
-          <p className={styles.quickSearchLabel}>Quick search:</p>
-          <div className={styles.quickSearchTags}>
-            {quickSearches.map((tag) => (
-              <button
-                key={tag}
-                type="button"
-                className={styles.quickTag}
-                onClick={() => handleSearch(tag)}
-              >
-                {tag}
-              </button>
-            ))}
-          </div>
+      {careers.length === 0 ? (
+        <div style={{ color: "#94a3b8", textAlign: "center", padding: 40 }}>
+          No career paths found in the database.
         </div>
-      </Card>
+      ) : (
+        <div className={styles.careerGrid}>
+          {careers.map((career) => (
+            <Card key={career.id} className={styles.careerCard}>
+              <div className={styles.cardHeader}>
+                <h2 className={styles.careerTitle}>{career.title}</h2>
+                <span className={styles.targetBadge}>Target Matrix</span>
+              </div>
+              <p className={styles.careerDesc}>{career.description}</p>
 
-      {searched && (
-        <div className={styles.resultsSection}>
-          <h2 className={styles.resultsTitle}>
-            {loading
-              ? "Searching..."
-              : `${results.length} course${results.length === 1 ? "" : "s"} found for "${query}"`}
-          </h2>
-
-          {!loading && results.length === 0 && (
-            <Card className={styles.emptyCard}>
-              <p className={styles.emptyText}>
-                No courses matched your search. Try another skill like "React" or "Python".
-              </p>
+              <div className={styles.requirementsList}>
+                <h3 className={styles.reqTitle}>Required Domain Mastery:</h3>
+                {career.career_requirements.map((req, i) => (
+                  <div key={i} className={styles.reqItem}>
+                    <div className={styles.reqLabelRow}>
+                      <span className={styles.domainName}>{req.domain}</span>
+                      <span className={styles.reqScore}>{req.required_score}%</span>
+                    </div>
+                    <div className={styles.progressBarBg}>
+                      <div 
+                        className={styles.progressBarFill}
+                        style={{ width: `${req.required_score}%` }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
             </Card>
-          )}
-
-          {!loading && results.length > 0 && (
-            <div className={styles.resultsGrid}>
-              {results.map((course) => (
-                <Link key={course.id} href="/courses" className={styles.resultLink}>
-                  <Card className={styles.resultCard}>
-                    <div
-                      className={styles.resultIcon}
-                      style={{
-                        backgroundColor: `${course.icon_bg}33`,
-                        color: course.icon_bg,
-                      }}
-                    >
-                      {course.icon}
-                    </div>
-                    <h3 className={styles.resultTitle}>{course.title}</h3>
-                    <p className={styles.resultDesc}>{course.description}</p>
-                    <div className={styles.resultMeta}>
-                      <span className={styles.resultLevel}>{course.level}</span>
-                      <span className={styles.resultMetaText}>
-                        🕒 {course.duration_weeks} weeks
-                      </span>
-                      <span className={styles.resultMetaText}>⭐ {course.rating}</span>
-                    </div>
-                  </Card>
-                </Link>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
-
-      {!searched && (
-        <div className={styles.featuresGrid}>
-          <Card className={styles.featureCard}>
-            <div className={`${styles.featureIcon} ${styles.iconPurple}`}>◎</div>
-            <h3 className={styles.featureTitle}>AI-Powered Recommendations</h3>
-            <p className={styles.featureDesc}>
-              Get personalized career suggestions based on your current skills
-            </p>
-          </Card>
-          <Card className={styles.featureCard}>
-            <div className={`${styles.featureIcon} ${styles.iconBlue}`}>💡</div>
-            <h3 className={styles.featureTitle}>Next Steps Guide</h3>
-            <p className={styles.featureDesc}>
-              Discover what skills to learn next to advance your career
-            </p>
-          </Card>
-          <Card className={styles.featureCard}>
-            <div className={`${styles.featureIcon} ${styles.iconGreen}`}>📈</div>
-            <h3 className={styles.featureTitle}>Market Insights</h3>
-            <p className={styles.featureDesc}>
-              See salary ranges and job demand for different tech roles
-            </p>
-          </Card>
+          ))}
         </div>
       )}
     </div>

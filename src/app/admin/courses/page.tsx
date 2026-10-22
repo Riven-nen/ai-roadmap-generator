@@ -47,6 +47,9 @@ export default async function AdminCourses() {
                 <td>{c.credits}</td>
                 <td>{c.level}</td>
                 <td>
+                  <Link href={`/admin/courses/${c.id}`} className={styles.editLink} style={{ marginRight: 16 }}>
+                    Manage Topics
+                  </Link>
                   <Link href={`/admin/courses/${c.id}/edit`} className={styles.editLink}>
                     Edit
                   </Link>

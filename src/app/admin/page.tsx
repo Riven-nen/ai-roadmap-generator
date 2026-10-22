@@ -74,6 +74,16 @@ export default async function AdminHome() {
             </p>
           </Card>
         </Link>
+
+        <Link href="/admin/analytics" className={styles.actionLink}>
+          <Card className={styles.actionCard}>
+            <div className={styles.actionIcon}>📊</div>
+            <h3 className={styles.actionTitle}>Program Analytics</h3>
+            <p className={styles.actionDesc}>
+              View aggregate knowledge map and curriculum gaps
+            </p>
+          </Card>
+        </Link>
       </div>
     </div>
   );
