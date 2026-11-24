@@ -103,6 +103,9 @@
 }
 
 .primaryBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding: 12px 24px;
   border-radius: 10px;
   background: linear-gradient(to right, var(--accent-purple), var(--accent-blue));
@@ -110,6 +113,7 @@
   font-weight: 600;
   font-size: 0.875rem;
   cursor: pointer;
+  text-decoration: none;
 }
 
 .primaryBtn:disabled {

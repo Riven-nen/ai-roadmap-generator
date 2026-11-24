@@ -47,6 +47,13 @@
   text-transform: capitalize;
 }
 
+.email {
+  color: #64748b;
+  font-size: 0.85rem;
+  margin-top: -8px;
+  margin-bottom: 12px;
+}
+
 .badges {
   display: flex;
   gap: 8px;

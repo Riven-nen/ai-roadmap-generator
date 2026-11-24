@@ -65,6 +65,16 @@ export default async function AdminHome() {
           </Card>
         </Link>
 
+        <Link href="/admin/students/new" className={styles.actionLink}>
+          <Card className={styles.actionCard}>
+            <div className={styles.actionIcon}>🎓</div>
+            <h3 className={styles.actionTitle}>Add Students</h3>
+            <p className={styles.actionDesc}>
+              Create one student or import a CSV with temporary passwords
+            </p>
+          </Card>
+        </Link>
+
         <Link href="/admin/courses" className={styles.actionLink}>
           <Card className={styles.actionCard}>
             <div className={styles.actionIcon}>📚</div>

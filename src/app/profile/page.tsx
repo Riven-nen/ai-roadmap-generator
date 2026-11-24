@@ -67,6 +67,7 @@ export default async function Profile() {
           <div>
             <h1 className={styles.name}>{profile.full_name}</h1>
             <p className={styles.role}>{profile.role}</p>
+            {profile.email && <p className={styles.email}>{profile.email}</p>}
             <div className={styles.badges}>
               <span className={styles.badgePurple}>BSIT Student</span>
               <span className={styles.badgeBlue}>Level {profile.level}</span>

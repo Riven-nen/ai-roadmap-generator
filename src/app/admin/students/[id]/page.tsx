@@ -41,7 +41,9 @@ export default async function StudentDetail({
       <div className={styles.header}>
         <div>
           <h1 className={styles.title}>{student.full_name}</h1>
-          <p className={styles.subtitle}>Enrolled in {enrollments.length} courses</p>
+          <p className={styles.subtitle}>
+            {student.email || "No email on file"} · Enrolled in {enrollments.length} courses
+          </p>
         </div>
       </div>
 

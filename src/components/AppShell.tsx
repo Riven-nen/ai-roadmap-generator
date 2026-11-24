@@ -6,7 +6,7 @@ import styles from "@/app/layout.module.css";
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const isAuthPage = pathname === "/login";
+  const isAuthPage = ["/login", "/forgot-password", "/reset-password"].includes(pathname);
 
   if (isAuthPage) {
     return <>{children}</>;

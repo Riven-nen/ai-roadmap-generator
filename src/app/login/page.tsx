@@ -1,34 +1,45 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
+import { Suspense, useState } from "react";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import styles from "./login.module.css";
 
-export default function LoginPage() {
+function LoginForm() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const resetNotice = searchParams.get("reset") === "1";
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
     setLoading(true);
 
-    const supabase = createClient();
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-    if (error) {
-      setError(error.message);
-      setLoading(false);
-    } else {
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || "Unable to sign in. Please try again.");
+        setLoading(false);
+        return;
+      }
+
       router.push("/");
       router.refresh();
+    } catch {
+      setError("Unable to reach the sign-in service. Please try again.");
+      setLoading(false);
     }
   }
 
@@ -59,7 +70,12 @@ export default function LoginPage() {
           </div>
 
           <div className={styles.field}>
-            <label className={styles.label} htmlFor="password">Password</label>
+            <div className={styles.labelRow}>
+              <label className={styles.label} htmlFor="password">Password</label>
+              <Link href="/forgot-password" className={styles.inlineLink}>
+                Forgot password?
+              </Link>
+            </div>
             <input
               id="password"
               type="password"
@@ -72,6 +88,11 @@ export default function LoginPage() {
             />
           </div>
 
+          {resetNotice && (
+            <div className={styles.success}>
+              Your password was updated. Sign in with your new password.
+            </div>
+          )}
           {error && <div className={styles.error}>{error}</div>}
 
           <button type="submit" className={styles.button} disabled={loading}>
@@ -79,8 +100,24 @@ export default function LoginPage() {
           </button>
         </form>
 
-        <p className={styles.footer}>IT Roadmap · Capstone Project</p>
+        <p className={styles.footer}>IT Roadmap</p>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className={styles.container}>
+          <div className={styles.card}>
+            <p className={styles.centerText}>Loading sign in...</p>
+          </div>
+        </div>
+      }
+    >
+      <LoginForm />
+    </Suspense>
   );
 }

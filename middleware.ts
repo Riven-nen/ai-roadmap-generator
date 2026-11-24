@@ -30,12 +30,15 @@ export async function middleware(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const pathname = request.nextUrl.pathname;
-  const isAuthPage = pathname === "/login";
+  const publicAuthPages = new Set(["/login", "/forgot-password", "/reset-password"]);
+  const isAuthPage = publicAuthPages.has(pathname);
+  const isLoginPage = pathname === "/login";
+  const isPublicApi = pathname === "/api/auth/login";
   const isPublicAsset =
     pathname.startsWith("/_next") ||
-    pathname.match(/\.(svg|png|jpg|jpeg|gif|webp|ico)$/);
+    pathname.match(/\.(svg|png|jpg|jpeg|gif|webp|ico|csv)$/);
 
-  if (isPublicAsset) return response;
+  if (isPublicAsset || isPublicApi) return response;
 
   if (!user && pathname.startsWith("/api/")) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -47,7 +50,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  if (user && isAuthPage) {
+  if (user && (isLoginPage || pathname === "/forgot-password")) {
     const url = request.nextUrl.clone();
     url.pathname = "/";
     return NextResponse.redirect(url);

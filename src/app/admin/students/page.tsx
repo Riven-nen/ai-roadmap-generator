@@ -17,7 +17,8 @@ export default async function AdminStudents() {
   const { data: students } = await supabase
     .from("profiles")
     .select("*")
-    .eq("role", "student");
+    .eq("role", "student")
+    .order("full_name");
 
   return (
     <div className={styles.container}>
@@ -28,28 +29,42 @@ export default async function AdminStudents() {
         <div className={styles.header}>
           <div>
             <h1 className={styles.title}>Students</h1>
-            <p className={styles.subtitle}>View and manage all students</p>
+            <p className={styles.subtitle}>
+              {students?.length ?? 0} student{(students?.length ?? 0) === 1 ? "" : "s"} in the program
+            </p>
           </div>
+          <Link href="/admin/students/new" className={styles.primaryBtn}>
+            + Add Students
+          </Link>
         </div>
       </div>
 
-      <div className={styles.studentGrid}>
-        {(students ?? []).map((student) => (
-          <Link
-            key={student.id}
-            href={`/admin/students/${student.id}`}
-            className={styles.actionLink}
-          >
-            <Card className={styles.actionCard}>
-              <div className={styles.avatarCircle}>
-                {student.avatar_initials}
-              </div>
-              <h3 className={styles.actionTitle}>{student.full_name}</h3>
-              <p className={styles.actionDesc}>{student.role}</p>
-            </Card>
-          </Link>
-        ))}
-      </div>
+      {students && students.length > 0 ? (
+        <div className={styles.studentGrid}>
+          {students.map((student) => (
+            <Link
+              key={student.id}
+              href={`/admin/students/${student.id}`}
+              className={styles.actionLink}
+            >
+              <Card className={styles.actionCard}>
+                <div className={styles.avatarCircle}>
+                  {student.avatar_initials || "ST"}
+                </div>
+                <h3 className={styles.actionTitle}>{student.full_name}</h3>
+                <p className={styles.actionDesc}>{student.email || "No email on file"}</p>
+                <p className={styles.actionDesc}>Year {student.level ?? 1}</p>
+              </Card>
+            </Link>
+          ))}
+        </div>
+      ) : (
+        <Card>
+          <p className={styles.actionDesc}>
+            No students yet. Use <strong>Add Students</strong> to create one or import a CSV.
+          </p>
+        </Card>
+      )}
     </div>
   );
 }
