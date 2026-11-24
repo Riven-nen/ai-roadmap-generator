@@ -2,9 +2,22 @@
 
 import { usePathname } from "next/navigation";
 import Sidebar from "./Sidebar";
+import TopNav from "./TopNav";
 import styles from "@/app/layout.module.css";
 
-export default function AppShell({ children }: { children: React.ReactNode }) {
+export type ShellProfile = {
+  full_name: string;
+  role: string;
+  avatar_initials: string;
+};
+
+export default function AppShell({
+  children,
+  profile,
+}: {
+  children: React.ReactNode;
+  profile: ShellProfile | null;
+}) {
   const pathname = usePathname();
   const isAuthPage = ["/login", "/forgot-password", "/reset-password"].includes(pathname);
 
@@ -12,9 +25,18 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     return <>{children}</>;
   }
 
+  if (profile?.role === "admin") {
+    return (
+      <div className={styles.adminShell}>
+        <TopNav profile={profile} />
+        <main className={styles.adminContent}>{children}</main>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.container}>
-      <Sidebar />
+      <Sidebar profile={profile} />
       <main className={styles.mainContent}>{children}</main>
     </div>
   );

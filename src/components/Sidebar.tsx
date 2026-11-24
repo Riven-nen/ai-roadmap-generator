@@ -2,9 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
 import { LogoutButton } from "@/lib/supabase/logout";
-import { createClient } from "@/lib/supabase/client";
 import styles from "@/app/layout.module.css";
 
 const studentNavItems = [
@@ -28,27 +26,16 @@ const professorNavItems = [
   { name: "Profile", href: "/profile" },
 ];
 
-export default function Sidebar() {
-  const pathname = usePathname();
-  const [profile, setProfile] = useState<{
+export default function Sidebar({
+  profile,
+}: {
+  profile: {
     full_name: string;
     role: string;
     avatar_initials: string;
-  } | null>(null);
-
-  useEffect(() => {
-    const supabase = createClient();
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (!user) return;
-      supabase
-        .from("profiles")
-        .select("full_name, role, avatar_initials")
-        .eq("id", user.id)
-        .single()
-        .then(({ data }) => setProfile(data));
-    });
-  }, []);
-
+  } | null;
+}) {
+  const pathname = usePathname();
   const isAdmin = profile?.role === "admin";
   const isProfessor = profile?.role === "professor";
 
