@@ -399,7 +399,7 @@ export default function CourseDetailPage() {
               proOptions={{ hideAttribution: true }}
               nodesDraggable={false}
             >
-              <Background color={canvasGridColor} gap={18} />
+              <Background bgColor="var(--bg-card)" color={canvasGridColor} gap={18} />
               <Controls />
               <MiniMap
                 pannable

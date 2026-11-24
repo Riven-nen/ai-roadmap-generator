@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import Sidebar from "./Sidebar";
 import TopNav from "./TopNav";
 import styles from "@/app/layout.module.css";
 
@@ -24,10 +25,19 @@ export default function AppShell({
     return <>{children}</>;
   }
 
+  if (profile?.role === "admin") {
+    return (
+      <div className={styles.appShell}>
+        <TopNav profile={profile} />
+        <main className={styles.appContent}>{children}</main>
+      </div>
+    );
+  }
+
   return (
-    <div className={styles.appShell}>
-      <TopNav profile={profile} />
-      <main className={styles.appContent}>{children}</main>
+    <div className={styles.container}>
+      <Sidebar profile={profile} />
+      <main className={styles.mainContent}>{children}</main>
     </div>
   );
 }

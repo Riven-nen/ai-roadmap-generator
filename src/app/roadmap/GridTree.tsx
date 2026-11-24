@@ -133,7 +133,7 @@ export default function GridTree({ courses, enrollments, onCourseClick }: Props)
         proOptions={{ hideAttribution: true }}
         nodesDraggable={false} // Prevents the student from messing up the layout
       >
-        <Background color={canvasGridColor} gap={16} />
+        <Background bgColor="var(--bg-subtle)" color={canvasGridColor} gap={16} />
         <Controls />
       </ReactFlow>
     </div>
