@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import CourseForm from "../CourseForm";
 import styles from "../../admin.module.css";
 
@@ -12,12 +13,25 @@ export default async function NewCourse() {
     .from("profiles").select("role").eq("id", user.id).single();
   if (me?.role !== "admin") redirect("/");
 
+  const { data: courseOptions } = await supabase
+    .from("courses").select("code,title,category").order("code");
+
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <h1 className={styles.title}>Add Course</h1>
+      <div>
+        <Link href="/admin/courses" className={styles.backLink}>
+          <span className={styles.backArrow}>←</span> Back to Courses
+        </Link>
+        <div className={styles.header}>
+          <h1 className={styles.title}>Add Course</h1>
+          <p className={styles.subtitle}>Create a new course and set its roadmap prerequisite.</p>
+        </div>
       </div>
-      <CourseForm />
+      <CourseForm
+        courseOptions={(courseOptions ?? []).filter(
+          (course) => course.category !== "General Education"
+        )}
+      />
     </div>
   );
 }

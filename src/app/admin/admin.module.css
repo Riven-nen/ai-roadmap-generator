@@ -155,6 +155,21 @@
 
 .input:focus { border-color: var(--accent-purple); }
 
+.fieldHint {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  line-height: 1.4;
+}
+
+.formError {
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #f87171;
+  font-size: 0.8rem;
+}
+
 .formActions {
   grid-column: span 2;
   display: flex;

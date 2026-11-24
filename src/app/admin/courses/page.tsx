@@ -35,7 +35,8 @@ export default async function AdminCourses() {
               <th>Code</th>
               <th>Title</th>
               <th>Credits</th>
-              <th>Level</th>
+              <th>Year / Sem</th>
+              <th>Prerequisite</th>
               <th></th>
             </tr>
           </thead>
@@ -45,7 +46,8 @@ export default async function AdminCourses() {
                 <td>{c.code}</td>
                 <td>{c.title}</td>
                 <td>{c.credits}</td>
-                <td>{c.level}</td>
+                <td>{c.year_level ? `Year ${c.year_level} · Sem ${c.semester}` : "—"}</td>
+                <td>{c.prerequisite_code || "—"}</td>
                 <td>
                   <Link href={`/admin/courses/${c.id}`} className={styles.editLink} style={{ marginRight: 16 }}>
                     Manage Topics
