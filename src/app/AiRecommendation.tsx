@@ -101,10 +101,10 @@ export default function AiRecommendation({
       
       {!recommendation && !loading && (
         <div>
-            <p style={{ color: "#94a3b8", fontSize: "0.85rem", marginBottom: 16 }}>
+            <p style={{ color: "#64748b", fontSize: "0.85rem", marginBottom: 16 }}>
                 Click below to run your Knowledge Map against the BSIT Career Matrix.
             </p>
-            <button onClick={getAiAdvice} style={{ background: "#a855f7", color: "white", padding: "10px 20px", borderRadius: 8, border: "none", cursor: "pointer", width: "100%", fontWeight: 600 }}>
+            <button onClick={getAiAdvice} style={{ background: "#f97316", color: "white", padding: "10px 20px", borderRadius: 8, border: "none", cursor: "pointer", width: "100%", fontWeight: 600 }}>
                 Analyze My Career Path
             </button>
         </div>
@@ -112,8 +112,8 @@ export default function AiRecommendation({
       
       {loading && (
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
-            <div style={{ width: "32px", height: "32px", border: "3px solid #2a2f45", borderTopColor: "#a855f7", borderRadius: "50%", animation: "spin 1s linear infinite" }} />
-            <p style={{ color: "#94a3b8", fontSize: "0.85rem", animation: "pulse 1.5s ease-in-out infinite" }}>
+            <div style={{ width: "32px", height: "32px", border: "3px solid #e2e8f0", borderTopColor: "#f97316", borderRadius: "50%", animation: "spin 1s linear infinite" }} />
+            <p style={{ color: "#64748b", fontSize: "0.85rem", animation: "pulse 1.5s ease-in-out infinite" }}>
                 Analyzing Knowledge Map...
             </p>
             <style>{`
@@ -124,9 +124,9 @@ export default function AiRecommendation({
       )}
       
       {recommendation && !loading && (
-        <div style={{ background: "#131620", padding: 16, borderRadius: 12, border: "1px solid #2a2f45", textAlign: "left", fontSize: "0.9rem", lineHeight: 1.6 }}>
+        <div style={{ background: "#ffffff", padding: 16, borderRadius: 12, border: "1px solid #e2e8f0", textAlign: "left", fontSize: "0.9rem", lineHeight: 1.6 }}>
           <p>{recommendation}</p>
-          <button onClick={() => setRecommendation(null)} style={{ marginTop: 12, background: "transparent", color: "#c084fc", border: "none", cursor: "pointer", fontSize: "0.8rem", fontWeight: 600 }}>
+          <button onClick={() => setRecommendation(null)} style={{ marginTop: 12, background: "transparent", color: "#ea580c", border: "none", cursor: "pointer", fontSize: "0.8rem", fontWeight: 600 }}>
             Ask Again
           </button>
         </div>

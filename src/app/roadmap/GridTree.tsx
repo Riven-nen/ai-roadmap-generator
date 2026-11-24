@@ -18,11 +18,11 @@ const nodeWidth = 240;
 const nodeHeight = 100;
 
 const edgeColors = {
-  completed: "#22c55e",
-  in_progress: "#3b82f6",
-  failed: "#ef4444",
-  available: "#475569",
-  locked: "#334155",
+  completed: "#16a34a",
+  in_progress: "#f97316",
+  failed: "#dc2626",
+  available: "#1e3a8a",
+  locked: "#cbd5e1",
 } as const;
 
 const getLayoutedElements = (nodes: Node[], edges: Edge[]) => {
@@ -117,17 +117,17 @@ export default function GridTree({ courses, enrollments, onCourseClick }: Props)
   const nodeTypes = useMemo(() => ({ courseNode: CourseNode }), []);
 
   return (
-    <div style={{ width: "100%", height: "100%", background: "#0f111a" }}>
+    <div style={{ width: "100%", height: "100%", background: "#f7f9fc" }}>
       <ReactFlow
         nodes={nodes}
         edges={edges}
         nodeTypes={nodeTypes}
         fitView
-        colorMode="dark"
+        colorMode="light"
         proOptions={{ hideAttribution: true }}
         nodesDraggable={false} // Prevents the student from messing up the layout
       >
-        <Background color="#2a2f45" gap={16} />
+        <Background color="#e2e8f0" gap={16} />
         <Controls />
       </ReactFlow>
     </div>

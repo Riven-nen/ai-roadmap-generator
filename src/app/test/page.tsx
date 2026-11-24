@@ -14,7 +14,7 @@ export default async function TestPage() {
     ]);
 
   return (
-    <pre style={{ color: "white", padding: 20 }}>
+    <pre style={{ color: "#0b1f3a", padding: 20 }}>
       {JSON.stringify(
         {
           profile: profile.data,

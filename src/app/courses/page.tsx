@@ -31,7 +31,7 @@ export default function CoursesPage() {
     c.code.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  if (loading) return <div style={{ color: "white", padding: 40 }}>Loading Library...</div>;
+  if (loading) return <div style={{ color: "#0b1f3a", padding: 40 }}>Loading Library...</div>;
 
   return (
     <div className={styles.container}>
@@ -91,7 +91,7 @@ export default function CoursesPage() {
         ))}
 
         {filteredCourses.length === 0 && (
-          <div style={{ color: "#94a3b8", gridColumn: "1 / -1", textAlign: "center", padding: 40 }}>
+          <div style={{ color: "#64748b", gridColumn: "1 / -1", textAlign: "center", padding: 40 }}>
             No courses found matching your search.
           </div>
         )}

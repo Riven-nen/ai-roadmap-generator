@@ -38,10 +38,10 @@ export default function KnowledgeMap({ enrollments }: { enrollments: Enrollment[
     <div style={{ width: "100%", height: 300 }}>
       <ResponsiveContainer width="100%" height="100%">
         <RadarChart cx="50%" cy="50%" outerRadius="80%" data={data}>
-          <PolarGrid stroke="#2a2f45" />
-          <PolarAngleAxis dataKey="subject" tick={{ fill: "#94a3b8", fontSize: 10 }} />
+          <PolarGrid stroke="#e2e8f0" />
+          <PolarAngleAxis dataKey="subject" tick={{ fill: "#64748b", fontSize: 10 }} />
           <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
-          <Radar name="Student" dataKey="A" stroke="#a855f7" fill="#a855f7" fillOpacity={0.5} />
+          <Radar name="Student" dataKey="A" stroke="#f97316" fill="#f97316" fillOpacity={0.35} />
         </RadarChart>
       </ResponsiveContainer>
     </div>

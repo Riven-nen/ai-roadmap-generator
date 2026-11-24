@@ -39,7 +39,7 @@ export default function CourseForm({
     level: initial?.level ?? "Beginner",
     duration_weeks: initial?.duration_weeks ?? 16,
     icon: initial?.icon ?? "📘",
-    icon_bg: initial?.icon_bg ?? "#8b5cf6",
+    icon_bg: initial?.icon_bg ?? "#f97316",
     year_level: initial?.year_level ?? 1,
     semester: initial?.semester ?? 1,
     prerequisite_code: initial?.prerequisite_code ?? "",

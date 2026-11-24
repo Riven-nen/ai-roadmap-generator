@@ -199,7 +199,7 @@ export default function CourseDetailPage() {
             source: parentId,
             target: child.id,
             type: "smoothstep",
-            style: { stroke: isLocked ? "#334155" : "#475569", strokeWidth: 2 },
+            style: { stroke: isLocked ? "#cbd5e1" : "#94a3b8", strokeWidth: 2 },
           });
         }
 
@@ -240,9 +240,9 @@ export default function CourseDetailPage() {
     ? Math.round((completedTopicCount / topics.length) * 100)
     : 0;
 
-  if (loading) return <div style={{ color: "white", padding: 40 }}>Loading Course...</div>;
-  if (loadError) return <div style={{ color: "white", padding: 40 }}>{loadError}</div>;
-  if (!course) return <div style={{ color: "white", padding: 40 }}>Course not found.</div>;
+  if (loading) return <div style={{ color: "#0b1f3a", padding: 40 }}>Loading Course...</div>;
+  if (loadError) return <div style={{ color: "#0b1f3a", padding: 40 }}>{loadError}</div>;
+  if (!course) return <div style={{ color: "#0b1f3a", padding: 40 }}>Course not found.</div>;
 
   const finalExam = quizzes.find(q => !q.topic_id);
 
@@ -311,11 +311,11 @@ export default function CourseDetailPage() {
               fitViewOptions={{ padding: 0.2 }}
               minZoom={0.4}
               maxZoom={2}
-              colorMode="dark"
+              colorMode="light"
               proOptions={{ hideAttribution: true }}
               nodesDraggable={false}
             >
-              <Background color="#2a2f45" gap={16} />
+              <Background color="#e2e8f0" gap={16} />
               <Controls />
             </ReactFlow>
           </div>

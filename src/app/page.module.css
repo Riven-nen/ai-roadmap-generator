@@ -127,7 +127,7 @@
   width: 100%;
   margin-top: 32px;
   padding: 12px;
-  background-color: var(--border-color);
+  background-color: #f1f5f9;
   color: var(--text-main);
   border-radius: 12px;
   font-size: 0.875rem;
@@ -136,7 +136,7 @@
 }
 
 .viewRoadmapBtn:hover {
-  background-color: #353b55;
+  background-color: #e2e8f0;
 }
 
 .recommendationsList {
@@ -147,7 +147,7 @@
 }
 
 .recItem {
-  background-color: var(--bg-sidebar);
+  background-color: #f8fafc;
   padding: 16px;
   border-radius: 12px;
   border: 1px solid var(--border-color);
@@ -156,7 +156,7 @@
 }
 
 .recItem:hover {
-  border-color: rgba(168, 85, 247, 0.5);
+  border-color: rgba(249, 115, 22, 0.5);
 }
 
 .recTitle {
@@ -180,9 +180,9 @@
   font-size: 0.625rem;
   padding: 2px 8px;
   border-radius: 9999px;
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  border: 1px solid rgba(11, 37, 69, 0.3);
   color: var(--accent-blue);
-  background-color: rgba(59, 130, 246, 0.1);
+  background-color: rgba(11, 37, 69, 0.1);
 }
 
 .recTime {

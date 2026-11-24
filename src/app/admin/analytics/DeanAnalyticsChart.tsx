@@ -16,9 +16,9 @@ type TooltipProps = {
 function CustomTooltip({ active, payload }: TooltipProps) {
   if (active && payload && payload.length) {
     return (
-      <div style={{ background: "#131620", padding: "10px", border: "1px solid #2a2f45", borderRadius: "8px" }}>
-        <p style={{ color: "#fff", margin: 0, fontSize: "0.85rem" }}>{payload[0].payload.subject}</p>
-        <p style={{ color: "#c084fc", margin: 0, fontWeight: "bold" }}>{payload[0].value}% Avg</p>
+      <div style={{ background: "#ffffff", padding: "10px", border: "1px solid #e2e8f0", borderRadius: "8px", boxShadow: "0 4px 12px rgba(11, 37, 69, 0.08)" }}>
+        <p style={{ color: "var(--text-main)", margin: 0, fontSize: "0.85rem" }}>{payload[0].payload.subject}</p>
+        <p style={{ color: "#ea580c", margin: 0, fontWeight: "bold" }}>{payload[0].value}% Avg</p>
       </div>
     );
   }
@@ -62,16 +62,16 @@ export default function DeanAnalyticsChart({ enrollments }: { enrollments: Enrol
           layout="vertical"
           margin={{ top: 5, right: 30, left: 40, bottom: 5 }}
         >
-          <CartesianGrid strokeDasharray="3 3" stroke="#2a2f45" horizontal={false} />
-          <XAxis type="number" domain={[0, 100]} stroke="#94a3b8" />
-          <YAxis type="category" dataKey="subject" stroke="#94a3b8" width={150} tick={{ fontSize: 12 }} />
-          <Tooltip content={<CustomTooltip />} cursor={{ fill: '#2a2f45' }} />
+          <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" horizontal={false} />
+          <XAxis type="number" domain={[0, 100]} stroke="#64748b" tick={{ fill: "#64748b", fontSize: 12 }} />
+          <YAxis type="category" dataKey="subject" stroke="#64748b" width={150} tick={{ fill: "#64748b", fontSize: 12 }} />
+          <Tooltip content={<CustomTooltip />} cursor={{ fill: '#e2e8f0' }} />
           <Bar dataKey="A" radius={[0, 4, 4, 0]}>
             {data.map((entry, index) => (
               <Cell
                 key={`cell-${index}`}
-                // If score is below 60, color it red (danger zone), otherwise purple
-                fill={entry.A < 60 ? "#ef4444" : "#a855f7"}
+                // If score is below 60, color it red (danger zone), otherwise orange
+                fill={entry.A < 60 ? "#dc2626" : "#f97316"}
               />
             ))}
           </Bar>

@@ -109,7 +109,7 @@ export default async function Profile() {
                     className={styles.progressBarFill}
                     style={{ 
                       width: `${skill.progress}%`, 
-                      background: skill.progress < 60 ? "#ef4444" : skill.progress < 80 ? "#eab308" : "#a855f7" 
+                      background: skill.progress < 60 ? "#dc2626" : skill.progress < 80 ? "#d97706" : "#f97316" 
                     }}
                   />
                 </div>
@@ -127,7 +127,7 @@ export default async function Profile() {
               </div>
             ))}
             {achievements.length === 0 && (
-              <p style={{ color: "#94a3b8", fontSize: "0.9rem" }}>No achievements unlocked yet.</p>
+              <p style={{ color: "#64748b", fontSize: "0.9rem" }}>No achievements unlocked yet.</p>
             )}
           </div>
         </Card>
