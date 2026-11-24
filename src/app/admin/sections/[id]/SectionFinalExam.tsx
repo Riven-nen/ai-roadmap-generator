@@ -193,30 +193,18 @@ function ExamCreator({
     }
 
     if (template) {
-      const { data: questions } = await supabase
-        .from("quiz_questions")
-        .select("question_text, options, correct_option")
-        .eq("quiz_id", template.id);
+      const { error: questionError } = await supabase.rpc("clone_quiz_questions", {
+        p_source_quiz_id: template.id,
+        p_target_quiz_id: created.id,
+      });
 
-      if (questions && questions.length > 0) {
-        const { error: questionError } = await supabase.from("quiz_questions").insert(
-          questions.map((question) => ({
-            id: crypto.randomUUID(),
-            quiz_id: created.id,
-            question_text: question.question_text,
-            options: question.options,
-            correct_option: question.correct_option,
-          }))
+      if (questionError) {
+        setError(
+          `The exam was created, but its questions could not be copied: ${questionError.message}`
         );
-
-        if (questionError) {
-          setError(
-            `The exam was created, but its questions could not be copied: ${questionError.message}`
-          );
-          setCreating(false);
-          router.refresh();
-          return;
-        }
+        setCreating(false);
+        router.refresh();
+        return;
       }
     }
 
