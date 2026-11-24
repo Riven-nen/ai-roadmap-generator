@@ -74,6 +74,14 @@ export default function CoursesPage() {
             <div className={styles.metaRow}>
               <span className={styles.metaText}>🕒 {course.duration_weeks} weeks</span>
               <span className={styles.metaText}>📚 {course.category}</span>
+              {course.year_level && (
+                <span className={styles.metaText}>
+                  📅 Year {course.year_level} · Sem {course.semester}
+                </span>
+              )}
+              {course.prerequisite_code && (
+                <span className={styles.prereqText}>🔗 Prereq: {course.prerequisite_code}</span>
+              )}
             </div>
 
             <Link href={`/roadmap/course/${course.id}`} className={styles.actionBtn}>

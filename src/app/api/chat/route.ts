@@ -42,7 +42,7 @@ export async function POST(req: Request) {
     const data = await response.json();
     return NextResponse.json({ reply: data.choices[0].message.content });
     
-  } catch (error) {
+  } catch {
     return NextResponse.json({ reply: "Sorry, I am having trouble connecting to my brain right now. Please try again." });
   }
 }

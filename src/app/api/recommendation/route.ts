@@ -52,7 +52,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ recommendation: aiText });
     
-  } catch (error) {
+  } catch {
     return NextResponse.json({ recommendation: "Focus on improving your weak domains to stay on track for graduation." });
   }
 }

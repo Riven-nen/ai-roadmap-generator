@@ -123,9 +123,16 @@
   display: flex;
   gap: 16px;
   margin-bottom: 24px;
+  flex-wrap: wrap;
 }
 
 .metaText { color: #64748b; font-size: 0.8rem; font-weight: 500; }
+
+.prereqText {
+  color: #c084fc;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
 
 .actionBtn {
   display: block;

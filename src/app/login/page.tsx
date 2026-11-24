@@ -6,8 +6,8 @@ import { createClient } from "@/lib/supabase/client";
 import styles from "./login.module.css";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("john@example.com");
-  const [password, setPassword] = useState("password123");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -53,6 +53,7 @@ export default function LoginPage() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
               className={styles.input}
+              autoComplete="email"
               required
             />
           </div>
@@ -66,6 +67,7 @@ export default function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               className={styles.input}
+              autoComplete="current-password"
               required
             />
           </div>

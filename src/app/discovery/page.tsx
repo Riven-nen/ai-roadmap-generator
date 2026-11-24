@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { gradeToScore } from "@/lib/grading";
 import Card from "@/components/Card";
 import styles from "./discovery.module.css";
 
@@ -12,37 +13,63 @@ type CareerPath = {
   career_requirements: { domain: string; required_score: number }[];
 };
 
+type EnrollmentRow = {
+  grade: string | null;
+  course: { category: string | null } | { category: string | null }[] | null;
+};
+
 export default function Discovery() {
   const [careers, setCareers] = useState<CareerPath[]>([]);
+  const [skills, setSkills] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchCareers() {
-      console.log("--- FETCH STARTED ---");
       const supabase = createClient();
-      
-      const { data: paths, error: pathError } = await supabase.from("career_paths").select("*");
-      
-      console.log("PATH DATA:", paths);
-      console.log("PATH ERROR:", pathError);
 
-      if (pathError || !paths) {
+      const [pathsRes, reqsRes] = await Promise.all([
+        supabase.from("career_paths").select("*"),
+        supabase.from("career_requirements").select("*"),
+      ]);
+
+      if (pathsRes.error || !pathsRes.data) {
         setLoading(false);
         return;
       }
 
-      const { data: reqs, error: reqError } = await supabase.from("career_requirements").select("*");
-      
-      console.log("REQ DATA:", reqs);
-      console.log("REQ ERROR:", reqError);
+      const { data: { user } } = await supabase.auth.getUser();
 
-      const combined = paths.map(path => ({
+      if (user) {
+        const { data: enrollmentData } = await supabase
+          .from("enrollments")
+          .select("grade, course:courses(category)")
+          .eq("user_id", user.id);
+
+        const domainScores: Record<string, { total: number; count: number }> = {};
+
+        ((enrollmentData || []) as unknown as EnrollmentRow[]).forEach((enrollment) => {
+          const course = Array.isArray(enrollment.course)
+            ? enrollment.course[0]
+            : enrollment.course;
+          const category = course?.category;
+          if (!category) return;
+
+          if (!domainScores[category]) domainScores[category] = { total: 0, count: 0 };
+          domainScores[category].total += gradeToScore(enrollment.grade);
+          domainScores[category].count += 1;
+        });
+
+        const currentSkills: Record<string, number> = {};
+        for (const [domain, scores] of Object.entries(domainScores)) {
+          currentSkills[domain] = scores.count > 0 ? Math.round(scores.total / scores.count) : 0;
+        }
+        setSkills(currentSkills);
+      }
+
+      const combined = pathsRes.data.map(path => ({
         ...path,
-        career_requirements: (reqs || []).filter(r => r.career_id === path.id)
+        career_requirements: (reqsRes.data || []).filter(r => r.career_id === path.id)
       }));
-
-      console.log("COMBINED DATA:", combined);
-      console.log("--- FETCH ENDED ---");
 
       setCareers(combined);
       setLoading(false);
@@ -79,20 +106,40 @@ export default function Discovery() {
 
               <div className={styles.requirementsList}>
                 <h3 className={styles.reqTitle}>Required Domain Mastery:</h3>
-                {career.career_requirements.map((req, i) => (
-                  <div key={i} className={styles.reqItem}>
-                    <div className={styles.reqLabelRow}>
-                      <span className={styles.domainName}>{req.domain}</span>
-                      <span className={styles.reqScore}>{req.required_score}%</span>
+                <p className={styles.reqHint}>
+                  The bar is your current score; the marker is the target.
+                </p>
+                {career.career_requirements.map((req, i) => {
+                  const currentScore = skills[req.domain] ?? 0;
+                  const met = currentScore >= req.required_score;
+
+                  return (
+                    <div key={i} className={styles.reqItem}>
+                      <div className={styles.reqLabelRow}>
+                        <span className={styles.domainName}>{req.domain}</span>
+                        <span className={met ? styles.reqScoreMet : styles.reqScoreGap}>
+                          {currentScore}% / {req.required_score}%
+                        </span>
+                      </div>
+                      <div className={styles.progressBarBg}>
+                        <div
+                          className={styles.progressBarFill}
+                          style={{
+                            width: `${Math.min(currentScore, 100)}%`,
+                            background: met
+                              ? "linear-gradient(to right, #22c55e, #4ade80)"
+                              : "linear-gradient(to right, #a855f7, #38bdf8)",
+                          }}
+                        />
+                        <div
+                          className={styles.targetMarker}
+                          style={{ left: `${Math.min(req.required_score, 100)}%` }}
+                          title={`Target: ${req.required_score}%`}
+                        />
+                      </div>
                     </div>
-                    <div className={styles.progressBarBg}>
-                      <div 
-                        className={styles.progressBarFill}
-                        style={{ width: `${req.required_score}%` }}
-                      />
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </Card>
           ))}

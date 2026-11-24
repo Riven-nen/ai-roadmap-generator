@@ -25,9 +25,9 @@ export default async function Dashboard() {
       <div className={styles.header}>
         <div>
           <h1 className={styles.title}>
-            Welcome back, <span className={styles.highlight}>{profile?.full_name.split(" ")[0]}!</span>
+            Welcome back, <span className={styles.highlight}>{profile?.full_name?.split(" ")[0] ?? "Student"}!</span>
           </h1>
-          <p className={styles.subtitle}>Dean's Dashboard: Knowledge Mapping & AI Analytics</p>
+          <p className={styles.subtitle}>Your knowledge map, AI analytics, and academic progress</p>
         </div>
       </div>
 

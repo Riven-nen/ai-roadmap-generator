@@ -1,6 +1,8 @@
 import Card from "@/components/Card";
 import { createClient } from "@/lib/supabase/server";
+import { gradeToScore } from "@/lib/grading";
 import { redirect } from "next/navigation";
+import EditProfileButton from "./EditProfileButton";
 import styles from "./profile.module.css";
 
 export default async function Profile() {
@@ -34,20 +36,7 @@ export default async function Profile() {
   enrollments.forEach((e) => {
     const cat = e.course?.category;
     if (cat && domainScores[cat]) {
-      let score = 0;
-      const grade = e.grade;
-      if (grade === "1.0") score = 98;
-      else if (grade === "1.25") score = 94;
-      else if (grade === "1.5") score = 90;
-      else if (grade === "1.75") score = 86;
-      else if (grade === "2.0") score = 82;
-      else if (grade === "2.25") score = 78;
-      else if (grade === "2.5") score = 74;
-      else if (grade === "2.75") score = 70;
-      else if (grade === "3.0") score = 60;
-      else if (grade === "5.0" || grade === "INC") score = 10;
-
-      domainScores[cat].total += score;
+      domainScores[cat].total += gradeToScore(e.grade);
       domainScores[cat].count += 1;
     }
   });
@@ -84,7 +73,11 @@ export default async function Profile() {
             </div>
           </div>
         </div>
-        <button className={styles.editBtn}>✎ Edit Profile</button>
+        <EditProfileButton
+          userId={user.id}
+          initialName={profile.full_name ?? ""}
+          initialInitials={profile.avatar_initials ?? ""}
+        />
       </div>
 
       <div className={styles.statsGrid}>

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Enrollment } from "@/types";
+import { gradeToScore } from "@/lib/grading";
 
 type CareerPath = {
   title: string;
@@ -20,27 +21,15 @@ export default function AiRecommendation({
 
   async function getAiAdvice() {
     setLoading(true);
-    console.log("--- FRONTEND: STARTING ---");
-    
+
     // 1. Calculate the student's current domain scores
     const domainScores: Record<string, { total: number; count: number }> = {};
     enrollments.forEach(e => {
         const cat = e.course?.category;
         if (cat) {
             if (!domainScores[cat]) domainScores[cat] = { total: 0, count: 0 };
-            let score = 0;
-            const grade = e.grade;
-            if (grade === "1.0") score = 98;
-            else if (grade === "1.25") score = 94;
-            else if (grade === "1.5") score = 90;
-            else if (grade === "1.75") score = 86;
-            else if (grade === "2.0") score = 82;
-            else if (grade === "2.25") score = 78;
-            else if (grade === "2.5") score = 74;
-            else if (grade === "2.75") score = 70;
-            else if (grade === "3.0") score = 60;
-            else if (grade === "5.0" || grade === "INC") score = 10;
-            
+            const score = gradeToScore(e.grade);
+
             domainScores[cat].total += score;
             domainScores[cat].count += 1;
         }
@@ -79,7 +68,6 @@ export default function AiRecommendation({
 
     // 3. Send to AI
     try {
-        console.log("Sending payload to API...");
         const res = await fetch("/api/recommendation", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -104,8 +92,7 @@ export default function AiRecommendation({
     } catch (error) {
         console.error("FRONTEND ERROR:", error);
         setRecommendation("Failed to generate recommendation. Please try again.");
-    } finally {
-        setLoading(false);
+    } finally {        setLoading(false);
     }
   }
 

@@ -61,17 +61,22 @@ export default function Sidebar() {
       </div>
 
       <nav className={styles.nav}>
-        {navItems.map((item) => (
-          <Link
-            key={item.name}
-            href={item.href}
-            className={`${styles.navItem} ${
-              pathname === item.href ? styles.navItemActive : ""
-            }`}
-          >
-            {item.name}
-          </Link>
-        ))}
+        {navItems.map((item) => {
+          const isActive =
+            item.href === "/"
+              ? pathname === "/"
+              : pathname === item.href || pathname.startsWith(`${item.href}/`);
+
+          return (
+            <Link
+              key={item.name}
+              href={item.href}
+              className={`${styles.navItem} ${isActive ? styles.navItemActive : ""}`}
+            >
+              {item.name}
+            </Link>
+          );
+        })}
       </nav>
 
       <LogoutButton className={styles.logoutBtn} />
