@@ -16,9 +16,12 @@ export type CourseStatus = {
 };
 
 /**
- * Build the set of course codes the student has actually passed.
- * A completed enrollment with a failing grade (5.0 / INC) does not unlock
- * the next course.
+ * Build the set of course codes the student has passed.
+ *
+ * A completed enrollment with a failing grade (5.0 / INC) does not unlock the
+ * next course. If a student has passed an advanced course, its prerequisites
+ * are treated as satisfied too — imported transcripts do not always include
+ * every lower-level course.
  */
 export function getPassedCourseCodes(
   courses: Course[],
@@ -34,6 +37,19 @@ export function getPassedCourseCodes(
     if (course && isPassingGrade(enrollment.grade)) {
       passed.add(course.code);
     }
+  }
+
+  const queue = [...passed];
+  while (queue.length > 0) {
+    const code = queue.pop();
+    if (!code) continue;
+
+    const course = courses.find((candidate) => candidate.code === code);
+    const prerequisite = course?.prerequisite_code;
+    if (!prerequisite || passed.has(prerequisite)) continue;
+
+    passed.add(prerequisite);
+    queue.push(prerequisite);
   }
 
   return passed;
