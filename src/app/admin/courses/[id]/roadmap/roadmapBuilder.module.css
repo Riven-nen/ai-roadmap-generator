@@ -1,5 +1,5 @@
 .page {
-  height: calc(100vh - 64px);
+  height: 100%;
   min-height: 620px;
   display: flex;
   flex-direction: column;
@@ -171,7 +171,7 @@
 }
 
 .loading {
-  height: calc(100vh - 64px);
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
