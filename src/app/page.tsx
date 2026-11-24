@@ -12,6 +12,9 @@ export default async function Dashboard() {
   if (!user) redirect("/login");
 
   const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).single();
+
+  if (profile?.role === "admin") redirect("/admin");
+  if (profile?.role === "professor") redirect("/teacher");
   
   const { data: enrollmentsData } = await supabase.from("enrollments").select("*, course:courses(*)").eq("user_id", user.id);
   const enrollments = (enrollmentsData || []) as Enrollment[];

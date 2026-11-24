@@ -31,7 +31,7 @@ export default async function EditCourse({
     <div className={styles.container}>
       <div>
         <Link href="/admin/courses" className={styles.backLink}>
-          <span className={styles.backArrow}>←</span> Back to Courses
+          <span className={styles.backArrow}>←</span> Back to Subjects
         </Link>
         <div className={styles.header}>
           <div>

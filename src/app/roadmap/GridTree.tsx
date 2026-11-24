@@ -14,8 +14,8 @@ type Props = {
   onCourseClick: (course: Course) => void;
 };
 
-const nodeWidth = 240;
-const nodeHeight = 100;
+const nodeWidth = 280;
+const nodeHeight = 120;
 
 const edgeColors = {
   completed: "#16a34a",
@@ -30,7 +30,7 @@ const getLayoutedElements = (nodes: Node[], edges: Edge[]) => {
   dagreGraph.setDefaultEdgeLabel(() => ({}));
 
   // TB = Top to Bottom. nodesep = horizontal gap, ranksep = vertical gap
-  dagreGraph.setGraph({ rankdir: "TB", nodesep: 60, ranksep: 100 });
+  dagreGraph.setGraph({ rankdir: "TB", nodesep: 72, ranksep: 110 });
 
   nodes.forEach((node) => {
     dagreGraph.setNode(node.id, { width: nodeWidth, height: nodeHeight });
@@ -123,6 +123,9 @@ export default function GridTree({ courses, enrollments, onCourseClick }: Props)
         edges={edges}
         nodeTypes={nodeTypes}
         fitView
+        fitViewOptions={{ padding: 0.15, minZoom: 0.5, maxZoom: 1.1 }}
+        minZoom={0.3}
+        maxZoom={2}
         colorMode="light"
         proOptions={{ hideAttribution: true }}
         nodesDraggable={false} // Prevents the student from messing up the layout

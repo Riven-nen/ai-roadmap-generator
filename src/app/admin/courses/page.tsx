@@ -20,11 +20,11 @@ export default async function AdminCourses() {
     <div className={styles.container}>
       <div className={styles.header}>
         <div>
-          <h1 className={styles.title}>Courses</h1>
-          <p className={styles.subtitle}>{courses?.length ?? 0} courses in catalog</p>
+          <h1 className={styles.title}>Subjects</h1>
+          <p className={styles.subtitle}>{courses?.length ?? 0} subjects in catalog</p>
         </div>
         <Link href="/admin/courses/new" className={styles.primaryBtn}>
-          + Add Course
+          + Add Subject
         </Link>
       </div>
 
@@ -32,7 +32,7 @@ export default async function AdminCourses() {
         <table className={styles.table}>
           <thead>
             <tr>
-              <th>Code</th>
+              <th>Subject Code</th>
               <th>Title</th>
               <th>Credits</th>
               <th>Year / Sem</th>
@@ -49,8 +49,11 @@ export default async function AdminCourses() {
                 <td>{c.year_level ? `Year ${c.year_level} · Sem ${c.semester}` : "—"}</td>
                 <td>{c.prerequisite_code || "—"}</td>
                 <td>
-                  <Link href={`/admin/courses/${c.id}`} className={styles.editLink} style={{ marginRight: 16 }}>
-                    Manage Topics
+                  <Link href={`/admin/courses/${c.id}/roadmap`} className={styles.editLink} style={{ marginRight: 16 }}>
+                    Build Roadmap
+                  </Link>
+                  <Link href={`/admin/sections?course=${c.id}`} className={styles.editLink} style={{ marginRight: 16 }}>
+                    Classes
                   </Link>
                   <Link href={`/admin/courses/${c.id}/edit`} className={styles.editLink}>
                     Edit

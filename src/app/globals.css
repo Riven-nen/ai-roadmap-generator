@@ -1,18 +1,243 @@
-:root {
+:root,
+[data-theme="calm"] {
+  color-scheme: light;
+
+  --bg-main: #f5f3ee;
+  --bg-card: #fdfcf9;
+  --bg-input: #eeebe4;
+  --bg-subtle: #f8f6f1;
+  --bg-sidebar: #2c3a37;
+
+  --border-color: #e3ded4;
+  --border-strong: #cfc8bb;
+
+  --text-main: #2f3632;
+  --text-muted: #707a73;
+  --text-faint: #9aa39c;
+
+  --accent: #5f8f83;
+  --accent-rgb: 95, 143, 131;
+  --accent-strong: #3d6b60;
+  --accent-strong-rgb: 61, 107, 96;
+  --accent-light: #a7c9be;
+  --accent-contrast: #ffffff;
+
+  --ink-rgb: 44, 58, 55;
+  --sidebar-border: #3b4c48;
+  --sidebar-text: #edf2ef;
+  --sidebar-muted: #bccbc5;
+
+  --success: #4e8a63;
+  --success-strong: #3a6e4c;
+  --success-rgb: 78, 138, 99;
+  --warning: #b07d3f;
+  --warning-strong: #8a5f2d;
+  --warning-rgb: 176, 125, 63;
+  --danger: #b45757;
+  --danger-strong: #923f3f;
+  --danger-rgb: 180, 87, 87;
+
+  --accent-navy: var(--accent-strong);
+  --accent-orange: var(--accent);
+  --accent-purple: var(--accent);
+  --accent-blue: var(--accent-strong);
+  --accent-pink: var(--accent-strong);
+  --accent-green: var(--success);
+  --accent-yellow: var(--warning);
+}
+
+[data-theme="ocean"] {
+  --bg-main: #f1f5f9;
+  --bg-card: #ffffff;
+  --bg-input: #e8eef5;
+  --bg-subtle: #f7fafc;
+  --bg-sidebar: #274257;
+  --border-color: #dbe4ed;
+  --border-strong: #c3d0dd;
+  --text-main: #243444;
+  --text-muted: #66788a;
+  --text-faint: #96a6b5;
+  --accent: #4f88a8;
+  --accent-rgb: 79, 136, 168;
+  --accent-strong: #356580;
+  --accent-strong-rgb: 53, 101, 128;
+  --accent-light: #a8c9da;
+  --accent-contrast: #ffffff;
+  --ink-rgb: 39, 66, 87;
+  --sidebar-border: #35566e;
+  --sidebar-text: #e8f1f7;
+  --sidebar-muted: #b5c9d8;
+  --success: #4e8a63;
+  --success-strong: #3a6e4c;
+  --success-rgb: 78, 138, 99;
+  --warning: #b07d3f;
+  --warning-strong: #8a5f2d;
+  --warning-rgb: 176, 125, 63;
+  --danger: #b45757;
+  --danger-strong: #923f3f;
+  --danger-rgb: 180, 87, 87;
+}
+
+[data-theme="forest"] {
+  --bg-main: #f3f6f1;
+  --bg-card: #fdfefc;
+  --bg-input: #e9efe5;
+  --bg-subtle: #f7faf5;
+  --bg-sidebar: #2e4234;
+  --border-color: #dce5d6;
+  --border-strong: #c7d4bf;
+  --text-main: #2c352e;
+  --text-muted: #6d7c70;
+  --text-faint: #9aa89d;
+  --accent: #6d9465;
+  --accent-rgb: 109, 148, 101;
+  --accent-strong: #4f7549;
+  --accent-strong-rgb: 79, 117, 73;
+  --accent-light: #b0cba8;
+  --accent-contrast: #ffffff;
+  --ink-rgb: 46, 66, 52;
+  --sidebar-border: #40594a;
+  --sidebar-text: #ecf3ea;
+  --sidebar-muted: #b9cbb8;
+  --success: #4e8a63;
+  --success-strong: #3a6e4c;
+  --success-rgb: 78, 138, 99;
+  --warning: #b07d3f;
+  --warning-strong: #8a5f2d;
+  --warning-rgb: 176, 125, 63;
+  --danger: #b45757;
+  --danger-strong: #923f3f;
+  --danger-rgb: 180, 87, 87;
+}
+
+[data-theme="plum"] {
+  --bg-main: #f7f4f8;
+  --bg-card: #fefcff;
+  --bg-input: #eee7f0;
+  --bg-subtle: #fbf8fc;
+  --bg-sidebar: #403348;
+  --border-color: #e6dce9;
+  --border-strong: #d3c3d8;
+  --text-main: #342e38;
+  --text-muted: #7a6d80;
+  --text-faint: #a89cae;
+  --accent: #9874a6;
+  --accent-rgb: 152, 116, 166;
+  --accent-strong: #765787;
+  --accent-strong-rgb: 118, 87, 135;
+  --accent-light: #cbb3d6;
+  --accent-contrast: #ffffff;
+  --ink-rgb: 64, 51, 72;
+  --sidebar-border: #57445f;
+  --sidebar-text: #f3ecf5;
+  --sidebar-muted: #cbbccf;
+  --success: #4e8a63;
+  --success-strong: #3a6e4c;
+  --success-rgb: 78, 138, 99;
+  --warning: #b07d3f;
+  --warning-strong: #8a5f2d;
+  --warning-rgb: 176, 125, 63;
+  --danger: #b45757;
+  --danger-strong: #923f3f;
+  --danger-rgb: 180, 87, 87;
+}
+
+[data-theme="sunset"] {
+  --bg-main: #fbf3ee;
+  --bg-card: #fffaf7;
+  --bg-input: #f4e7df;
+  --bg-subtle: #fdf7f3;
+  --bg-sidebar: #4a342a;
+  --border-color: #eddcd1;
+  --border-strong: #ddc2b1;
+  --text-main: #3a2f2a;
+  --text-muted: #8a7264;
+  --text-faint: #b39a8b;
+  --accent: #c47a55;
+  --accent-rgb: 196, 122, 85;
+  --accent-strong: #a15d3d;
+  --accent-strong-rgb: 161, 93, 61;
+  --accent-light: #e5b29a;
+  --accent-contrast: #ffffff;
+  --ink-rgb: 74, 52, 42;
+  --sidebar-border: #61463a;
+  --sidebar-text: #f7ece5;
+  --sidebar-muted: #d6beb0;
+  --success: #4e8a63;
+  --success-strong: #3a6e4c;
+  --success-rgb: 78, 138, 99;
+  --warning: #b07d3f;
+  --warning-strong: #8a5f2d;
+  --warning-rgb: 176, 125, 63;
+  --danger: #b45757;
+  --danger-strong: #923f3f;
+  --danger-rgb: 180, 87, 87;
+}
+
+[data-theme="midnight"] {
+  color-scheme: dark;
+
+  --bg-main: #12171c;
+  --bg-card: #1a222a;
+  --bg-input: #242f39;
+  --bg-subtle: #172028;
+  --bg-sidebar: #0d1318;
+  --border-color: #2c3a46;
+  --border-strong: #3d4e5c;
+  --text-main: #e5edf3;
+  --text-muted: #9caeba;
+  --text-faint: #70828f;
+  --accent: #7fb7a9;
+  --accent-rgb: 127, 183, 169;
+  --accent-strong: #5f9488;
+  --accent-strong-rgb: 95, 148, 136;
+  --accent-light: #a9d4c9;
+  --accent-contrast: #0d1318;
+  --ink-rgb: 13, 19, 24;
+  --sidebar-border: #1e2a33;
+  --sidebar-text: #e5edf3;
+  --sidebar-muted: #9caeba;
+  --success: #6fb387;
+  --success-strong: #55976b;
+  --success-rgb: 111, 179, 135;
+  --warning: #d0a45e;
+  --warning-strong: #a77f3d;
+  --warning-rgb: 208, 164, 94;
+  --danger: #d97a7a;
+  --danger-strong: #b25a5a;
+  --danger-rgb: 217, 122, 122;
+}
+
+[data-theme="classic"] {
   --bg-main: #f7f9fc;
-  --bg-sidebar: #0b2545;
   --bg-card: #ffffff;
   --bg-input: #f1f5f9;
+  --bg-subtle: #f8fafc;
+  --bg-sidebar: #0b2545;
   --border-color: #e2e8f0;
+  --border-strong: #cbd5e1;
   --text-main: #0b1f3a;
   --text-muted: #64748b;
-  --accent-navy: #0b2545;
-  --accent-orange: #f97316;
-  --accent-purple: #f97316;
-  --accent-blue: #0b2545;
-  --accent-pink: #ea580c;
-  --accent-green: #16a34a;
-  --accent-yellow: #d97706;
+  --text-faint: #94a3b8;
+  --accent: #f97316;
+  --accent-rgb: 249, 115, 22;
+  --accent-strong: #0b2545;
+  --accent-strong-rgb: 11, 37, 69;
+  --accent-light: #fb923c;
+  --accent-contrast: #ffffff;
+  --ink-rgb: 11, 37, 69;
+  --sidebar-border: #13315c;
+  --sidebar-text: #ffffff;
+  --sidebar-muted: #cbd5e1;
+  --success: #16a34a;
+  --success-strong: #15803d;
+  --success-rgb: 22, 163, 74;
+  --warning: #d97706;
+  --warning-strong: #b45309;
+  --warning-rgb: 217, 119, 6;
+  --danger: #dc2626;
+  --danger-strong: #b91c1c;
+  --danger-rgb: 239, 68, 68;
 }
 
 * {
@@ -27,7 +252,7 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   height: 100vh;
   overflow: hidden;
-  color-scheme: light;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 a {

@@ -17,14 +17,15 @@ export default async function AddStudentsPage() {
   return (
     <div className={styles.container}>
       <div>
-        <Link href="/admin/students" className={styles.backLink}>
-          <span className={styles.backArrow}>←</span> Back to Students
+        <Link href="/admin" className={styles.backLink}>
+          <span className={styles.backArrow}>←</span> Back to Admin
         </Link>
         <div className={styles.header}>
           <div>
-            <h1 className={styles.title}>Add Students</h1>
+            <h1 className={styles.title}>Add Users</h1>
             <p className={styles.subtitle}>
-              Create one student or import a CSV. Temporary passwords are shown only once.
+              Create student or professor accounts, one at a time or by CSV. Temporary passwords
+              are shown only once.
             </p>
           </div>
         </div>

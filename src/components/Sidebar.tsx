@@ -7,11 +7,24 @@ import { LogoutButton } from "@/lib/supabase/logout";
 import { createClient } from "@/lib/supabase/client";
 import styles from "@/app/layout.module.css";
 
-const baseNavItems = [
+const studentNavItems = [
   { name: "Dashboard", href: "/" },
   { name: "Roadmap", href: "/roadmap" },
   { name: "Discovery", href: "/discovery" },
-  { name: "Courses", href: "/courses" },
+  { name: "Subjects", href: "/courses" },
+  { name: "Profile", href: "/profile" },
+];
+
+const adminNavItems = [
+  { name: "Admin", href: "/admin" },
+  { name: "Subjects", href: "/admin/courses" },
+  { name: "Classes", href: "/admin/sections" },
+  { name: "Students", href: "/admin/students" },
+  { name: "Profile", href: "/profile" },
+];
+
+const professorNavItems = [
+  { name: "My Teaching", href: "/teacher" },
   { name: "Profile", href: "/profile" },
 ];
 
@@ -21,7 +34,6 @@ export default function Sidebar() {
     full_name: string;
     role: string;
     avatar_initials: string;
-    user_role: string;
   } | null>(null);
 
   useEffect(() => {
@@ -30,7 +42,7 @@ export default function Sidebar() {
       if (!user) return;
       supabase
         .from("profiles")
-        .select("full_name, role, avatar_initials, user_role:role")
+        .select("full_name, role, avatar_initials")
         .eq("id", user.id)
         .single()
         .then(({ data }) => setProfile(data));
@@ -38,10 +50,19 @@ export default function Sidebar() {
   }, []);
 
   const isAdmin = profile?.role === "admin";
+  const isProfessor = profile?.role === "professor";
 
   const navItems = isAdmin
-    ? [...baseNavItems, { name: "Admin", href: "/admin" }]
-    : baseNavItems;
+    ? adminNavItems
+    : isProfessor
+      ? professorNavItems
+      : studentNavItems;
+
+  const roleLabel = isAdmin
+    ? "Administrator"
+    : isProfessor
+      ? "Professor"
+      : "CS Student";
 
   return (
     <aside className={styles.sidebar}>
@@ -54,17 +75,15 @@ export default function Sidebar() {
         <div className={styles.avatar}>{profile?.avatar_initials ?? "??"}</div>
         <div className={styles.userInfo}>
           <span className={styles.userName}>{profile?.full_name ?? "Loading..."}</span>
-          <span className={styles.userRole}>
-            {isAdmin ? "Administrator" : "CS Student"}
-          </span>
+          <span className={styles.userRole}>{roleLabel}</span>
         </div>
       </div>
 
       <nav className={styles.nav}>
         {navItems.map((item) => {
           const isActive =
-            item.href === "/"
-              ? pathname === "/"
+            item.href === "/" || item.href === "/admin"
+              ? pathname === item.href
               : pathname === item.href || pathname.startsWith(`${item.href}/`);
 
           return (

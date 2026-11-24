@@ -1,20 +1,38 @@
 "use client";
 
-import { CourseTopic } from "@/types";
+import { CourseTopic, TopicNodeType } from "@/types";
 import styles from "./course.module.css";
 
 type Props = {
   topic: CourseTopic;
   status: string;
   hasQuiz: boolean;
+  nodeType: TopicNodeType;
   onClose: () => void;
   onUpdateStatus: (status: "reading" | "completed") => void;
   onTakeQuiz: () => void;
 };
 
-export default function TopicModal({ topic, status, hasQuiz, onClose, onUpdateStatus, onTakeQuiz }: Props) {
+const typeLabels: Record<TopicNodeType, string> = {
+  module: "Section",
+  topic: "Topic",
+  quiz: "Quiz",
+  material: "Material",
+  coursework: "Coursework",
+};
+
+export default function TopicModal({
+  topic,
+  status,
+  hasQuiz,
+  nodeType,
+  onClose,
+  onUpdateStatus,
+  onTakeQuiz,
+}: Props) {
   const isCompleted = status === "completed";
   const isReading = status === "reading";
+  const isQuizNode = nodeType === "quiz";
 
   return (
     <div className={styles.modalOverlay} onClick={onClose}>
@@ -22,6 +40,7 @@ export default function TopicModal({ topic, status, hasQuiz, onClose, onUpdateSt
 
         <div className={styles.modalHeader}>
           <div>
+            <div className={styles.modalTypeBadge}>{typeLabels[nodeType] ?? "Topic"}</div>
             <h2 className={styles.modalTitle}>{topic.title}</h2>
             <div className={styles.modalBadges}>
               <span
@@ -49,6 +68,15 @@ export default function TopicModal({ topic, status, hasQuiz, onClose, onUpdateSt
             </div>
           )}
 
+          {topic.content && (
+            <div className={styles.modalSection}>
+              <h3 className={styles.sectionTitle}>
+                {nodeType === "coursework" ? "Coursework Details" : "Additional Information"}
+              </h3>
+              <p className={styles.contentText}>{topic.content}</p>
+            </div>
+          )}
+
           {topic.learning_objectives && topic.learning_objectives.length > 0 && (
             <div className={styles.modalSection}>
               <h3 className={styles.sectionTitle}>Learning Objectives</h3>
@@ -62,9 +90,11 @@ export default function TopicModal({ topic, status, hasQuiz, onClose, onUpdateSt
 
           {topic.resource_url && (
             <div className={styles.modalSection}>
-              <h3 className={styles.sectionTitle}>Recommended Resource</h3>
+              <h3 className={styles.sectionTitle}>
+                {nodeType === "material" ? "Material" : "Recommended Resource"}
+              </h3>
               <a href={topic.resource_url} target="_blank" rel="noopener noreferrer" className={styles.resourceLink}>
-                📚 {topic.resource_name}
+                📚 {topic.resource_name || "Open resource"}
               </a>
             </div>
           )}
@@ -73,20 +103,26 @@ export default function TopicModal({ topic, status, hasQuiz, onClose, onUpdateSt
         <div className={styles.modalActions}>
           {isCompleted ? (
             <div className={styles.completedBanner}>
-              ✅ Topic Completed
+              ✅ {isQuizNode ? "Quiz Passed" : "Completed"}
             </div>
-          ) : hasQuiz ? (
-            <div className={styles.quizActionWrap}>
-              <button
-                className={styles.quizBtn}
-                onClick={onTakeQuiz}
-              >
-                📝 Take Topic Quiz
-              </button>
-              <p className={styles.quizHint}>
-                Pass the quiz to mark this topic as completed.
-              </p>
-            </div>
+          ) : isQuizNode ? (
+            hasQuiz ? (
+              <div className={styles.quizActionWrap}>
+                <button
+                  className={styles.quizBtn}
+                  onClick={onTakeQuiz}
+                >
+                  📝 Take Quiz
+                </button>
+                <p className={styles.quizHint}>
+                  Pass the quiz to complete this section.
+                </p>
+              </div>
+            ) : (
+              <div className={styles.quizUnavailable}>
+                This quiz has not been attached yet. Ask your professor.
+              </div>
+            )
           ) : (
             <>
               <button

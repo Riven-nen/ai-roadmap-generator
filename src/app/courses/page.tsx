@@ -31,19 +31,19 @@ export default function CoursesPage() {
     c.code.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  if (loading) return <div style={{ color: "#0b1f3a", padding: 40 }}>Loading Library...</div>;
+  if (loading) return <div style={{ color: "var(--text-main)", padding: 40 }}>Loading Library...</div>;
 
   return (
     <div className={styles.container}>
       <div className={styles.header}>
         <div>
           <h1 className={styles.title}>
-            Course <span className={styles.highlight}>Library</span>
+            Subject <span className={styles.highlight}>Library</span>
           </h1>
-          <p className={styles.subtitle}>Explore your IT curriculum and dive into the syllabus.</p>
+          <p className={styles.subtitle}>Explore your IT subjects and dive into the syllabus.</p>
         </div>
         <div className={styles.headerBadges}>
-          <span className={styles.badgePurple}>{courses.length} Courses</span>
+          <span className={styles.badgePurple}>{courses.length} Subjects</span>
         </div>
       </div>
 
@@ -52,7 +52,7 @@ export default function CoursesPage() {
           <span className={styles.searchIcon}>🔍</span>
           <input
             type="text"
-            placeholder="Search courses by code or title..."
+            placeholder="Search subjects by code or title..."
             className={styles.searchInput}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -91,8 +91,8 @@ export default function CoursesPage() {
         ))}
 
         {filteredCourses.length === 0 && (
-          <div style={{ color: "#64748b", gridColumn: "1 / -1", textAlign: "center", padding: 40 }}>
-            No courses found matching your search.
+          <div style={{ color: "var(--text-muted)", gridColumn: "1 / -1", textAlign: "center", padding: 40 }}>
+            No subjects found matching your search.
           </div>
         )}
       </div>

@@ -2,23 +2,49 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { generateTemporaryPassword } from "@/lib/password";
 import { getStudentEmailError, normalizeEmail } from "@/lib/validation";
+import {
+  normalizeDepartment as normalizeDepartmentValue,
+  normalizeStudentSection,
+  type Department,
+  type StudentSection,
+} from "@/lib/academic";
 
 type StudentInput = {
   fullName?: unknown;
   email?: unknown;
   yearLevel?: unknown;
+  role?: unknown;
+  department?: unknown;
+  section?: unknown;
 };
+
+type AccountRole = "student" | "professor";
 
 type AdminStudentResult = {
   index: number;
   fullName: string;
   email: string;
   yearLevel: number;
+  role: AccountRole;
+  department: Department | null;
+  section: StudentSection | null;
   status: "created" | "error";
   userId?: string;
   temporaryPassword?: string;
   error?: string;
 };
+
+function normalizeRole(value: unknown): AccountRole {
+  return String(value ?? "").trim().toLowerCase() === "professor" ? "professor" : "student";
+}
+
+function normalizeDepartment(value: unknown): Department {
+  return normalizeDepartmentValue(String(value ?? ""));
+}
+
+function normalizeSection(value: unknown): StudentSection {
+  return normalizeStudentSection(String(value ?? ""));
+}
 
 const MAX_BATCH_SIZE = 200;
 
@@ -78,8 +104,11 @@ export async function POST(req: Request) {
     const fullName = cleanName(row.fullName);
     const email = normalizeEmail(String(row.email ?? ""));
     const yearLevel = normalizeYearLevel(row.yearLevel);
+    const role = normalizeRole(row.role);
+    const department = role === "student" ? normalizeDepartment(row.department) : null;
+    const section = role === "student" ? normalizeSection(row.section) : null;
 
-    const baseResult = { index, fullName, email, yearLevel };
+    const baseResult = { index, fullName, email, yearLevel, role, department, section };
 
     if (fullName.length < 2) {
       results.push({ ...baseResult, status: "error", error: "Full name is required." });
@@ -106,11 +135,14 @@ export async function POST(req: Request) {
     // stores only the bcrypt hash.
     const temporaryPassword = generateTemporaryPassword(12);
 
-    const { data: userId, error: createError } = await supabase.rpc("admin_create_student", {
+    const { data: userId, error: createError } = await supabase.rpc("admin_create_user", {
       p_email: email,
       p_password: temporaryPassword,
       p_full_name: fullName,
       p_year_level: yearLevel,
+      p_role: role,
+      p_department: department,
+      p_section: section,
     });
 
     if (createError) {
@@ -118,7 +150,7 @@ export async function POST(req: Request) {
       results.push({
         ...baseResult,
         status: "error",
-        error: message || "Could not create this student.",
+        error: message || "Could not create this account.",
       });
       continue;
     }

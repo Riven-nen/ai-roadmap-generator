@@ -1,8 +1,10 @@
 import Card from "@/components/Card";
 import { createClient } from "@/lib/supabase/server";
 import { gradeToScore } from "@/lib/grading";
+import { getCurrentAcademicYear, getCurrentTerm } from "@/lib/academic";
 import { redirect } from "next/navigation";
 import EditProfileButton from "./EditProfileButton";
+import ThemeSelector from "./ThemeSelector";
 import styles from "./profile.module.css";
 
 export default async function Profile() {
@@ -69,8 +71,23 @@ export default async function Profile() {
             <p className={styles.role}>{profile.role}</p>
             {profile.email && <p className={styles.email}>{profile.email}</p>}
             <div className={styles.badges}>
-              <span className={styles.badgePurple}>BSIT Student</span>
-              <span className={styles.badgeBlue}>Level {profile.level}</span>
+              {profile.role === "student" ? (
+                <>
+                  <span className={styles.badgePurple}>
+                    {profile.department ?? "BSIT"} Student
+                  </span>
+                  <span className={styles.badgeBlue}>
+                    Year {profile.level ?? 1} - {profile.section ?? "A"}
+                  </span>
+                </>
+              ) : (
+                <span className={styles.badgePurple}>
+                  {profile.role === "admin" ? "Administrator" : "Professor"}
+                </span>
+              )}
+              <span className={styles.badgeBlue}>
+                AY {getCurrentAcademicYear()} · {getCurrentTerm()}
+              </span>
             </div>
           </div>
         </div>
@@ -93,6 +110,10 @@ export default async function Profile() {
         ))}
       </div>
 
+      <Card title="🎨 Appearance">
+        <ThemeSelector />
+      </Card>
+
       <div className={styles.mainGrid}>
         <Card title="🎯 IT Domain Proficiency">
           <div className={styles.skillsList}>
@@ -109,7 +130,7 @@ export default async function Profile() {
                     className={styles.progressBarFill}
                     style={{ 
                       width: `${skill.progress}%`, 
-                      background: skill.progress < 60 ? "#dc2626" : skill.progress < 80 ? "#d97706" : "#f97316" 
+                      background: skill.progress < 60 ? "var(--danger)" : skill.progress < 80 ? "var(--warning)" : "var(--accent)" 
                     }}
                   />
                 </div>
@@ -127,7 +148,7 @@ export default async function Profile() {
               </div>
             ))}
             {achievements.length === 0 && (
-              <p style={{ color: "#64748b", fontSize: "0.9rem" }}>No achievements unlocked yet.</p>
+              <p style={{ color: "var(--text-muted)", fontSize: "0.9rem" }}>No achievements unlocked yet.</p>
             )}
           </div>
         </Card>

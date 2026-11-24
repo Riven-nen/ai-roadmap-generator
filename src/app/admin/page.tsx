@@ -35,7 +35,9 @@ export default async function AdminHome() {
           <h1 className={styles.title}>
             Admin <span className={styles.highlight}>Panel</span>
           </h1>
-          <p className={styles.subtitle}>Manage students, courses, and enrollments</p>
+          <p className={styles.subtitle}>
+            Manage students, professors, courses, sections, and enrollments
+          </p>
         </div>
       </div>
 
@@ -45,7 +47,7 @@ export default async function AdminHome() {
           <p className={styles.statValue}>{students.length}</p>
         </Card>
         <Card className={styles.statCard}>
-          <p className={styles.statLabel}>Total Courses</p>
+          <p className={styles.statLabel}>Total Subjects</p>
           <p className={styles.statValue}>{courses.length}</p>
         </Card>
         <Card className={styles.statCard}>
@@ -68,9 +70,20 @@ export default async function AdminHome() {
         <Link href="/admin/students/new" className={styles.actionLink}>
           <Card className={styles.actionCard}>
             <div className={styles.actionIcon}>🎓</div>
-            <h3 className={styles.actionTitle}>Add Students</h3>
+            <h3 className={styles.actionTitle}>Add Users</h3>
             <p className={styles.actionDesc}>
-              Create one student or import a CSV with temporary passwords
+              Create student or professor accounts, one at a time or by CSV
+            </p>
+          </Card>
+        </Link>
+
+        <Link href="/admin/sections" className={styles.actionLink}>
+          <Card className={styles.actionCard}>
+            <div className={styles.actionIcon}>🗂️</div>
+            <h3 className={styles.actionTitle}>Classes</h3>
+            <p className={styles.actionDesc}>
+              Assign subjects to sections, assign professors, bulk-enroll students, and set final
+              exams
             </p>
           </Card>
         </Link>
@@ -78,9 +91,9 @@ export default async function AdminHome() {
         <Link href="/admin/courses" className={styles.actionLink}>
           <Card className={styles.actionCard}>
             <div className={styles.actionIcon}>📚</div>
-            <h3 className={styles.actionTitle}>Manage Courses</h3>
+            <h3 className={styles.actionTitle}>Manage Subjects</h3>
             <p className={styles.actionDesc}>
-              Add, edit, and remove courses from the catalog
+              Add, edit, and remove subjects, or open the shared roadmap builder
             </p>
           </Card>
         </Link>

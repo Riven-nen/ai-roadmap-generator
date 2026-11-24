@@ -1,11 +1,11 @@
-full_name,email,year_level
-"Alyssa Mercado",alyssa.mercado@student.edu,1
-"Benedict Tan",benedict.tan@student.edu,1
-"Chloe Villanueva",chloe.villanueva@student.edu,2
-"Daniel Ramos",daniel.ramos@student.edu,2
-"Ella Navarro",ella.navarro@student.edu,3
-"Felix Mendoza",felix.mendoza@student.edu,3
-"Grace Lim",grace.lim@student.edu,4
-"Haruto Sato",haruto.sato@student.edu,4
-"Isabella Cruz",isabella.cruz@student.edu,1
-"Joshua Reyes",joshua.reyes@student.edu,2
+full_name,email,year_level,course,section
+"Alyssa Mercado",alyssa.mercado@student.edu,1,BSIT,A
+"Benedict Tan",benedict.tan@student.edu,1,BSIT,B
+"Chloe Villanueva",chloe.villanueva@student.edu,2,BSIT,C
+"Daniel Ramos",daniel.ramos@student.edu,2,BSIT,A
+"Ella Navarro",ella.navarro@student.edu,3,BSIT,B
+"Felix Mendoza",felix.mendoza@student.edu,3,BSIT,C
+"Grace Lim",grace.lim@student.edu,4,BSIT,A
+"Haruto Sato",haruto.sato@student.edu,4,BSIT,B
+"Isabella Cruz",isabella.cruz@student.edu,1,BSIT,C
+"Joshua Reyes",joshua.reyes@student.edu,2,BSIT,A

@@ -13,7 +13,7 @@
 }
 
 .title { font-size: 1.875rem; font-weight: 700; }
-.highlight { color: #ea580c; }
+.highlight { color: var(--accent-strong); }
 .subtitle { color: var(--text-muted); margin-top: 4px; }
 
 .statsGrid {
@@ -59,11 +59,11 @@
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #f97316, #0b2545);
+  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #ffffff;
+  color: var(--accent-contrast);
   font-weight: 700;
   margin-bottom: 8px;
 }
@@ -89,6 +89,7 @@
 
 .form {
   display: flex;
+  flex-wrap: wrap;
   gap: 12px;
   align-items: center;
 }
@@ -110,7 +111,7 @@
   padding: 12px 24px;
   border-radius: 10px;
   background: linear-gradient(to right, var(--accent-purple), var(--accent-blue));
-  color: #ffffff;
+  color: var(--accent-contrast);
   font-weight: 600;
   font-size: 0.875rem;
   cursor: pointer;
@@ -123,7 +124,7 @@
 }
 
 .editLink {
-  color: #ea580c;
+  color: var(--accent-strong);
   font-size: 0.875rem;
   text-decoration: none;
 }
@@ -169,9 +170,18 @@
 .formError {
   padding: 10px 14px;
   border-radius: 8px;
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.35);
-  color: #b91c1c;
+  background: rgba(var(--danger-rgb), 0.1);
+  border: 1px solid rgba(var(--danger-rgb), 0.35);
+  color: var(--danger-strong);
+  font-size: 0.8rem;
+}
+
+.formSuccess {
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: rgba(var(--success-rgb), 0.1);
+  border: 1px solid rgba(var(--success-rgb), 0.3);
+  color: var(--success-strong);
   font-size: 0.8rem;
 }
 

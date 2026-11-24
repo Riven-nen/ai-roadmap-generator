@@ -19,14 +19,14 @@
   color: var(--text-main);
 }
 
-.highlight { color: #ea580c; }
-.subtitle { color: #64748b; margin-top: 4px; font-size: 1rem; }
+.highlight { color: var(--accent-strong); }
+.subtitle { color: var(--text-muted); margin-top: 4px; font-size: 1rem; }
 
 .headerBadges { display: flex; gap: 8px; }
 
 .badgePurple {
-  background-color: rgba(249, 115, 22, 0.1);
-  color: #ea580c;
+  background-color: rgba(var(--accent-rgb), 0.1);
+  color: var(--accent-strong);
   padding: 6px 16px;
   border-radius: 9999px;
   font-size: 0.85rem;
@@ -34,8 +34,8 @@
 }
 
 .filterBar {
-  background-color: #f1f5f9;
-  border: 1px solid #e2e8f0;
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   padding: 16px;
 }
@@ -43,13 +43,13 @@
 .searchWrapper {
   display: flex;
   align-items: center;
-  background-color: #f7f9fc;
-  border: 1px solid #e2e8f0;
+  background-color: var(--bg-subtle);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 0 16px;
 }
 
-.searchIcon { color: #64748b; font-size: 1.2rem; }
+.searchIcon { color: var(--text-muted); font-size: 1.2rem; }
 
 .searchInput {
   width: 100%;
@@ -68,21 +68,21 @@
 }
 
 .courseCard {
-  background-color: #ffffff;
-  border: 1px solid #e2e8f0;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: 16px;
   padding: 24px;
   display: flex;
   flex-direction: column;
   transition: transform 0.2s, border-color 0.2s;
   box-sizing: border-box;
-  box-shadow: 0 2px 8px rgba(11, 37, 69, 0.04);
+  box-shadow: 0 2px 8px rgba(var(--ink-rgb), 0.04);
 }
 
 .courseCard:hover {
   transform: translateY(-2px);
-  border-color: #ea580c;
-  box-shadow: 0 8px 24px rgba(11, 37, 69, 0.12);
+  border-color: var(--accent-strong);
+  box-shadow: 0 8px 24px rgba(var(--ink-rgb), 0.12);
 }
 
 .cardTop {
@@ -93,8 +93,8 @@
 }
 
 .courseCode {
-  background-color: rgba(30, 58, 138, 0.1);
-  color: #1e3a8a;
+  background-color: rgba(var(--accent-strong-rgb), 0.1);
+  color: var(--accent-strong);
   padding: 4px 10px;
   border-radius: 6px;
   font-size: 0.75rem;
@@ -102,7 +102,7 @@
   letter-spacing: 0.05em;
 }
 
-.rating { font-size: 0.85rem; font-weight: 600; color: #d97706; }
+.rating { font-size: 0.85rem; font-weight: 600; color: var(--warning); }
 
 .courseTitle {
   font-size: 1.25rem;
@@ -113,7 +113,7 @@
 }
 
 .courseDesc {
-  color: #64748b;
+  color: var(--text-muted);
   font-size: 0.9rem;
   line-height: 1.5;
   margin: 0 0 24px 0;
@@ -127,10 +127,10 @@
   flex-wrap: wrap;
 }
 
-.metaText { color: #64748b; font-size: 0.8rem; font-weight: 500; }
+.metaText { color: var(--text-muted); font-size: 0.8rem; font-weight: 500; }
 
 .prereqText {
-  color: #ea580c;
+  color: var(--accent-strong);
   font-size: 0.8rem;
   font-weight: 600;
 }
@@ -138,8 +138,8 @@
 .actionBtn {
   display: block;
   text-align: center;
-  background: linear-gradient(to right, #f97316, #0b2545);
-  color: white;
+  background: linear-gradient(to right, var(--accent), var(--accent-strong));
+  color: var(--accent-contrast);
   padding: 12px;
   border-radius: 8px;
   text-decoration: none;

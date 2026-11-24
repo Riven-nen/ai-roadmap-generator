@@ -22,6 +22,7 @@ export type Enrollment = {
   id: string;
   user_id: string;
   course_id: string;
+  section_id: string | null;
   progress: number;
   grade: string | null;
   status: string;
@@ -46,6 +47,13 @@ export type CareerRequirement = {
   required_score: number;
 };
 
+export type TopicNodeType =
+  | "module"
+  | "topic"
+  | "quiz"
+  | "material"
+  | "coursework";
+
 export type CourseTopic = {
   id: string;
   course_id: string;
@@ -57,12 +65,27 @@ export type CourseTopic = {
   overview?: string;
   learning_objectives?: string[];
   estimated_time?: string;
+  node_type: TopicNodeType;
+  content: string | null;
+  position_x: number | null;
+  position_y: number | null;
+  updated_at?: string;
+};
+
+export type RoadmapEdge = {
+  id: string;
+  course_id: string;
+  source_topic_id: string;
+  target_topic_id: string;
+  label: string | null;
+  created_at: string;
 };
 
 export type Quiz = {
   id: string;
   course_id: string;
   topic_id: string | null;
+  section_id: string | null;
   title: string;
   description: string;
   passing_score: number;

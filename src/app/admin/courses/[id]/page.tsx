@@ -214,8 +214,8 @@ export default function ManageCourseTopics() {
     titleInputRef.current?.focus();
   }
 
-  if (loading) return <div style={{ color: "#0b1f3a", padding: 40 }}>Loading...</div>;
-  if (!course) return <div style={{ color: "#0b1f3a", padding: 40 }}>Course not found.</div>;
+  if (loading) return <div style={{ color: "var(--text-main)", padding: 40 }}>Loading...</div>;
+  if (!course) return <div style={{ color: "var(--text-main)", padding: 40 }}>Course not found.</div>;
 
   return (
     <div className={styles.container}>
@@ -236,7 +236,7 @@ export default function ManageCourseTopics() {
 
           {flatTopics.length === 0 ? (
             <div className={styles.emptyState}>
-              <p style={{ color: "#64748b" }}>No topics added yet.</p>
+              <p style={{ color: "var(--text-muted)" }}>No topics added yet.</p>
               <p className={styles.emptyHint}>Add the first root topic using the form on the right.</p>
             </div>
           ) : (

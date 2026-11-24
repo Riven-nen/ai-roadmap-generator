@@ -20,11 +20,11 @@ export default async function NewCourse() {
     <div className={styles.container}>
       <div>
         <Link href="/admin/courses" className={styles.backLink}>
-          <span className={styles.backArrow}>←</span> Back to Courses
+          <span className={styles.backArrow}>←</span> Back to Subjects
         </Link>
         <div className={styles.header}>
-          <h1 className={styles.title}>Add Course</h1>
-          <p className={styles.subtitle}>Create a new course and set its roadmap prerequisite.</p>
+          <h1 className={styles.title}>Add Subject</h1>
+          <p className={styles.subtitle}>Create a new subject and set its roadmap prerequisite.</p>
         </div>
       </div>
       <CourseForm

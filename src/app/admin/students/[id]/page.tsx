@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Card from "@/components/Card";
 import EnrollForm from "./EnrollForm";
+import StudentDetailsForm from "./StudentDetailsForm";
 import styles from "../../admin.module.css";
 
 export default async function StudentDetail({
@@ -19,15 +20,23 @@ export default async function StudentDetail({
     .from("profiles").select("role").eq("id", user.id).single();
   if (me?.role !== "admin") redirect("/");
 
-  const [studentRes, enrollmentsRes, coursesRes] = await Promise.all([
+  const [studentRes, enrollmentsRes, coursesRes, sectionsRes] = await Promise.all([
     supabase.from("profiles").select("*").eq("id", id).single(),
-    supabase.from("enrollments").select("*, course:courses(*)").eq("user_id", id),
+    supabase
+      .from("enrollments")
+      .select("*, course:courses(*), section:sections(section_code, academic_year, term)")
+      .eq("user_id", id),
     supabase.from("courses").select("*").order("code"),
+    supabase
+      .from("sections")
+      .select("id, course_id, section_code, academic_year, term")
+      .order("section_code"),
   ]);
 
   const student = studentRes.data;
   const enrollments = enrollmentsRes.data ?? [];
   const courses = coursesRes.data ?? [];
+  const sections = sectionsRes.data ?? [];
 
   if (!student) return <div>Student not found.</div>;
 
@@ -42,10 +51,21 @@ export default async function StudentDetail({
         <div>
           <h1 className={styles.title}>{student.full_name}</h1>
           <p className={styles.subtitle}>
-            {student.email || "No email on file"} · Enrolled in {enrollments.length} courses
+            {student.email || "No email on file"} · {student.department ?? "BSIT"} · Year{" "}
+            {student.level ?? 1} - {student.section ?? "A"} · Enrolled in {enrollments.length}{" "}
+            course{enrollments.length === 1 ? "" : "s"}
           </p>
         </div>
       </div>
+
+      <Card title="Program Details">
+        <StudentDetailsForm
+          studentId={student.id}
+          initialYear={student.level ?? 1}
+          initialDepartment={student.department ?? "BSIT"}
+          initialSection={student.section ?? "A"}
+        />
+      </Card>
 
       <Card title="Current Enrollments">
         <table className={styles.table}>
@@ -53,6 +73,7 @@ export default async function StudentDetail({
             <tr>
               <th>Code</th>
               <th>Title</th>
+              <th>Section</th>
               <th>Grade</th>
               <th>Status</th>
             </tr>
@@ -62,6 +83,11 @@ export default async function StudentDetail({
               <tr key={e.id}>
                 <td>{e.course?.code}</td>
                 <td>{e.course?.title}</td>
+                <td>
+                  {e.section
+                    ? `${e.section.section_code} · ${e.section.academic_year} · ${e.section.term}`
+                    : "No section"}
+                </td>
                 <td>{e.grade ?? "—"}</td>
                 <td>{e.status}</td>
               </tr>
@@ -71,7 +97,11 @@ export default async function StudentDetail({
       </Card>
 
       <Card title="Enroll in a New Course">
-        <EnrollForm studentId={student.id} courses={availableCourses} />
+        <EnrollForm
+          studentId={student.id}
+          courses={availableCourses}
+          sections={sections}
+        />
       </Card>
     </div>
   );

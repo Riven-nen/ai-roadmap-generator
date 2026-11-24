@@ -2,13 +2,26 @@
 
 import { useMemo, useRef, useState } from "react";
 import { getStudentEmailError, normalizeEmail } from "@/lib/validation";
+import {
+  DEPARTMENTS,
+  STUDENT_SECTIONS,
+  normalizeDepartment,
+  normalizeStudentSection,
+  type Department,
+  type StudentSection,
+} from "@/lib/academic";
 import styles from "./add-students.module.css";
+
+type AccountRole = "student" | "professor";
 
 type StudentResult = {
   index: number;
   fullName: string;
   email: string;
   yearLevel: number;
+  role: AccountRole;
+  department: Department | null;
+  section: StudentSection | null;
   status: "created" | "error";
   temporaryPassword?: string;
   error?: string;
@@ -19,6 +32,9 @@ type CsvRow = {
   fullName: string;
   email: string;
   yearLevel: number;
+  role: AccountRole;
+  department: Department;
+  section: StudentSection;
   error?: string;
 };
 
@@ -89,10 +105,13 @@ function downloadCsv(filename: string, content: string) {
 export default function AddStudents() {
   const [mode, setMode] = useState<"single" | "csv">("single");
 
-  // Single student form
+  // Single account form
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [yearLevel, setYearLevel] = useState(1);
+  const [role, setRole] = useState<AccountRole>("student");
+  const [department, setDepartment] = useState<Department>("BSIT");
+  const [section, setSection] = useState<StudentSection>("A");
   const [singleError, setSingleError] = useState<string | null>(null);
 
   // CSV import
@@ -109,7 +128,16 @@ export default function AddStudents() {
 
   const validCsvRows = useMemo(() => csvRows.filter((row) => !row.error), [csvRows]);
 
-  async function submitRows(rows: Array<{ fullName: string; email: string; yearLevel: number }>) {
+  async function submitRows(
+    rows: Array<{
+      fullName: string;
+      email: string;
+      yearLevel: number;
+      role: AccountRole;
+      department: Department | null;
+      section: StudentSection | null;
+    }>
+  ) {
     setSubmitting(true);
     setLastSummary(null);
 
@@ -128,7 +156,7 @@ export default function AddStudents() {
 
       setResults((previous) => [...previous, ...(data.results as StudentResult[])]);
       setLastSummary(
-        `Created ${data.createdCount} student${data.createdCount === 1 ? "" : "s"}${
+        `Created ${data.createdCount} account${data.createdCount === 1 ? "" : "s"}${
           data.failedCount > 0 ? `, ${data.failedCount} failed` : ""
         }.`
       );
@@ -145,7 +173,7 @@ export default function AddStudents() {
 
     const cleanName = fullName.trim().replace(/\s+/g, " ");
     if (cleanName.length < 2) {
-      setSingleError("Enter the student's full name.");
+      setSingleError("Enter the person's full name.");
       return;
     }
 
@@ -156,12 +184,22 @@ export default function AddStudents() {
     }
 
     await submitRows([
-      { fullName: cleanName, email: normalizeEmail(email), yearLevel },
+      {
+        fullName: cleanName,
+        email: normalizeEmail(email),
+        yearLevel,
+        role,
+        department: role === "student" ? department : null,
+        section: role === "student" ? section : null,
+      },
     ]);
 
     setFullName("");
     setEmail("");
     setYearLevel(1);
+    setRole("student");
+    setDepartment("BSIT");
+    setSection("A");
   }
 
   function handleCsvFile(file: File | undefined) {
@@ -187,7 +225,21 @@ export default function AddStudents() {
         }
 
         const header = rows[0].map((cell) => cell.trim().toLowerCase());
-        const hasHeader = header.some((cell) => ["email", "full_name", "name", "year_level"].includes(cell));
+        const hasHeader = header.some((cell) =>
+          [
+            "email",
+            "full_name",
+            "name",
+            "year_level",
+            "role",
+            "account_type",
+            "course",
+            "department",
+            "program",
+            "section",
+            "block",
+          ].includes(cell)
+        );
         const dataRows = hasHeader ? rows.slice(1) : rows;
 
         const nameIndex = hasHeader
@@ -199,6 +251,15 @@ export default function AddStudents() {
         const levelIndex = hasHeader
           ? header.findIndex((cell) => ["year_level", "year", "level", "year level"].includes(cell))
           : 2;
+        const roleIndex = hasHeader
+          ? header.findIndex((cell) => ["role", "account_type", "account type", "type"].includes(cell))
+          : -1;
+        const departmentIndex = hasHeader
+          ? header.findIndex((cell) => ["course", "program", "department"].includes(cell))
+          : -1;
+        const sectionIndex = hasHeader
+          ? header.findIndex((cell) => ["section", "block"].includes(cell))
+          : -1;
 
         if (nameIndex < 0 || emailIndex < 0) {
           setCsvError("CSV needs full_name and email columns. Download the template below.");
@@ -213,6 +274,14 @@ export default function AddStudents() {
           const studentLevel = Number.isFinite(rawLevel)
             ? Math.min(6, Math.max(1, Math.trunc(rawLevel)))
             : 1;
+          const rawRole = roleIndex >= 0 ? (columns[roleIndex] ?? "").trim().toLowerCase() : "student";
+          const accountRole: AccountRole = rawRole === "professor" ? "professor" : "student";
+          const rawDepartment =
+            departmentIndex >= 0 ? (columns[departmentIndex] ?? "").trim() : "";
+          const rawSection =
+            sectionIndex >= 0 ? (columns[sectionIndex] ?? "").trim().toUpperCase() : "";
+          const studentDepartment: Department = normalizeDepartment(rawDepartment);
+          const studentSection: StudentSection = normalizeStudentSection(rawSection);
 
           const problems: string[] = [];
           if (studentName.length < 2) problems.push("full name is required");
@@ -221,12 +290,32 @@ export default function AddStudents() {
           if (levelIndex >= 0 && columns[levelIndex] !== undefined && columns[levelIndex].trim() !== "" && (rawLevel < 1 || rawLevel > 6)) {
             problems.push("year level must be between 1 and 6");
           }
+          if (roleIndex >= 0 && rawRole && !["student", "professor"].includes(rawRole)) {
+            problems.push("role must be student or professor");
+          }
+          if (
+            departmentIndex >= 0 &&
+            rawDepartment &&
+            studentDepartment.toLowerCase() !== rawDepartment.toLowerCase()
+          ) {
+            problems.push("course must be BSIT, BSCpE, or BSIE");
+          }
+          if (
+            sectionIndex >= 0 &&
+            rawSection &&
+            studentSection !== rawSection
+          ) {
+            problems.push(`section must be one of ${STUDENT_SECTIONS.join(", ")}`);
+          }
 
           return {
             rowNumber: index + (hasHeader ? 2 : 1),
             fullName: studentName,
             email: studentEmail,
             yearLevel: studentLevel,
+            role: accountRole,
+            department: studentDepartment,
+            section: studentSection,
             error: problems.length > 0 ? problems.join("; ") : undefined,
           };
         });
@@ -265,6 +354,9 @@ export default function AddStudents() {
         fullName: row.fullName,
         email: row.email,
         yearLevel: row.yearLevel,
+        role: row.role,
+        department: row.role === "student" ? row.department : null,
+        section: row.role === "student" ? row.section : null,
       }))
     );
 
@@ -284,14 +376,27 @@ export default function AddStudents() {
   }
 
   function downloadCredentials() {
-    const header = ["full_name", "email", "year_level", "temporary_password", "status", "error"];
+    const header = [
+      "full_name",
+      "email",
+      "role",
+      "department",
+      "year_level",
+      "section",
+      "temporary_password",
+      "status",
+      "error",
+    ];
     const lines = [
       header.join(","),
       ...results.map((result) =>
         [
           result.fullName,
           result.email,
+          result.role,
+          result.department ?? "",
           result.yearLevel,
+          result.section ?? "",
           result.temporaryPassword ?? "",
           result.status,
           result.error ?? "",
@@ -300,7 +405,7 @@ export default function AddStudents() {
           .join(",")
       ),
     ];
-    downloadCsv("student-credentials.csv", lines.join("\r\n"));
+    downloadCsv("user-credentials.csv", lines.join("\r\n"));
   }
 
   const createdResults = results.filter((result) => result.status === "created");
@@ -313,7 +418,7 @@ export default function AddStudents() {
           className={`${styles.modeTab} ${mode === "single" ? styles.modeTabActive : ""}`}
           onClick={() => setMode("single")}
         >
-          Add One Student
+          Add One User
         </button>
         <button
           type="button"
@@ -326,9 +431,10 @@ export default function AddStudents() {
 
       {mode === "single" ? (
         <form className={styles.panel} onSubmit={handleSingleSubmit}>
-          <h2 className={styles.panelTitle}>Student Details</h2>
+          <h2 className={styles.panelTitle}>Account Details</h2>
           <p className={styles.panelHint}>
-            A temporary password is generated automatically and shown once after the account is created.
+            Create a student or professor account. A temporary password is generated automatically
+            and shown once after the account is created.
           </p>
 
           <div className={styles.formGrid}>
@@ -356,16 +462,69 @@ export default function AddStudents() {
             </label>
 
             <label className={styles.field}>
+              <span className={styles.label}>Account type</span>
+              <select
+                className={styles.input}
+                value={role}
+                onChange={(e) => setRole(e.target.value as AccountRole)}
+              >
+                <option value="student">Student</option>
+                <option value="professor">Professor</option>
+              </select>
+            </label>
+
+            <label className={styles.field}>
               <span className={styles.label}>Year Level</span>
               <select
                 className={styles.input}
                 value={yearLevel}
                 onChange={(e) => setYearLevel(Number(e.target.value))}
+                disabled={role === "professor"}
               >
                 {[1, 2, 3, 4, 5, 6].map((level) => (
                   <option key={level} value={level}>Year {level}</option>
                 ))}
               </select>
+              {role === "professor" && (
+                <span className={styles.panelHint}>Year level is only used for students.</span>
+              )}
+            </label>
+
+            <label className={styles.field}>
+              <span className={styles.label}>Course</span>
+              <select
+                className={styles.input}
+                value={department}
+                onChange={(e) => setDepartment(e.target.value as Department)}
+                disabled={role !== "student"}
+              >
+                {DEPARTMENTS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label className={styles.field}>
+              <span className={styles.label}>Section</span>
+              <select
+                className={styles.input}
+                value={section}
+                onChange={(e) => setSection(e.target.value as StudentSection)}
+                disabled={role !== "student"}
+              >
+                {STUDENT_SECTIONS.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+              {role === "student" && (
+                <span className={styles.panelHint}>
+                  Shown as Year {yearLevel} - {section}, for example 3 - A.
+                </span>
+              )}
             </label>
           </div>
 
@@ -373,16 +532,19 @@ export default function AddStudents() {
 
           <div className={styles.formActions}>
             <button type="submit" className={styles.primaryBtn} disabled={submitting}>
-              {submitting ? "Creating..." : "Create Student"}
+              {submitting ? "Creating..." : "Create Account"}
             </button>
           </div>
         </form>
       ) : (
         <div className={styles.panel}>
-          <h2 className={styles.panelTitle}>Import Students from CSV</h2>
+          <h2 className={styles.panelTitle}>Import Users from CSV</h2>
           <p className={styles.panelHint}>
-            Required columns: <code>full_name</code>, <code>email</code>, <code>year_level</code>.
-            Up to {MAX_ROWS} students per file.
+            Required columns: <code>full_name</code>, <code>email</code>. Optional:{" "}
+            <code>year_level</code>, <code>course</code> (<code>BSIT</code>,{" "}
+            <code>BSCpE</code>, <code>BSIE</code>), <code>section</code> (A–F), and{" "}
+            <code>role</code> (<code>student</code> or <code>professor</code>). Up to{" "}
+            {MAX_ROWS} accounts per file.
           </p>
 
           <div className={styles.csvActions}>
@@ -423,7 +585,9 @@ export default function AddStudents() {
                       <th>Row</th>
                       <th>Full Name</th>
                       <th>Email</th>
-                      <th>Year</th>
+                      <th>Role</th>
+                      <th>Course</th>
+                      <th>Year / Section</th>
                       <th>Status</th>
                     </tr>
                   </thead>
@@ -433,7 +597,13 @@ export default function AddStudents() {
                         <td>{row.rowNumber}</td>
                         <td>{row.fullName || "—"}</td>
                         <td>{row.email || "—"}</td>
-                        <td>{row.yearLevel}</td>
+                        <td>{row.role}</td>
+                        <td>{row.role === "student" ? row.department : "—"}</td>
+                        <td>
+                          {row.role === "student"
+                            ? `${row.yearLevel} - ${row.section}`
+                            : "—"}
+                        </td>
                         <td>
                           {row.error ? (
                             <span className={styles.badgeError}>{row.error}</span>
@@ -454,7 +624,7 @@ export default function AddStudents() {
                   onClick={handleCsvSubmit}
                   disabled={submitting}
                 >
-                  {submitting ? "Importing..." : `Import ${csvRows.length} Student${csvRows.length === 1 ? "" : "s"}`}
+                  {submitting ? "Importing..." : `Import ${csvRows.length} Account${csvRows.length === 1 ? "" : "s"}`}
                 </button>
               </div>
             </>
@@ -506,7 +676,9 @@ export default function AddStudents() {
                 <tr>
                   <th>Name</th>
                   <th>Email</th>
-                  <th>Year</th>
+                  <th>Role</th>
+                  <th>Course</th>
+                  <th>Year / Section</th>
                   <th>Temporary Password</th>
                   <th>Status</th>
                   <th></th>
@@ -517,7 +689,13 @@ export default function AddStudents() {
                   <tr key={rowIndex}>
                     <td>{result.fullName}</td>
                     <td>{result.email}</td>
-                    <td>{result.yearLevel}</td>
+                    <td>{result.role ?? "student"}</td>
+                    <td>{result.role === "professor" ? "—" : result.department ?? "BSIT"}</td>
+                    <td>
+                      {result.role === "professor"
+                        ? "—"
+                        : `${result.yearLevel} - ${result.section ?? "A"}`}
+                    </td>
                     <td>
                       {result.temporaryPassword ? (
                         <code className={styles.password}>{result.temporaryPassword}</code>
@@ -555,7 +733,7 @@ export default function AddStudents() {
 
       {createdResults.length > 0 && (
         <p className={styles.initialHint}>
-          Tip: students should change their temporary password after their first sign-in.
+          Tip: users should change their temporary password after their first sign-in.
         </p>
       )}
     </div>

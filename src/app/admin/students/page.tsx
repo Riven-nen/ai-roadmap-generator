@@ -53,7 +53,10 @@ export default async function AdminStudents() {
                 </div>
                 <h3 className={styles.actionTitle}>{student.full_name}</h3>
                 <p className={styles.actionDesc}>{student.email || "No email on file"}</p>
-                <p className={styles.actionDesc}>Year {student.level ?? 1}</p>
+                <p className={styles.actionDesc}>
+                  {student.department ?? "BSIT"} · Year {student.level ?? 1} -{" "}
+                  {student.section ?? "A"}
+                </p>
               </Card>
             </Link>
           ))}

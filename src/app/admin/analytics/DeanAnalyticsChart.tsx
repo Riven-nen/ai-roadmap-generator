@@ -16,9 +16,9 @@ type TooltipProps = {
 function CustomTooltip({ active, payload }: TooltipProps) {
   if (active && payload && payload.length) {
     return (
-      <div style={{ background: "#ffffff", padding: "10px", border: "1px solid #e2e8f0", borderRadius: "8px", boxShadow: "0 4px 12px rgba(11, 37, 69, 0.08)" }}>
+      <div style={{ background: "var(--bg-card)", padding: "10px", border: "1px solid var(--border-color)", borderRadius: "8px", boxShadow: "0 4px 12px rgba(var(--ink-rgb), 0.08)" }}>
         <p style={{ color: "var(--text-main)", margin: 0, fontSize: "0.85rem" }}>{payload[0].payload.subject}</p>
-        <p style={{ color: "#ea580c", margin: 0, fontWeight: "bold" }}>{payload[0].value}% Avg</p>
+        <p style={{ color: "var(--accent-strong)", margin: 0, fontWeight: "bold" }}>{payload[0].value}% Avg</p>
       </div>
     );
   }

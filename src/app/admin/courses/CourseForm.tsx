@@ -88,13 +88,13 @@ export default function CourseForm({
       {error && <div className={`${styles.formError} ${styles.fieldFull}`}>{error}</div>}
 
       <label className={styles.field}>
-        <span className={styles.fieldLabel}>Code</span>
+        <span className={styles.fieldLabel}>Subject code</span>
         <input className={styles.input} value={form.code}
           onChange={(e) => update("code", e.target.value)} required />
       </label>
 
       <label className={styles.field}>
-        <span className={styles.fieldLabel}>Title</span>
+        <span className={styles.fieldLabel}>Subject title</span>
         <input className={styles.input} value={form.title}
           onChange={(e) => update("title", e.target.value)} required />
       </label>

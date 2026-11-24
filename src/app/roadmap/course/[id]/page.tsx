@@ -4,11 +4,12 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
-import { ReactFlow, Background, Controls, type Edge, type Node } from "@xyflow/react";
-import dagre from "dagre";
+import { ReactFlow, Background, Controls, MiniMap, MarkerType, type Edge, type Node } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { createClient } from "@/lib/supabase/client";
-import { Course, CourseTopic, Quiz } from "@/types";
+import { Course, CourseTopic, Quiz, RoadmapEdge } from "@/types";
+import { layoutRoadmapGraph } from "@/lib/roadmapLayout";
+import { themeColor } from "@/lib/theme";
 import styles from "./course.module.css";
 import TopicModal from "./TopicModal";
 import TopicNode from "./TopicNode";
@@ -18,39 +19,10 @@ type Progress = {
   status: "unread" | "reading" | "completed";
 };
 
-const nodeWidth = 200;
-const nodeHeight = 80;
-
-const getLayoutedElements = (nodes: Node[], edges: Edge[]) => {
-  const dagreGraph = new dagre.graphlib.Graph();
-  dagreGraph.setDefaultEdgeLabel(() => ({}));
-
-  // Standard centered tree layout
-  dagreGraph.setGraph({
-    rankdir: "TB",
-    nodesep: 40,
-    ranksep: 80
-  });
-
-  nodes.forEach((node) => {
-    dagreGraph.setNode(node.id, { width: nodeWidth, height: nodeHeight });
-  });
-
-  edges.forEach((edge) => {
-    dagreGraph.setEdge(edge.source, edge.target);
-  });
-
-  dagre.layout(dagreGraph);
-
-  nodes.forEach((node) => {
-    const nodeWithPosition = dagreGraph.node(node.id);
-    node.position = {
-      x: nodeWithPosition.x - nodeWidth / 2,
-      y: nodeWithPosition.y - nodeHeight / 2,
-    };
-  });
-
-  return { nodes, edges };
+type SectionInfo = {
+  section_code: string;
+  academic_year: string;
+  term: string;
 };
 
 export default function CourseDetailPage() {
@@ -61,6 +33,9 @@ export default function CourseDetailPage() {
   const [course, setCourse] = useState<Course | null>(null);
   const [topics, setTopics] = useState<CourseTopic[]>([]);
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
+  const [roadmapEdges, setRoadmapEdges] = useState<RoadmapEdge[]>([]);
+  const [sectionId, setSectionId] = useState<string | null>(null);
+  const [sectionInfo, setSectionInfo] = useState<SectionInfo | null>(null);
   const [progress, setProgress] = useState<Progress[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -79,10 +54,19 @@ export default function CourseDetailPage() {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
 
-      const [courseResult, topicsResult, quizzesResult] = await Promise.all([
+      const [courseResult, topicsResult, quizzesResult, edgesResult, enrollmentResult] = await Promise.all([
         supabase.from("courses").select("*").eq("id", courseId).single(),
         supabase.from("course_topics").select("*").eq("course_id", courseId).order("created_at"),
         supabase.from("quizzes").select("*").eq("course_id", courseId),
+        supabase.from("roadmap_edges").select("*").eq("course_id", courseId),
+        user
+          ? supabase
+              .from("enrollments")
+              .select("section_id, section:sections(section_code, academic_year, term)")
+              .eq("user_id", user.id)
+              .eq("course_id", courseId)
+              .maybeSingle()
+          : Promise.resolve({ data: null }),
       ]);
 
       if (courseResult.error) {
@@ -98,9 +82,22 @@ export default function CourseDetailPage() {
         progressData = (data || []) as Progress[];
       }
 
+      const enrollment = enrollmentResult.data as
+        | {
+            section_id?: string | null;
+            section?: SectionInfo | SectionInfo[] | null;
+          }
+        | null;
+      const enrollmentSection = Array.isArray(enrollment?.section)
+        ? enrollment.section[0] ?? null
+        : enrollment?.section ?? null;
+
       setCourse(courseResult.data);
       setTopics(topicsResult.data || []);
       setQuizzes(quizzesResult.data || []);
+      setRoadmapEdges((edgesResult.data || []) as RoadmapEdge[]);
+      setSectionId(enrollment?.section_id ?? null);
+      setSectionInfo(enrollmentSection);
       setProgress(progressData);
       setLoading(false);
     }
@@ -166,68 +163,140 @@ export default function CourseDetailPage() {
   };
 
   const { nodes, edges } = useMemo(() => {
-    const initialNodes: Node[] = [];
-    const initialEdges: Edge[] = [];
+    const topicsById = new Map(topics.map((topic) => [topic.id, topic]));
+    const completedIds = new Set(
+      progress.filter((entry) => entry.status === "completed").map((entry) => entry.topic_id)
+    );
 
-    const rootTopics = topics.filter(t => !t.parent_id);
+    const graphEdges = roadmapEdges.length > 0
+      ? roadmapEdges.map((edge) => ({
+          id: edge.id,
+          source: edge.source_topic_id,
+          target: edge.target_topic_id,
+          label: edge.label,
+        }))
+      : topics
+          .filter((topic) => topic.parent_id)
+          .map((topic) => ({
+            id: `${topic.parent_id}-${topic.id}`,
+            source: topic.parent_id as string,
+            target: topic.id,
+            label: null as string | null,
+          }));
 
-    const traverse = (parentId: string | null, isParentCompleted: boolean) => {
-      const children = topics.filter(t => t.parent_id === parentId);
-      const parentTopic = parentId ? topics.find(t => t.id === parentId) : undefined;
+    const incomingByTarget = new Map<string, string[]>();
+    for (const edge of graphEdges) {
+      const current = incomingByTarget.get(edge.target) ?? [];
+      current.push(edge.source);
+      incomingByTarget.set(edge.target, current);
+    }
 
-      children.forEach((child) => {
-        const childProgress = progress.find(p => p.topic_id === child.id);
-        const isChildCompleted = childProgress?.status === "completed";
-        const isLocked = !isParentCompleted && childProgress?.status !== "completed";
+    const lockedByTopic = new Map<string, boolean>();
+    const lockReasonByTopic = new Map<string, string | undefined>();
 
-        initialNodes.push({
-          id: child.id,
-          type: "topicNode",
-          data: {
-            topic: child,
-            status: childProgress?.status || "unread",
-            isLocked,
-            lockReason: isLocked ? parentTopic?.title : undefined,
-            onClick: setSelectedTopic
-          },
-          position: { x: 0, y: 0 },
+    for (const topic of topics) {
+      if (completedIds.has(topic.id)) {
+        lockedByTopic.set(topic.id, false);
+        continue;
+      }
+
+      const incoming = incomingByTarget.get(topic.id) ?? [];
+      const missing = incoming.find((sourceId) => !completedIds.has(sourceId));
+      const locked = incoming.length > 0 && Boolean(missing);
+      lockedByTopic.set(topic.id, locked);
+
+      if (locked && missing) {
+        lockReasonByTopic.set(topic.id, topicsById.get(missing)?.title);
+      }
+    }
+
+    const isModuleTopic = (topic: CourseTopic) =>
+      topic.node_type === "module" || topic.title.startsWith("Module ");
+
+    const getModuleMeta = (topic: CourseTopic) => {
+      const childTopicIds = graphEdges
+        .filter((edge) => edge.source === topic.id)
+        .map((edge) => edge.target)
+        .filter((targetId) => {
+          const target = topicsById.get(targetId);
+          return target && !isModuleTopic(target);
         });
 
-        if (parentId) {
-          initialEdges.push({
-            id: `${parentId}-${child.id}`,
-            source: parentId,
-            target: child.id,
-            type: "smoothstep",
-            style: { stroke: isLocked ? "#cbd5e1" : "#94a3b8", strokeWidth: 2 },
-          });
-        }
-
-        traverse(child.id, isChildCompleted);
-      });
+      return {
+        topicCount: childTopicIds.length,
+        completedTopicCount: childTopicIds.filter((id) => completedIds.has(id)).length,
+      };
     };
 
-    rootTopics.forEach(root => {
-      const rootProgress = progress.find(p => p.topic_id === root.id);
-      const isRootCompleted = rootProgress?.status === "completed";
+    const lockedEdgeColor = themeColor("--border-strong", "#cfc8bb");
+    const moduleEdgeColor = themeColor("--accent-strong", "#3d6b60");
+    const topicEdgeColor = themeColor("--accent", "#5f8f83");
 
-      initialNodes.push({
-        id: root.id,
-        type: "topicNode",
-        data: {
-          topic: root,
-          status: rootProgress?.status || "unread",
-          isLocked: false,
-          onClick: setSelectedTopic
-        },
-        position: { x: 0, y: 0 },
+    const initialEdges: Edge[] = graphEdges
+      .filter((edge) => topicsById.has(edge.source) && topicsById.has(edge.target))
+      .map((edge) => {
+        const target = topicsById.get(edge.target);
+        const targetIsModule = target ? isModuleTopic(target) : false;
+        const isLocked = lockedByTopic.get(edge.target) ?? false;
+        const edgeColor = isLocked
+          ? lockedEdgeColor
+          : targetIsModule
+            ? moduleEdgeColor
+            : topicEdgeColor;
+
+        return {
+          id: edge.id,
+          source: edge.source,
+          target: edge.target,
+          type: "default",
+          label: edge.label ?? undefined,
+          style: {
+            stroke: edgeColor,
+            strokeWidth: targetIsModule ? 3 : 2,
+          },
+          markerEnd: {
+            type: MarkerType.ArrowClosed,
+            color: edgeColor,
+            width: 18,
+            height: 18,
+          },
+        } as Edge;
       });
 
-      traverse(root.id, isRootCompleted);
+    const allPositioned = topics.length > 0 && topics.every(
+      (topic) => topic.position_x !== null && topic.position_y !== null
+    );
+
+    let initialNodes: Node[] = topics.map((topic) => {
+      const isModule = isModuleTopic(topic);
+      const status = progress.find((entry) => entry.topic_id === topic.id)?.status || "unread";
+
+      return {
+        id: topic.id,
+        type: "topicNode",
+        data: {
+          topic,
+          status,
+          isLocked: lockedByTopic.get(topic.id) ?? false,
+          lockReason: lockReasonByTopic.get(topic.id),
+          isModule,
+          nodeType: topic.node_type,
+          hasQuiz: quizzes.some((quiz) => quiz.topic_id === topic.id),
+          ...(isModule ? getModuleMeta(topic) : {}),
+          onClick: setSelectedTopic,
+        },
+        position: allPositioned
+          ? { x: topic.position_x as number, y: topic.position_y as number }
+          : { x: 0, y: 0 },
+      };
     });
 
-    return getLayoutedElements(initialNodes, initialEdges);
-  }, [topics, progress]);
+    if (!allPositioned) {
+      initialNodes = layoutRoadmapGraph(initialNodes, initialEdges);
+    }
+
+    return { nodes: initialNodes, edges: initialEdges };
+  }, [topics, progress, roadmapEdges, quizzes]);
 
   const nodeTypes = useMemo(() => ({ topicNode: TopicNode }), []);
 
@@ -240,11 +309,20 @@ export default function CourseDetailPage() {
     ? Math.round((completedTopicCount / topics.length) * 100)
     : 0;
 
-  if (loading) return <div style={{ color: "#0b1f3a", padding: 40 }}>Loading Course...</div>;
-  if (loadError) return <div style={{ color: "#0b1f3a", padding: 40 }}>{loadError}</div>;
-  if (!course) return <div style={{ color: "#0b1f3a", padding: 40 }}>Course not found.</div>;
+  if (loading) return <div style={{ color: "var(--text-main)", padding: 40 }}>Loading Course...</div>;
+  if (loadError) return <div style={{ color: "var(--text-main)", padding: 40 }}>{loadError}</div>;
+  if (!course) return <div style={{ color: "var(--text-main)", padding: 40 }}>Course not found.</div>;
 
-  const finalExam = quizzes.find(q => !q.topic_id);
+  const canvasGridColor = themeColor("--border-color", "#e3ded4");
+  const moduleMiniMapColor = themeColor("--accent-strong", "#3d6b60");
+  const topicMiniMapColor = themeColor("--accent", "#5f8f83");
+  const miniMapMaskColor = `rgba(${themeColor("--ink-rgb", "44, 58, 55")}, 0.08)`;
+
+  const sectionFinalExam = sectionId
+    ? quizzes.find((quiz) => !quiz.topic_id && quiz.section_id === sectionId)
+    : undefined;
+  const courseFinalExam = quizzes.find((quiz) => !quiz.topic_id && !quiz.section_id);
+  const finalExam = sectionFinalExam || courseFinalExam;
 
   return (
     <div className={styles.pageContainer}>
@@ -258,6 +336,11 @@ export default function CourseDetailPage() {
               <div className={styles.courseMetaRow}>
                 <span className={styles.metaChip}>📚 {course.category}</span>
                 <span className={styles.metaChip}>🎓 {course.credits} credits</span>
+                {sectionInfo && (
+                  <span className={styles.metaChip}>
+                    🏷️ {sectionInfo.section_code} · {sectionInfo.academic_year} · {sectionInfo.term}
+                  </span>
+                )}
                 {course.prerequisite_code && (
                   <span className={styles.metaChip}>🔗 Prerequisite: {course.prerequisite_code}</span>
                 )}
@@ -303,20 +386,33 @@ export default function CourseDetailPage() {
           </div>
         ) : (
           <div className={styles.treeArea}>
+            <div className={styles.treeHint}>Drag to pan · Scroll to zoom</div>
             <ReactFlow
               nodes={nodes}
               edges={edges}
               nodeTypes={nodeTypes}
               fitView
-              fitViewOptions={{ padding: 0.2 }}
-              minZoom={0.4}
+              fitViewOptions={{ padding: 0.1, minZoom: 0.6, maxZoom: 1.15 }}
+              minZoom={0.3}
               maxZoom={2}
               colorMode="light"
               proOptions={{ hideAttribution: true }}
               nodesDraggable={false}
             >
-              <Background color="#e2e8f0" gap={16} />
+              <Background color={canvasGridColor} gap={18} />
               <Controls />
+              <MiniMap
+                pannable
+                zoomable
+                position="top-right"
+                className={styles.minimap}
+                maskColor={miniMapMaskColor}
+                nodeColor={(node) =>
+                  (node.data as { isModule?: boolean } | undefined)?.isModule
+                    ? moduleMiniMapColor
+                    : topicMiniMapColor
+                }
+              />
             </ReactFlow>
           </div>
         )}
@@ -369,6 +465,7 @@ export default function CourseDetailPage() {
           topic={selectedTopic}
           status={progress.find(p => p.topic_id === selectedTopic.id)?.status || "unread"}
           hasQuiz={quizzes.some(q => q.topic_id === selectedTopic.id)}
+          nodeType={selectedTopic.node_type}
           onTakeQuiz={() => {
             const topicQuiz = quizzes.find(q => q.topic_id === selectedTopic.id);
             if (topicQuiz) router.push(`/roadmap/course/${courseId}/quiz/${topicQuiz.id}`);

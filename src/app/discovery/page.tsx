@@ -77,7 +77,7 @@ export default function Discovery() {
     fetchCareers();
   }, []);
 
-  if (loading) return <div style={{ color: "#0b1f3a", padding: 40 }}>Loading Matrix...</div>;
+  if (loading) return <div style={{ color: "var(--text-main)", padding: 40 }}>Loading Matrix...</div>;
 
   return (
     <div className={styles.container}>
@@ -91,7 +91,7 @@ export default function Discovery() {
       </div>
 
       {careers.length === 0 ? (
-        <div style={{ color: "#64748b", textAlign: "center", padding: 40 }}>
+        <div style={{ color: "var(--text-muted)", textAlign: "center", padding: 40 }}>
           No career paths found in the database.
         </div>
       ) : (
@@ -127,8 +127,8 @@ export default function Discovery() {
                           style={{
                             width: `${Math.min(currentScore, 100)}%`,
                             background: met
-                              ? "linear-gradient(to right, #16a34a, #15803d)"
-                              : "linear-gradient(to right, #f97316, #1e3a8a)",
+                              ? "linear-gradient(to right, var(--success), var(--success-strong))"
+                              : "linear-gradient(to right, var(--accent), var(--accent-strong))",
                           }}
                         />
                         <div

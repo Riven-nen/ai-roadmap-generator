@@ -3,7 +3,7 @@
   margin: 0 auto;
   padding: 40px 20px;
   color: var(--text-main);
-  background-color: #f7f9fc;
+  background-color: var(--bg-subtle);
   min-height: 100%;
 }
 
@@ -11,15 +11,15 @@
   text-align: center;
   margin-bottom: 40px;
   padding-bottom: 24px;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .quizTitle { font-size: 2rem; font-weight: 700; margin-bottom: 8px; }
-.quizDesc { color: #64748b; font-size: 1rem; margin-bottom: 16px; }
+.quizDesc { color: var(--text-muted); font-size: 1rem; margin-bottom: 16px; }
 
 .passingBadge {
-  background: rgba(249, 115, 22, 0.1);
-  color: #ea580c;
+  background: rgba(var(--accent-rgb), 0.1);
+  color: var(--accent-strong);
   padding: 6px 16px;
   border-radius: 999px;
   font-size: 0.85rem;
@@ -29,11 +29,11 @@
 .questionsList { display: flex; flex-direction: column; gap: 24px; margin-bottom: 40px; }
 
 .questionCard {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   padding: 24px;
-  box-shadow: 0 2px 8px rgba(11, 37, 69, 0.05);
+  box-shadow: 0 2px 8px rgba(var(--ink-rgb), 0.05);
 }
 
 .questionText { font-size: 1.1rem; font-weight: 600; margin-bottom: 20px; line-height: 1.5; }
@@ -44,22 +44,22 @@
   display: flex;
   align-items: center;
   padding: 14px 16px;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--border-strong);
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s;
 }
 
-.optionLabel:hover { background: #e2e8f0; }
-.optionSelected { background: rgba(249, 115, 22, 0.1); border-color: #f97316; }
+.optionLabel:hover { background: var(--border-color); }
+.optionSelected { background: rgba(var(--accent-rgb), 0.1); border-color: var(--accent); }
 
-.radioInput { margin-right: 12px; accent-color: #f97316; }
-.optionText { font-size: 0.95rem; color: #1e293b; }
+.radioInput { margin-right: 12px; accent-color: var(--accent); }
+.optionText { font-size: 0.95rem; color: var(--text-main); }
 
 .submitBtn {
   width: 100%;
-  background: linear-gradient(to right, #f97316, #0b2545);
-  color: white;
+  background: linear-gradient(to right, var(--accent), var(--accent-strong));
+  color: var(--accent-contrast);
   padding: 16px;
   border: none;
   border-radius: 8px;
@@ -71,17 +71,17 @@
 .submitBtn:disabled { opacity: 0.5; }
 
 .resultCard {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: 16px;
   padding: 40px;
   text-align: center;
   max-width: 500px;
   margin: 100px auto;
-  box-shadow: 0 8px 30px rgba(11, 37, 69, 0.08);
+  box-shadow: 0 8px 30px rgba(var(--ink-rgb), 0.08);
 }
 
-.resultTitle { font-size: 1.5rem; color: #64748b; margin-bottom: 16px; }
+.resultTitle { font-size: 1.5rem; color: var(--text-muted); margin-bottom: 16px; }
 .resultScore { font-size: 4rem; font-weight: 800; color: var(--text-main); margin-bottom: 8px; }
 
 .resultStatus {
@@ -93,13 +93,13 @@
   margin-bottom: 24px;
 }
 
-.passed { background: rgba(34, 197, 94, 0.2); color: #16a34a; }
-.failed { background: rgba(239, 68, 68, 0.2); color: #dc2626; }
+.passed { background: rgba(var(--success-rgb), 0.2); color: var(--success); }
+.failed { background: rgba(var(--danger-rgb), 0.2); color: var(--danger); }
 
-.resultText { color: #64748b; font-size: 0.9rem; margin-bottom: 32px; line-height: 1.6; }
+.resultText { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 32px; line-height: 1.6; }
 
 .backBtn {
-  background: #e2e8f0;
+  background: var(--border-color);
   color: var(--text-main);
   padding: 12px 24px;
   border: none;
@@ -108,11 +108,11 @@
   cursor: pointer;
 }
 
-.backBtn:hover { background: #cbd5e1; }
+.backBtn:hover { background: var(--border-strong); }
 
 .retryBtn {
-  background: linear-gradient(to right, #f97316, #0b2545);
-  color: white;
+  background: linear-gradient(to right, var(--accent), var(--accent-strong));
+  color: var(--accent-contrast);
   padding: 12px 24px;
   border: none;
   border-radius: 8px;
@@ -133,8 +133,8 @@
   margin-bottom: 20px;
   padding: 12px 16px;
   border-radius: 8px;
-  background: rgba(239, 68, 68, 0.12);
-  border: 1px solid rgba(239, 68, 68, 0.4);
-  color: #b91c1c;
+  background: rgba(var(--danger-rgb), 0.12);
+  border: 1px solid rgba(var(--danger-rgb), 0.4);
+  color: var(--danger-strong);
   font-size: 0.9rem;
 }

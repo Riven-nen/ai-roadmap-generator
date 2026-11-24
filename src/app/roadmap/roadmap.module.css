@@ -2,14 +2,14 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  background: #f7f9fc;
+  background: var(--bg-subtle);
   color: var(--text-main);
 }
 
 .header {
   flex-shrink: 0;
   padding: 24px 32px 16px;
-  background: #f7f9fc;
+  background: var(--bg-subtle);
   z-index: 10;
   border-bottom: 1px solid var(--border-color);
 }
@@ -29,11 +29,11 @@
 }
 
 .highlight {
-  color: #ea580c;
+  color: var(--accent-strong);
 }
 
 .subtitle {
-  color: #64748b;
+  color: var(--text-muted);
   margin-top: 6px;
   font-size: 0.95rem;
 }
@@ -48,8 +48,8 @@
   min-width: 86px;
   padding: 10px 14px;
   border-radius: 12px;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -65,14 +65,14 @@
   font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: #64748b;
+  color: var(--text-muted);
   font-weight: 600;
 }
 
-.statCompleted { color: #16a34a; }
-.statProgress { color: #f97316; }
-.statAvailable { color: #1e3a8a; }
-.statLocked { color: #64748b; }
+.statCompleted { color: var(--success); }
+.statProgress { color: var(--accent); }
+.statAvailable { color: var(--accent-strong); }
+.statLocked { color: var(--text-muted); }
 
 .legend {
   display: flex;
@@ -85,7 +85,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: #64748b;
+  color: var(--text-muted);
   font-size: 0.78rem;
   font-weight: 500;
 }
@@ -97,11 +97,11 @@
   display: inline-block;
 }
 
-.dotCompleted { background: #16a34a; }
-.dotProgress { background: #f97316; }
-.dotAvailable { background: #1e3a8a; }
-.dotFailed { background: #dc2626; }
-.dotLocked { background: #94a3b8; }
+.dotCompleted { background: var(--success); }
+.dotProgress { background: var(--accent); }
+.dotAvailable { background: var(--accent-strong); }
+.dotFailed { background: var(--danger); }
+.dotLocked { background: var(--text-faint); }
 
 .canvas {
   flex: 1;
@@ -117,9 +117,9 @@
   align-items: center;
   justify-content: center;
   gap: 12px;
-  color: #64748b;
+  color: var(--text-muted);
   text-align: center;
-  background: #f7f9fc;
+  background: var(--bg-subtle);
   padding: 32px;
 }
 
@@ -134,7 +134,7 @@
 }
 
 .stateText {
-  color: #64748b;
+  color: var(--text-muted);
   font-size: 0.95rem;
   max-width: 460px;
   line-height: 1.6;
@@ -155,8 +155,8 @@
   margin-top: 8px;
   padding: 12px 24px;
   border-radius: 10px;
-  background: linear-gradient(to right, #f97316, #0b2545);
-  color: white;
+  background: linear-gradient(to right, var(--accent), var(--accent-strong));
+  color: var(--accent-contrast);
   font-weight: 600;
   font-size: 0.9rem;
 }
@@ -166,8 +166,8 @@
 .spinner {
   width: 34px;
   height: 34px;
-  border: 3px solid #e2e8f0;
-  border-top-color: #f97316;
+  border: 3px solid var(--border-color);
+  border-top-color: var(--accent);
   border-radius: 50%;
   animation: spin 0.9s linear infinite;
 }
