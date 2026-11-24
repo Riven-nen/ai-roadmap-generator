@@ -48,5 +48,9 @@
 .inProgress { border-color: #3b82f6; background: linear-gradient(180deg, #1e2233 0%, rgba(59, 130, 246, 0.05) 100%); }
 .inProgress .nodeGrade { color: #3b82f6; }
 
-.locked { border-color: #475569; opacity: 0.8; }
+.available { border-color: #6366f1; background: linear-gradient(180deg, #1e2233 0%, rgba(99, 102, 241, 0.08) 100%); }
+.available .nodeGrade { color: #a5b4fc; }
+
+.locked { border-color: #334155; opacity: 0.55; filter: grayscale(60%); }
 .locked .nodeGrade { color: #94a3b8; }
+.locked:hover { transform: none; box-shadow: none; border-color: #334155; }

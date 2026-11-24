@@ -37,6 +37,10 @@ export async function middleware(request: NextRequest) {
 
   if (isPublicAsset) return response;
 
+  if (!user && pathname.startsWith("/api/")) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   if (!user && !isAuthPage) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";

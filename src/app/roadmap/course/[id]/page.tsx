@@ -24,12 +24,12 @@ const nodeHeight = 80;
 const getLayoutedElements = (nodes: Node[], edges: Edge[]) => {
   const dagreGraph = new dagre.graphlib.Graph();
   dagreGraph.setDefaultEdgeLabel(() => ({}));
-  
+
   // Standard centered tree layout
-  dagreGraph.setGraph({ 
-    rankdir: "TB", 
-    nodesep: 40, 
-    ranksep: 80 
+  dagreGraph.setGraph({
+    rankdir: "TB",
+    nodesep: 40,
+    ranksep: 80
   });
 
   nodes.forEach((node) => {
@@ -63,6 +63,8 @@ export default function CourseDetailPage() {
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
   const [progress, setProgress] = useState<Progress[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   const [selectedTopic, setSelectedTopic] = useState<CourseTopic | null>(null);
 
@@ -76,20 +78,29 @@ export default function CourseDetailPage() {
     async function fetchData() {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
-      
-      const { data: courseData } = await supabase.from("courses").select("*").eq("id", courseId).single();
-      const { data: topicsData } = await supabase.from("course_topics").select("*").eq("course_id", courseId).order("created_at");
-      const { data: quizzesData } = await supabase.from("quizzes").select("*").eq("course_id", courseId);
-      
-      let progressData: any[] = [];
-      if (user) {
-        const { data } = await supabase.from("student_topic_progress").select("*").eq("user_id", user.id);
-        progressData = data || [];
+
+      const [courseResult, topicsResult, quizzesResult] = await Promise.all([
+        supabase.from("courses").select("*").eq("id", courseId).single(),
+        supabase.from("course_topics").select("*").eq("course_id", courseId).order("created_at"),
+        supabase.from("quizzes").select("*").eq("course_id", courseId),
+      ]);
+
+      if (courseResult.error) {
+        setLoadError("We couldn't load this course.");
       }
 
-      setCourse(courseData);
-      setTopics(topicsData || []);
-      setQuizzes(quizzesData || []);
+      let progressData: Progress[] = [];
+      if (user) {
+        const { data } = await supabase
+          .from("student_topic_progress")
+          .select("topic_id,status")
+          .eq("user_id", user.id);
+        progressData = (data || []) as Progress[];
+      }
+
+      setCourse(courseResult.data);
+      setTopics(topicsResult.data || []);
+      setQuizzes(quizzesResult.data || []);
       setProgress(progressData);
       setLoading(false);
     }
@@ -118,8 +129,8 @@ export default function CourseDetailPage() {
         body: JSON.stringify({ messages: newMessages, courseTitle: course.title, courseContext }),
       });
       const data = await res.json();
-      setMessages([...newMessages, { role: "assistant", content: data.reply }]);
-    } catch (error) {
+      setMessages([...newMessages, { role: "assistant", content: data.reply || "Sorry, I couldn't answer that. Please try again." }]);
+    } catch {
       setMessages([...newMessages, { role: "assistant", content: "Error connecting to AI." }]);
     } finally {
       setIsTyping(false);
@@ -131,12 +142,19 @@ export default function CourseDetailPage() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
-    await supabase.from("student_topic_progress").upsert({
+    setSaveError(null);
+
+    const { error } = await supabase.from("student_topic_progress").upsert({
       user_id: user.id,
       topic_id: topicId,
       status: newStatus,
       updated_at: new Date().toISOString()
-    }, { onConflict: "user_id, topic_id" });
+    }, { onConflict: "user_id,topic_id" });
+
+    if (error) {
+      setSaveError("Couldn't save your progress. Please try again.");
+      return;
+    }
 
     setProgress(prev => {
       const existing = prev.find(p => p.topic_id === topicId);
@@ -155,7 +173,8 @@ export default function CourseDetailPage() {
 
     const traverse = (parentId: string | null, isParentCompleted: boolean) => {
       const children = topics.filter(t => t.parent_id === parentId);
-      
+      const parentTopic = parentId ? topics.find(t => t.id === parentId) : undefined;
+
       children.forEach((child) => {
         const childProgress = progress.find(p => p.topic_id === child.id);
         const isChildCompleted = childProgress?.status === "completed";
@@ -164,11 +183,12 @@ export default function CourseDetailPage() {
         initialNodes.push({
           id: child.id,
           type: "topicNode",
-          data: { 
-            topic: child, 
+          data: {
+            topic: child,
             status: childProgress?.status || "unread",
             isLocked,
-            onClick: setSelectedTopic 
+            lockReason: isLocked ? parentTopic?.title : undefined,
+            onClick: setSelectedTopic
           },
           position: { x: 0, y: 0 },
         });
@@ -194,11 +214,11 @@ export default function CourseDetailPage() {
       initialNodes.push({
         id: root.id,
         type: "topicNode",
-        data: { 
-          topic: root, 
+        data: {
+          topic: root,
           status: rootProgress?.status || "unread",
           isLocked: false,
-          onClick: setSelectedTopic 
+          onClick: setSelectedTopic
         },
         position: { x: 0, y: 0 },
       });
@@ -211,7 +231,17 @@ export default function CourseDetailPage() {
 
   const nodeTypes = useMemo(() => ({ topicNode: TopicNode }), []);
 
+  const courseTopicIds = useMemo(() => new Set(topics.map(t => t.id)), [topics]);
+  const completedTopicCount = useMemo(
+    () => progress.filter(p => courseTopicIds.has(p.topic_id) && p.status === "completed").length,
+    [progress, courseTopicIds]
+  );
+  const topicProgressPercent = topics.length > 0
+    ? Math.round((completedTopicCount / topics.length) * 100)
+    : 0;
+
   if (loading) return <div style={{ color: "white", padding: 40 }}>Loading Course...</div>;
+  if (loadError) return <div style={{ color: "white", padding: 40 }}>{loadError}</div>;
   if (!course) return <div style={{ color: "white", padding: 40 }}>Course not found.</div>;
 
   const finalExam = quizzes.find(q => !q.topic_id);
@@ -221,44 +251,75 @@ export default function CourseDetailPage() {
       <div className={styles.roadmapColumn}>
         <div className={styles.header}>
           <Link href="/roadmap" className={styles.backLink}>← Back to Main Roadmap</Link>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
+          <div className={styles.headerMain}>
             <div>
               <h1 className={styles.title}>{course.code}: {course.title}</h1>
               <p className={styles.desc}>{course.description}</p>
+              <div className={styles.courseMetaRow}>
+                <span className={styles.metaChip}>📚 {course.category}</span>
+                <span className={styles.metaChip}>🎓 {course.credits} credits</span>
+                {course.prerequisite_code && (
+                  <span className={styles.metaChip}>🔗 Prerequisite: {course.prerequisite_code}</span>
+                )}
+              </div>
             </div>
-            
+
             {finalExam && (
-              <Link 
+              <Link
                 href={`/roadmap/course/${courseId}/quiz/${finalExam.id}`}
-                style={{ 
-                  background: "linear-gradient(to right, #eab308, #f97316)", 
-                  color: "white", padding: "12px 24px", borderRadius: "8px", 
-                  textDecoration: "none", fontWeight: "bold", marginLeft: 20, whiteSpace: "nowrap"
-                }}
+                className={styles.finalExamBtn}
               >
                 ⚠️ Take Final Exam
               </Link>
             )}
           </div>
+
+          {topics.length > 0 && (
+            <div className={styles.progressWrap}>
+              <div className={styles.progressLabelRow}>
+                <span>Course Progress</span>
+                <span>{completedTopicCount} / {topics.length} topics · {topicProgressPercent}%</span>
+              </div>
+              <div className={styles.progressTrack}>
+                <div className={styles.progressFill} style={{ width: `${topicProgressPercent}%` }} />
+              </div>
+            </div>
+          )}
+
+          {saveError && <div className={styles.inlineError}>{saveError}</div>}
         </div>
 
-        <div style={{ flex: 1, width: "100%", height: "100%" }}>
-          <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            nodeTypes={nodeTypes}
-            fitView
-            fitViewOptions={{ padding: 0.2 }}
-            minZoom={0.4} // <--- CHANGED: Prevents zooming out into a tiny line
-            maxZoom={2}
-            colorMode="dark"
-            proOptions={{ hideAttribution: true }}
-            nodesDraggable={false}
-          >
-            <Background color="#2a2f45" gap={16} />
-            <Controls />
-          </ReactFlow>
-        </div>
+        {topics.length === 0 ? (
+          <div className={styles.emptySyllabus}>
+            <div className={styles.emptyIcon}>📚</div>
+            <h2 className={styles.emptyTitle}>No syllabus yet</h2>
+            <p className={styles.emptyText}>
+              This course doesn&apos;t have any topics yet. An administrator can add
+              topics, resources, and quizzes from the Admin Panel.
+            </p>
+            <Link href="/roadmap" className={styles.emptyAction}>
+              Back to Roadmap
+            </Link>
+          </div>
+        ) : (
+          <div className={styles.treeArea}>
+            <ReactFlow
+              nodes={nodes}
+              edges={edges}
+              nodeTypes={nodeTypes}
+              fitView
+              fitViewOptions={{ padding: 0.2 }}
+              minZoom={0.4}
+              maxZoom={2}
+              colorMode="dark"
+              proOptions={{ hideAttribution: true }}
+              nodesDraggable={false}
+            >
+              <Background color="#2a2f45" gap={16} />
+              <Controls />
+            </ReactFlow>
+          </div>
+        )}
       </div>
 
       <button className={styles.floatingChatBtn} onClick={() => setIsChatOpen(true)}>
@@ -277,12 +338,12 @@ export default function CourseDetailPage() {
           <div className={styles.chatMessages}>
             {messages.length === 0 && (
               <div className={styles.chatPlaceholder}>
-                <p>Hi! I'm your AI tutor for <strong>{course.title}</strong>.</p>
+                <p>Hi! I&apos;m your AI tutor for <strong>{course.title}</strong>.</p>
                 <p>I know your syllabus. Try asking:</p>
                 <ul>
-                  <li>"Can you explain the OSI model?"</li>
-                  <li>"Give me an example of polymorphism."</li>
-                  <li>"What are the learning objectives?"</li>
+                  <li>&quot;Can you explain the OSI model?&quot;</li>
+                  <li>&quot;Give me an example of polymorphism.&quot;</li>
+                  <li>&quot;What are the learning objectives?&quot;</li>
                 </ul>
               </div>
             )}
@@ -304,7 +365,7 @@ export default function CourseDetailPage() {
       )}
 
       {selectedTopic && (
-        <TopicModal 
+        <TopicModal
           topic={selectedTopic}
           status={progress.find(p => p.topic_id === selectedTopic.id)?.status || "unread"}
           hasQuiz={quizzes.some(q => q.topic_id === selectedTopic.id)}

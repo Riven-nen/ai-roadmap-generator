@@ -1,6 +1,6 @@
 .pageContainer {
   position: relative;
-  height: 100vh;
+  height: 100%;
   background-color: #0f111a;
   color: white;
   padding: 24px;
@@ -25,6 +25,112 @@
   flex-shrink: 0;
 }
 
+.headerMain {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.finalExamBtn {
+  background: linear-gradient(to right, #eab308, #f97316);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.finalExamBtn:hover { opacity: 0.9; }
+
+.progressWrap {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.progressLabelRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #94a3b8;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.progressTrack {
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  background: #1e2233;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(to right, #a855f7, #3b82f6);
+  transition: width 0.3s ease;
+}
+
+.inlineError {
+  margin-top: 12px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #fca5a5;
+  font-size: 0.85rem;
+}
+
+.treeArea {
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+}
+
+.emptySyllabus {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 12px;
+  padding: 40px;
+}
+
+.emptyIcon { font-size: 2.75rem; }
+
+.emptyTitle {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: white;
+}
+
+.emptyText {
+  color: #94a3b8;
+  max-width: 460px;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+.emptyAction {
+  margin-top: 8px;
+  padding: 12px 24px;
+  border-radius: 10px;
+  background: linear-gradient(to right, #a855f7, #3b82f6);
+  color: white;
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.emptyAction:hover { opacity: 0.9; }
+
 .backLink {
   color: #94a3b8;
   text-decoration: none;
@@ -46,6 +152,23 @@
 .desc {
   color: #94a3b8;
   font-size: 1rem;
+}
+
+.courseMetaRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.metaChip {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #1e2233;
+  border: 1px solid #2a2f45;
+  color: #94a3b8;
+  font-size: 0.75rem;
+  font-weight: 600;
 }
 
 .floatingChatBtn {
@@ -146,6 +269,10 @@
 .modalContent { background: #131620; border: 1px solid #2a2f45; border-radius: 16px; width: 100%; max-width: 600px; max-height: 85vh; display: flex; flex-direction: column; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
 .modalHeader { padding: 24px 32px; border-bottom: 1px solid #2a2f45; display: flex; justify-content: space-between; align-items: flex-start; }
 .modalTitle { font-size: 1.5rem; font-weight: 700; color: white; margin-bottom: 8px; }
+.modalBadges { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.modalStatus { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 4px 10px; border-radius: 999px; background: #1e2233; color: #94a3b8; border: 1px solid #2a2f45; }
+.modalStatusCompleted { background: rgba(34, 197, 94, 0.12); color: #22c55e; border-color: rgba(34, 197, 94, 0.4); }
+.modalStatusReading { background: rgba(234, 179, 8, 0.12); color: #eab308; border-color: rgba(234, 179, 8, 0.4); }
 .timeBadge { background: rgba(168, 85, 247, 0.1); color: #c084fc; padding: 4px 12px; border-radius: 999px; font-size: 0.75rem; font-weight: 600; }
 .closeBtn { background: transparent; border: none; color: #94a3b8; font-size: 1.5rem; cursor: pointer; padding: 0; line-height: 1; }
 .closeBtn:hover { color: white; }
@@ -175,6 +302,10 @@
   font-size: 0.95rem;
 }
 .quizBtn:hover { opacity: 0.9; }
+
+.quizActionWrap { width: 100%; display: flex; flex-direction: column; gap: 8px; }
+.quizHint { text-align: center; color: #94a3b8; font-size: 0.78rem; }
+.completedBanner { width: 100%; text-align: center; color: #22c55e; font-weight: bold; padding: 14px; background: rgba(34, 197, 94, 0.1); border-radius: 8px; }
 
 .markdown { font-size: 0.85rem; line-height: 1.6; }
 .markdown p { margin-bottom: 12px; }
@@ -226,4 +357,7 @@
   font-size: 0.75rem;
   font-weight: 600;
   margin-top: auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

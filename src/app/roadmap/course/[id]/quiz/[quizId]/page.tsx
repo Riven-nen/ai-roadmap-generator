@@ -3,8 +3,22 @@
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { Quiz, QuizQuestion } from "@/types";
+import { Quiz } from "@/types";
 import styles from "./quiz.module.css";
+
+type ClientQuestion = {
+  id: string;
+  quiz_id: string;
+  question_text: string;
+  options: Record<string, string>;
+};
+
+type QuizResult = {
+  score: number;
+  passed: boolean;
+  correctCount: number;
+  total: number;
+};
 
 export default function QuizPage() {
   const params = useParams();
@@ -13,20 +27,26 @@ export default function QuizPage() {
   const quizId = params.quizId as string;
 
   const [quiz, setQuiz] = useState<Quiz | null>(null);
-  const [questions, setQuestions] = useState<QuizQuestion[]>([]);
+  const [questions, setQuestions] = useState<ClientQuestion[]>([]);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [result, setResult] = useState<{ score: number; passed: boolean } | null>(null);
-  
+  const [result, setResult] = useState<QuizResult | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
   const [alreadyCompleted, setAlreadyCompleted] = useState(false);
 
   useEffect(() => {
     async function fetchQuiz() {
       const supabase = createClient();
-      
+
       const { data: quizData } = await supabase.from("quizzes").select("*").eq("id", quizId).single();
-      const { data: qData } = await supabase.from("quiz_questions").select("*").eq("quiz_id", quizId);
+
+      // Do not select correct_option: grading happens in the server route.
+      const { data: qData } = await supabase
+        .from("quiz_questions")
+        .select("id,quiz_id,question_text,options")
+        .eq("quiz_id", quizId);
 
       const { data: { user } } = await supabase.auth.getUser();
       if (user && quizData?.topic_id) {
@@ -35,15 +55,15 @@ export default function QuizPage() {
           .select("status")
           .eq("user_id", user.id)
           .eq("topic_id", quizData.topic_id)
-          .single();
-          
+          .maybeSingle();
+
         if (progressData?.status === "completed") {
           setAlreadyCompleted(true);
         }
       }
 
       setQuiz(quizData);
-      setQuestions(qData || []);
+      setQuestions((qData || []) as ClientQuestion[]);
       setLoading(false);
     }
     fetchQuiz();
@@ -55,60 +75,44 @@ export default function QuizPage() {
 
   const handleSubmit = async () => {
     if (Object.keys(answers).length !== questions.length) {
-      alert("Please answer all questions before submitting.");
+      setError("Please answer all questions before submitting.");
       return;
     }
 
+    setError(null);
     setSubmitting(true);
 
-    let correctCount = 0;
-    questions.forEach((q) => {
-      if (answers[q.id] === q.correct_option) {
-        correctCount++;
-      }
-    });
+    try {
+      const response = await fetch("/api/quiz/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ quizId, answers }),
+      });
 
-    const percentage = Math.round((correctCount / questions.length) * 100);
-    const passed = percentage >= (quiz?.passing_score || 70);
+      const data = await response.json();
 
-    let grade = "5.0";
-    if (percentage >= 95) grade = "1.0";
-    else if (percentage >= 90) grade = "1.25";
-    else if (percentage >= 85) grade = "1.5";
-    else if (percentage >= 80) grade = "1.75";
-    else if (percentage >= 75) grade = "2.0";
-    else if (percentage >= 70) grade = "2.25";
-    else if (percentage >= 65) grade = "2.5";
-    else if (percentage >= 60) grade = "3.0";
-
-    const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (user) {
-      if (quiz?.topic_id) {
-        await supabase.from("student_topic_progress").upsert({
-          user_id: user.id,
-          topic_id: quiz.topic_id,
-          status: passed ? "completed" : "reading",
-          updated_at: new Date().toISOString()
-        }, { onConflict: "user_id, topic_id" });
+      if (!response.ok) {
+        setError(data.error || "We couldn't submit your quiz. Please try again.");
+        return;
       }
 
-      if (!quiz?.topic_id) {
-        await supabase.from("enrollments")
-          .update({ 
-            grade: grade, 
-            progress: 100, 
-            status: passed ? "completed" : "in_progress",
-            completed_at: passed ? new Date().toISOString() : null
-          })
-          .eq("user_id", user.id)
-          .eq("course_id", courseId);
-      }
+      setResult({
+        score: data.score,
+        passed: data.passed,
+        correctCount: data.correctCount,
+        total: data.total,
+      });
+    } catch {
+      setError("We couldn't submit your quiz. Please try again.");
+    } finally {
+      setSubmitting(false);
     }
+  };
 
-    setResult({ score: percentage, passed });
-    setSubmitting(false);
+  const handleRetry = () => {
+    setResult(null);
+    setAnswers({});
+    setError(null);
   };
 
   if (loading) return <div className={styles.container}>Loading Quiz...</div>;
@@ -120,7 +124,7 @@ export default function QuizPage() {
         <div className={styles.resultCard}>
           <h1 className={styles.resultTitle}>Already Completed</h1>
           <p className={styles.resultText}>
-            You have already passed this quiz. 
+            You have already passed this quiz.
           </p>
           <button className={styles.backBtn} onClick={() => router.push(`/roadmap/course/${courseId}`)}>
             Back to Course
@@ -140,7 +144,33 @@ export default function QuizPage() {
             {result.passed ? "PASSED" : "FAILED"}
           </p>
           <p className={styles.resultText}>
-            Your progress has been updated.
+            You answered {result.correctCount} of {result.total} questions correctly.{" "}
+            {result.passed
+              ? "Your progress has been updated."
+              : "Review the topic and try again when you're ready."}
+          </p>
+          <div className={styles.resultActions}>
+            {!result.passed && (
+              <button className={styles.retryBtn} onClick={handleRetry}>
+                Try Again
+              </button>
+            )}
+            <button className={styles.backBtn} onClick={() => router.push(`/roadmap/course/${courseId}`)}>
+              Back to Course
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (questions.length === 0) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.resultCard}>
+          <h1 className={styles.resultTitle}>No Questions Yet</h1>
+          <p className={styles.resultText}>
+            This quiz doesn&apos;t have any questions yet. Please check back later.
           </p>
           <button className={styles.backBtn} onClick={() => router.push(`/roadmap/course/${courseId}`)}>
             Back to Course
@@ -155,8 +185,10 @@ export default function QuizPage() {
       <div className={styles.quizHeader}>
         <h1 className={styles.quizTitle}>{quiz.title}</h1>
         <p className={styles.quizDesc}>{quiz.description}</p>
-        <span className={styles.passingBadge}>Passing Score: {quiz.passing_score}%</span>
+        <span className={styles.passingBadge}>Passing Score: {quiz.passing_score ?? 70}%</span>
       </div>
+
+      {error && <div className={styles.errorBanner}>{error}</div>}
 
       <div className={styles.questionsList}>
         {questions.map((q, index) => (
@@ -164,8 +196,8 @@ export default function QuizPage() {
             <h2 className={styles.questionText}>{index + 1}. {q.question_text}</h2>
             <div className={styles.optionsList}>
               {Object.entries(q.options).map(([key, value]) => (
-                <label 
-                  key={key} 
+                <label
+                  key={key}
                   className={`${styles.optionLabel} ${answers[q.id] === key ? styles.optionSelected : ""}`}
                 >
                   <input

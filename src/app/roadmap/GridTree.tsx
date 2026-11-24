@@ -5,6 +5,7 @@ import { ReactFlow, Background, Controls, MarkerType, type Edge, type Node } fro
 import dagre from "dagre";
 import "@xyflow/react/dist/style.css";
 import { Course, Enrollment } from "@/types";
+import { getCourseStatus, getPassedCourseCodes } from "@/lib/courseStatus";
 import CourseNode from "./CourseNode";
 
 type Props = {
@@ -16,10 +17,18 @@ type Props = {
 const nodeWidth = 240;
 const nodeHeight = 100;
 
+const edgeColors = {
+  completed: "#22c55e",
+  in_progress: "#3b82f6",
+  failed: "#ef4444",
+  available: "#475569",
+  locked: "#334155",
+} as const;
+
 const getLayoutedElements = (nodes: Node[], edges: Edge[]) => {
   const dagreGraph = new dagre.graphlib.Graph();
   dagreGraph.setDefaultEdgeLabel(() => ({}));
-  
+
   // TB = Top to Bottom. nodesep = horizontal gap, ranksep = vertical gap
   dagreGraph.setGraph({ rankdir: "TB", nodesep: 60, ranksep: 100 });
 
@@ -49,41 +58,57 @@ export default function GridTree({ courses, enrollments, onCourseClick }: Props)
     const initialNodes: Node[] = [];
     const initialEdges: Edge[] = [];
 
-    // 1. Create Nodes
+    // 1. Work out which courses the student has passed so prerequisites can
+    //    unlock the next set of courses.
+    const passedCodes = getPassedCourseCodes(courses, enrollments);
+    const statusByCourseId = new Map(
+      courses.map((course) => {
+        const enrollment = enrollments.find((e) => e.course_id === course.id);
+        return [
+          course.id,
+          getCourseStatus(course, enrollment, passedCodes, courses),
+        ] as const;
+      })
+    );
+
+    // 2. Create Nodes
     courses.forEach((course) => {
-      const enrollment = enrollments.find((e) => e.course_id === course.id);
+      const status = statusByCourseId.get(course.id);
+
       initialNodes.push({
         id: course.id,
         type: "courseNode",
-        data: { course, enrollment, onClick: onCourseClick },
+        data: {
+          course,
+          enrollment: status?.enrollment,
+          state: status?.state ?? "available",
+          isLocked: status?.isLocked ?? false,
+          lockReason: status?.lockReason,
+          onClick: onCourseClick,
+        },
         position: { x: 0, y: 0 },
       });
     });
 
-    // 2. Create Edges based on the prerequisite_code
+    // 3. Create Edges based on the prerequisite_code
     courses.forEach((course) => {
-      if (course.prerequisite_code) {
-        const sourceCourse = courses.find((c) => c.code === course.prerequisite_code);
-        if (sourceCourse) {
-          const enrollment = enrollments.find((e) => e.course_id === sourceCourse.id);
-          let edgeColor = "#475569"; 
-          
-          if (enrollment) {
-            if (enrollment.status === "completed") edgeColor = "#22c55e";
-            else if (enrollment.status === "in_progress") edgeColor = "#3b82f6";
-          }
+      if (!course.prerequisite_code) return;
 
-          initialEdges.push({
-            id: `${sourceCourse.id}-${course.id}`,
-            source: sourceCourse.id,
-            target: course.id,
-            type: "smoothstep", // Gives the clean right-angle routing
-            animated: true,
-            style: { stroke: edgeColor, strokeWidth: 2 },
-            markerEnd: { type: MarkerType.ArrowClosed, color: edgeColor },
-          });
-        }
-      }
+      const sourceCourse = courses.find((c) => c.code === course.prerequisite_code);
+      if (!sourceCourse) return;
+
+      const sourceStatus = statusByCourseId.get(sourceCourse.id);
+      const edgeColor = edgeColors[sourceStatus?.state ?? "available"];
+
+      initialEdges.push({
+        id: `${sourceCourse.id}-${course.id}`,
+        source: sourceCourse.id,
+        target: course.id,
+        type: "smoothstep", // Gives the clean right-angle routing
+        animated: sourceStatus?.state !== "locked",
+        style: { stroke: edgeColor, strokeWidth: 2 },
+        markerEnd: { type: MarkerType.ArrowClosed, color: edgeColor },
+      });
     });
 
     return getLayoutedElements(initialNodes, initialEdges);

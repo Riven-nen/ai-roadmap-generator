@@ -1,0 +1,177 @@
+.page {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #0f111a;
+  color: white;
+}
+
+.header {
+  flex-shrink: 0;
+  padding: 24px 32px 16px;
+  background: #0f111a;
+  z-index: 10;
+  border-bottom: 1px solid rgba(42, 47, 69, 0.6);
+}
+
+.titleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.title {
+  font-size: 1.875rem;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.highlight {
+  color: #c084fc;
+}
+
+.subtitle {
+  color: #94a3b8;
+  margin-top: 6px;
+  font-size: 0.95rem;
+}
+
+.stats {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.stat {
+  min-width: 86px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: #131620;
+  border: 1px solid #2a2f45;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.statValue {
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.statLabel {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+.statCompleted { color: #22c55e; }
+.statProgress { color: #3b82f6; }
+.statAvailable { color: #a5b4fc; }
+.statLocked { color: #94a3b8; }
+
+.legend {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #94a3b8;
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.dotCompleted { background: #22c55e; }
+.dotProgress { background: #3b82f6; }
+.dotAvailable { background: #6366f1; }
+.dotFailed { background: #ef4444; }
+.dotLocked { background: #334155; }
+
+.canvas {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+}
+
+.stateScreen {
+  height: 100%;
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: #94a3b8;
+  text-align: center;
+  background: #0f111a;
+  padding: 32px;
+}
+
+.stateIcon {
+  font-size: 2.5rem;
+}
+
+.stateTitle {
+  color: white;
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+
+.stateText {
+  color: #94a3b8;
+  font-size: 0.95rem;
+  max-width: 460px;
+  line-height: 1.6;
+}
+
+.emptyState {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-align: center;
+  padding: 32px;
+}
+
+.retryBtn {
+  margin-top: 8px;
+  padding: 12px 24px;
+  border-radius: 10px;
+  background: linear-gradient(to right, #a855f7, #3b82f6);
+  color: white;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.retryBtn:hover { opacity: 0.9; }
+
+.spinner {
+  width: 34px;
+  height: 34px;
+  border: 3px solid #2a2f45;
+  border-top-color: #a855f7;
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
