@@ -6,6 +6,7 @@ import dagre from "dagre";
 import "@xyflow/react/dist/style.css";
 import { Course, Enrollment } from "@/types";
 import { getCourseStatus, getPassedCourseCodes } from "@/lib/courseStatus";
+import { themeColor } from "@/lib/theme";
 import CourseNode from "./CourseNode";
 
 type Props = {
@@ -116,8 +117,10 @@ export default function GridTree({ courses, enrollments, onCourseClick }: Props)
 
   const nodeTypes = useMemo(() => ({ courseNode: CourseNode }), []);
 
+  const canvasGridColor = themeColor("--border-color", "#e2e8f0");
+
   return (
-    <div style={{ width: "100%", height: "100%", background: "#f7f9fc" }}>
+    <div style={{ width: "100%", height: "100%", background: "var(--bg-subtle)" }}>
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -130,7 +133,7 @@ export default function GridTree({ courses, enrollments, onCourseClick }: Props)
         proOptions={{ hideAttribution: true }}
         nodesDraggable={false} // Prevents the student from messing up the layout
       >
-        <Background color="#e2e8f0" gap={16} />
+        <Background color={canvasGridColor} gap={16} />
         <Controls />
       </ReactFlow>
     </div>
