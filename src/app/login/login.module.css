@@ -89,6 +89,12 @@
   gap: 12px;
 }
 
+.forgotRow {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 2px;
+}
+
 .inlineLink {
   color: var(--accent-strong);
   font-size: 0.75rem;

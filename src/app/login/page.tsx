@@ -70,12 +70,7 @@ function LoginForm() {
           </div>
 
           <div className={styles.field}>
-            <div className={styles.labelRow}>
-              <label className={styles.label} htmlFor="password">Password</label>
-              <Link href="/forgot-password" className={styles.inlineLink}>
-                Forgot password?
-              </Link>
-            </div>
+            <label className={styles.label} htmlFor="password">Password</label>
             <input
               id="password"
               type="password"
@@ -86,6 +81,11 @@ function LoginForm() {
               autoComplete="current-password"
               required
             />
+            <div className={styles.forgotRow}>
+              <Link href="/forgot-password" className={styles.inlineLink}>
+                Forgot password?
+              </Link>
+            </div>
           </div>
 
           {resetNotice && (
