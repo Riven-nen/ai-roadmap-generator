@@ -51,9 +51,6 @@ function LoginForm() {
           <span className={styles.logoText}>IT Roadmap</span>
         </div>
 
-        <h1 className={styles.title}>Welcome Back</h1>
-        <p className={styles.subtitle}>Sign in to continue your learning journey</p>
-
         <form className={styles.form} onSubmit={handleLogin}>
           <div className={styles.field}>
             <label className={styles.label} htmlFor="email">Email</label>
@@ -99,8 +96,6 @@ function LoginForm() {
             {loading ? "Signing in..." : "Sign In"}
           </button>
         </form>
-
-        <p className={styles.footer}>IT Roadmap</p>
       </div>
     </div>
   );
