@@ -35,6 +35,11 @@ type CsvRow = {
 };
 
 const MAX_ROWS = 200;
+const APP_URL = (
+  process.env.NEXT_PUBLIC_APP_URL ||
+  "https://ai-roadmap-generator-eight.vercel.app"
+).replace(/\/$/, "");
+const APP_LOGIN_URL = `${APP_URL}/login`;
 
 function parseCsv(text: string): string[][] {
   const rows: string[][] = [];
@@ -407,8 +412,6 @@ export default function AddStudents() {
   function mailtoHref(result: CredentialResult) {
     if (!result.temporaryPassword) return "";
 
-    const origin =
-      typeof window !== "undefined" ? window.location.origin : "";
     const subject = "Your IT Roadmap account";
     const body = [
       `Hi ${result.fullName},`,
@@ -418,7 +421,7 @@ export default function AddStudents() {
       `Email: ${result.email}`,
       `Temporary password: ${result.temporaryPassword}`,
       "",
-      `Sign in here: ${origin}/login`,
+      `Sign in here: ${APP_LOGIN_URL}`,
       "",
       "After signing in, you will be asked to set your own password.",
       "",
