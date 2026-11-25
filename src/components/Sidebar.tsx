@@ -7,7 +7,7 @@ import styles from "@/app/layout.module.css";
 
 const studentNavItems = [
   { name: "Dashboard", href: "/" },
-  { name: "Roadmap", href: "/roadmap" },
+  { name: "My Subjects", href: "/roadmap" },
   { name: "Discovery", href: "/discovery" },
   { name: "Subjects", href: "/courses" },
   { name: "Profile", href: "/profile" },

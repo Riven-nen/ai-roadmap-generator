@@ -14,7 +14,7 @@ type Profile = {
 
 const studentNav = [
   { name: "Dashboard", href: "/" },
-  { name: "Roadmap", href: "/roadmap" },
+  { name: "My Subjects", href: "/roadmap" },
   { name: "Subjects", href: "/courses" },
   { name: "Discovery", href: "/discovery" },
   { name: "Profile", href: "/profile" },

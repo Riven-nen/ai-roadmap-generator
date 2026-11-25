@@ -212,7 +212,9 @@ export default async function EnrolledSubjectsPage() {
 
               <div className={styles.cardMeta}>
                 <span>
-                  {item.completedTopics}/{item.totalTopics} topics completed
+                  {item.totalTopics > 0
+                    ? `${item.completedTopics}/${item.totalTopics} topics completed`
+                    : "No topics yet"}
                 </span>
                 <span>{item.grade ? `Grade: ${item.grade}` : "No grade yet"}</span>
               </div>

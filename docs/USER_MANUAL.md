@@ -69,7 +69,7 @@ Click **Analyze My Career Path** in the AI Academic Advisor card to generate adv
 
 ### 3.2 Enrolled subjects page
 
-1. Click **Roadmap** in the sidebar.
+1. Click **My Subjects** in the sidebar.
 2. The page now shows a list of your **currently enrolled subjects**.
 3. Each subject card shows:
    - Subject code and title
