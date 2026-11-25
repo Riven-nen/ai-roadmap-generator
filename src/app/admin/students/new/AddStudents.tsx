@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { getStudentEmailError, normalizeEmail } from "@/lib/validation";
 import {
   DEPARTMENTS,
@@ -10,22 +10,18 @@ import {
   type Department,
   type StudentSection,
 } from "@/lib/academic";
+import {
+  addCredentialResults,
+  clearCredentialResults,
+  getServerSnapshot,
+  getSnapshot,
+  removeCredentialResult,
+  subscribe,
+  type CredentialResult,
+} from "@/lib/pendingCredentials";
 import styles from "./add-students.module.css";
 
 type AccountRole = "student" | "professor";
-
-type StudentResult = {
-  index: number;
-  fullName: string;
-  email: string;
-  yearLevel: number;
-  role: AccountRole;
-  department: Department | null;
-  section: StudentSection | null;
-  status: "created" | "error";
-  temporaryPassword?: string;
-  error?: string;
-};
 
 type CsvRow = {
   rowNumber: number;
@@ -120,8 +116,8 @@ export default function AddStudents() {
   const [csvError, setCsvError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Results
-  const [results, setResults] = useState<StudentResult[]>([]);
+  // Results persist in this tab until the admin marks the email as sent.
+  const results = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
   const [lastSummary, setLastSummary] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [copyMessage, setCopyMessage] = useState<string | null>(null);
@@ -154,7 +150,7 @@ export default function AddStudents() {
         return;
       }
 
-      setResults((previous) => [...previous, ...(data.results as StudentResult[])]);
+      addCredentialResults(data.results as CredentialResult[]);
       setLastSummary(
         `Created ${data.createdCount} account${data.createdCount === 1 ? "" : "s"}${
           data.failedCount > 0 ? `, ${data.failedCount} failed` : ""
@@ -408,6 +404,39 @@ export default function AddStudents() {
     downloadCsv("user-credentials.csv", lines.join("\r\n"));
   }
 
+  function mailtoHref(result: CredentialResult) {
+    if (!result.temporaryPassword) return "";
+
+    const origin =
+      typeof window !== "undefined" ? window.location.origin : "";
+    const subject = "Your IT Roadmap account";
+    const body = [
+      `Hi ${result.fullName},`,
+      "",
+      "Your IT Roadmap account has been created.",
+      "",
+      `Email: ${result.email}`,
+      `Temporary password: ${result.temporaryPassword}`,
+      "",
+      `Sign in here: ${origin}/login`,
+      "",
+      "After signing in, you will be asked to set your own password.",
+      "",
+      "Regards,",
+      "IT Roadmap",
+    ].join("\n");
+
+    return `mailto:${result.email}?subject=${encodeURIComponent(
+      subject
+    )}&body=${encodeURIComponent(body)}`;
+  }
+
+  function markEmailSent(result: CredentialResult) {
+    removeCredentialResult(result.email);
+    setCopyMessage(`Removed ${result.email} from the pending list.`);
+    window.setTimeout(() => setCopyMessage(null), 2500);
+  }
+
   const createdResults = results.filter((result) => result.status === "created");
 
   return (
@@ -640,7 +669,8 @@ export default function AddStudents() {
             <div>
               <h2 className={styles.panelTitle}>Temporary Credentials</h2>
               <p className={styles.warning}>
-                Passwords are shown once. Copy or download them now before leaving this page.
+                These stay in this browser tab after a refresh until you mark the email as sent
+                or close the tab. Passwords are never shown again after removal.
               </p>
             </div>
             <div className={styles.resultsActions}>
@@ -662,7 +692,7 @@ export default function AddStudents() {
               <button type="button" className={styles.secondaryBtn} onClick={downloadCredentials}>
                 Download CSV
               </button>
-              <button type="button" className={styles.textBtn} onClick={() => setResults([])}>
+              <button type="button" className={styles.textBtn} onClick={clearCredentialResults}>
                 Clear
               </button>
             </div>
@@ -681,12 +711,12 @@ export default function AddStudents() {
                   <th>Year / Section</th>
                   <th>Temporary Password</th>
                   <th>Status</th>
-                  <th></th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {results.map((result, rowIndex) => (
-                  <tr key={rowIndex}>
+                {results.map((result) => (
+                  <tr key={result.email}>
                     <td>{result.fullName}</td>
                     <td>{result.email}</td>
                     <td>{result.role ?? "student"}</td>
@@ -711,15 +741,42 @@ export default function AddStudents() {
                       )}
                     </td>
                     <td>
-                      {result.temporaryPassword && (
+                      {result.status === "created" && result.temporaryPassword ? (
+                        <div className={styles.actionGroup}>
+                          <a
+                            href={mailtoHref(result)}
+                            className={styles.smallBtn}
+                            title="Open an email draft with the temporary password"
+                          >
+                            Email
+                          </a>
+                          <button
+                            type="button"
+                            className={styles.smallBtn}
+                            onClick={() =>
+                              copyText(
+                                result.temporaryPassword!,
+                                `Password copied for ${result.email}.`
+                              )
+                            }
+                          >
+                            Copy
+                          </button>
+                          <button
+                            type="button"
+                            className={styles.smallBtn}
+                            onClick={() => markEmailSent(result)}
+                          >
+                            Mark sent
+                          </button>
+                        </div>
+                      ) : (
                         <button
                           type="button"
                           className={styles.smallBtn}
-                          onClick={() =>
-                            copyText(result.temporaryPassword!, `Password copied for ${result.email}.`)
-                          }
+                          onClick={() => markEmailSent(result)}
                         >
-                          Copy
+                          Dismiss
                         </button>
                       )}
                     </td>

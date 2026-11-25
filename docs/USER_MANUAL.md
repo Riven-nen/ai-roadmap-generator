@@ -414,8 +414,11 @@ Click a class to open it.
    - Course
    - Section
 4. Click **Create Account**.
-5. Copy the temporary password immediately. It is shown only once.
-6. The user must sign in with the temporary password and set their own password on the first-login screen. No welcome email is required for this step.
+5. The temporary credentials appear in the **Temporary Credentials** panel.
+6. Use **Email** to open a mail draft that already contains the temporary password and login link.
+7. Use **Copy** to copy the password, or **Download CSV** to keep the whole list.
+8. The credentials stay in that browser tab after a refresh until you click **Mark sent** or close the tab.
+9. The user must sign in with the temporary password and set their own password on the first-login screen. No welcome email is required for this step.
 
 #### Import CSV
 

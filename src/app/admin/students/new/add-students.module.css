@@ -317,7 +317,17 @@
   align-items: center;
 }
 
+.actionGroup {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
 .smallBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding: 6px 10px;
   border-radius: 6px;
   background: var(--border-color);
@@ -325,6 +335,7 @@
   font-size: 0.7rem;
   font-weight: 600;
   white-space: nowrap;
+  text-decoration: none;
 }
 
 .smallBtn:hover { background: var(--border-strong); }

@@ -59,6 +59,13 @@ Temporary data was created and removed after testing. No demo records were left 
 
 The first-login flow does not depend on email delivery. The user is forced to set a password with the temporary password they were given.
 
+### Credential delivery
+
+- Created accounts show a **mailto** link containing the email, temporary password, and login URL.
+- Credential rows persist in `sessionStorage` across a refresh in the same tab.
+- **Mark sent** removes only that email from the pending list.
+- The pending-credential store was tested for add, remove, persist, clear, and change notification: **PASS**.
+
 ### Next.js 16 proxy fix
 
 The previous auth gate lived in `middleware.ts`. Next.js 16 uses `src/proxy.ts` for this project layout. That file was renamed and the export changed to `proxy`, so first-login redirects and route protection now actually run.
