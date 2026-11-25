@@ -7,6 +7,7 @@ import ReactMarkdown from "react-markdown";
 import { ReactFlow, Background, Controls, MiniMap, MarkerType, type Edge, type Node } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { createClient } from "@/lib/supabase/client";
+import BackButton from "@/components/BackButton";
 import { Course, CourseTopic, Quiz, RoadmapEdge } from "@/types";
 import { layoutRoadmapGraph } from "@/lib/roadmapLayout";
 import { themeColor } from "@/lib/theme";
@@ -328,7 +329,7 @@ export default function CourseDetailPage() {
     <div className={styles.pageContainer}>
       <div className={styles.roadmapColumn}>
         <div className={styles.header}>
-          <Link href="/roadmap" className={styles.backLink}>← Back to Main Roadmap</Link>
+          <BackButton fallbackHref="/roadmap" className={styles.backLink} />
           <div className={styles.headerMain}>
             <div>
               <h1 className={styles.title}>{course.code}: {course.title}</h1>

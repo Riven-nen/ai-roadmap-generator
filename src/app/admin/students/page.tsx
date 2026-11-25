@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Card from "@/components/Card";
+import BackButton from "@/components/BackButton";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import styles from "../admin.module.css";
@@ -23,9 +24,7 @@ export default async function AdminStudents() {
   return (
     <div className={styles.container}>
       <div>
-        <Link href="/admin" className={styles.backLink}>
-          <span className={styles.backArrow}>←</span> Back to Admin
-        </Link>
+        <BackButton fallbackHref="/admin" className={styles.backLink} />
         <div className={styles.header}>
           <div>
             <h1 className={styles.title}>Students</h1>

@@ -21,6 +21,7 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { createClient } from "@/lib/supabase/client";
+import BackButton from "@/components/BackButton";
 import { Course, Quiz, TopicNodeType } from "@/types";
 import {
   DraftNode,
@@ -608,7 +609,7 @@ export default function RoadmapBuilder({ course, backHref }: Props) {
     <div className={styles.page}>
       <div className={styles.toolbar}>
         <div className={styles.toolbarInfo}>
-          <Link href={backHref} className={styles.ghostBtn}>← Back</Link>
+          <BackButton fallbackHref={backHref} className={styles.ghostBtn} />
           <h1 className={styles.builderTitle}>
             {course.code}: {course.title}
           </h1>

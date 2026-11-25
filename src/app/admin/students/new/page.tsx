@@ -1,4 +1,4 @@
-import Link from "next/link";
+import BackButton from "@/components/BackButton";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import AddStudents from "./AddStudents";
@@ -17,9 +17,7 @@ export default async function AddStudentsPage() {
   return (
     <div className={styles.container}>
       <div>
-        <Link href="/admin" className={styles.backLink}>
-          <span className={styles.backArrow}>←</span> Back to Admin
-        </Link>
+        <BackButton fallbackHref="/admin/students" className={styles.backLink} />
         <div className={styles.header}>
           <div>
             <h1 className={styles.title}>Add Users</h1>

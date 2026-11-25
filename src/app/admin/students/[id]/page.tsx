@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Card from "@/components/Card";
+import BackButton from "@/components/BackButton";
 import EnrollForm from "./EnrollForm";
 import StudentDetailsForm from "./StudentDetailsForm";
 import styles from "../../admin.module.css";
@@ -47,14 +48,17 @@ export default async function StudentDetail({
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <div>
-          <h1 className={styles.title}>{student.full_name}</h1>
-          <p className={styles.subtitle}>
-            {student.email || "No email on file"} · {student.department ?? "BSIT"} · Year{" "}
-            {student.level ?? 1} - {student.section ?? "A"} · Enrolled in {enrollments.length}{" "}
-            course{enrollments.length === 1 ? "" : "s"}
-          </p>
+      <div>
+        <BackButton fallbackHref="/admin/students" className={styles.backLink} />
+        <div className={styles.header}>
+          <div>
+            <h1 className={styles.title}>{student.full_name}</h1>
+            <p className={styles.subtitle}>
+              {student.email || "No email on file"} · {student.department ?? "BSIT"} · Year{" "}
+              {student.level ?? 1} - {student.section ?? "A"} · Enrolled in {enrollments.length}{" "}
+              course{enrollments.length === 1 ? "" : "s"}
+            </p>
+          </div>
         </div>
       </div>
 

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
+import BackButton from "@/components/BackButton";
 import { createClient } from "@/lib/supabase/server";
 import SectionProfessors from "./SectionProfessors";
 import SectionEnrollments from "./SectionEnrollments";
@@ -109,9 +110,7 @@ export default async function AdminSectionDetail({
   return (
     <div className={styles.container}>
       <div>
-        <Link href="/admin/sections" className={styles.backLink}>
-          <span className={styles.backArrow}>←</span> Back to Classes
-        </Link>
+        <BackButton fallbackHref="/admin/sections" className={styles.backLink} />
         <div className={styles.header}>
           <div>
             <h1 className={styles.title}>

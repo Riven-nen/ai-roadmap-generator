@@ -1,5 +1,5 @@
-import Link from "next/link";
 import Card from "@/components/Card";
+import BackButton from "@/components/BackButton";
 import { createClient } from "@/lib/supabase/server";
 import { notFound, redirect } from "next/navigation";
 import CourseForm from "../../CourseForm";
@@ -30,9 +30,7 @@ export default async function EditCourse({
   return (
     <div className={styles.container}>
       <div>
-        <Link href="/admin/courses" className={styles.backLink}>
-          <span className={styles.backArrow}>←</span> Back to Subjects
-        </Link>
+        <BackButton fallbackHref="/admin/courses" className={styles.backLink} />
         <div className={styles.header}>
           <div>
             <h1 className={styles.title}>Edit {courseRes.data.code}</h1>

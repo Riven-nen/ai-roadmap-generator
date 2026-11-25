@@ -2,8 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "next/navigation";
-import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import BackButton from "@/components/BackButton";
 import { Course, CourseTopic } from "@/types";
 import styles from "./manage.module.css";
 
@@ -220,7 +220,7 @@ export default function ManageCourseTopics() {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <Link href="/admin/courses" className={styles.backLink}>← Back to Courses</Link>
+        <BackButton fallbackHref="/admin/courses" className={styles.backLink} />
         <h1 className={styles.title}>Manage Syllabus: {course.code} - {course.title}</h1>
         <p className={styles.subtitle}>
           {topics.length} topic{topics.length === 1 ? "" : "s"} across {flatTopics.filter(t => t.depth === 0).length} root branch{flatTopics.filter(t => t.depth === 0).length === 1 ? "" : "es"}.
