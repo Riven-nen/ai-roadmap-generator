@@ -19,7 +19,7 @@ export default function AppShell({
   profile: ShellProfile | null;
 }) {
   const pathname = usePathname();
-  const isAuthPage = ["/login", "/forgot-password", "/reset-password"].includes(pathname);
+  const isAuthPage = ["/login", "/forgot-password", "/reset-password", "/set-password"].includes(pathname);
 
   if (isAuthPage) {
     return <>{children}</>;

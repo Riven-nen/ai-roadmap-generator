@@ -72,6 +72,7 @@ export default function ResetPasswordPage() {
       return;
     }
 
+    await supabase.rpc("complete_password_change");
     await supabase.auth.signOut();
     router.push("/login?reset=1");
     router.refresh();

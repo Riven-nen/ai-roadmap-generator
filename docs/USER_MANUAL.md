@@ -41,14 +41,18 @@ After signing in, the system sends you to the correct home page automatically:
 - Professor → My Teaching
 - Administrator → Admin Panel
 
+If an administrator created your account, your **first sign-in** opens the **Set Your Password** page. You must choose a new password before you can use the rest of the system.
+
 If you enter the wrong password too many times, the account is temporarily locked.
 
 ### Forgot password
 
-1. Click **Forgot password** on the login page.
+1. Click **Forgot password?** below the password field.
 2. Enter your email.
 3. Open the recovery email and follow the link.
 4. Set a new password.
+
+Password reset emails require a real, deliverable email address and working Supabase email/SMTP settings. Demo/test addresses may be rejected.
 
 ---
 
@@ -411,6 +415,7 @@ Click a class to open it.
    - Section
 4. Click **Create Account**.
 5. Copy the temporary password immediately. It is shown only once.
+6. The user must sign in with the temporary password and set their own password on the first-login screen. No welcome email is required for this step.
 
 #### Import CSV
 

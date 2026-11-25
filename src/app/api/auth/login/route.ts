@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  const { error: signInError } = await supabase.auth.signInWithPassword({
+  const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
     email,
     password,
   });
@@ -111,8 +111,17 @@ export async function POST(request: NextRequest) {
     console.error("Could not reset login attempts:", resetError.message);
   }
 
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("must_change_password")
+    .eq("id", signInData.user.id)
+    .single();
+
   // The session cookie is written by onAuthStateChange asynchronously.
   await waitForCookies();
 
-  return json({ ok: true });
+  return json({
+    ok: true,
+    mustChangePassword: profile?.must_change_password === true,
+  });
 }

@@ -35,7 +35,7 @@ function LoginForm() {
         return;
       }
 
-      router.push("/");
+      router.push(data.mustChangePassword ? "/set-password" : "/");
       router.refresh();
     } catch {
       setError("Unable to reach the sign-in service. Please try again.");

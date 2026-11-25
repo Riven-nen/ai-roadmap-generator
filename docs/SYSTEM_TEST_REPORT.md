@@ -43,7 +43,29 @@ Temporary data was created and removed after testing. No demo records were left 
 
 ---
 
-## 3. Student pages and data
+## 3. First-login password setup
+
+| Test | Expected | Result |
+|---|---|---|
+| New admin-created account is flagged | `must_change_password = true` | PASS |
+| First login returns `mustChangePassword` | `true` | PASS |
+| First visit to `/` redirects | `/set-password` | PASS |
+| Set-password page loads | 200 | PASS |
+| User sets a new password | Supabase password update succeeds | PASS |
+| Setup completion clears the flag | `must_change_password = false` | PASS |
+| Login with the new password | `mustChangePassword = false` | PASS |
+| Existing demo accounts | Not forced to change | PASS |
+| Existing LCUP account used in the screenshot | Flagged for setup | PASS |
+
+The first-login flow does not depend on email delivery. The user is forced to set a password with the temporary password they were given.
+
+### Next.js 16 proxy fix
+
+The previous auth gate lived in `middleware.ts`. Next.js 16 uses `src/proxy.ts` for this project layout. That file was renamed and the export changed to `proxy`, so first-login redirects and route protection now actually run.
+
+---
+
+## 4. Student pages and data
 
 | Test | Expected | Result |
 |---|---|---|
@@ -62,7 +84,7 @@ Temporary data was created and removed after testing. No demo records were left 
 
 ---
 
-## 4. Professor tests
+## 5. Professor tests
 
 | Test | Expected | Result |
 |---|---|---|
@@ -81,7 +103,7 @@ Temporary data was created and removed after testing. No demo records were left 
 
 ---
 
-## 5. Administrator tests
+## 6. Administrator tests
 
 | Test | Expected | Result |
 |---|---|---|
@@ -108,7 +130,7 @@ Temporary data was created and removed after testing. No demo records were left 
 
 ---
 
-## 6. Quiz and grading tests
+## 7. Quiz and grading tests
 
 ### Final exam
 
@@ -138,7 +160,7 @@ Temporary data was created and removed after testing. No demo records were left 
 
 ---
 
-## 7. Security checks
+## 8. Security checks
 
 | Check | Expected | Result |
 |---|---|---|
@@ -164,7 +186,7 @@ Temporary data was created and removed after testing. No demo records were left 
 
 ---
 
-## 8. Class and academic-year validation
+## 9. Class and academic-year validation
 
 | Rule | Result |
 |---|---|
@@ -177,7 +199,7 @@ Temporary data was created and removed after testing. No demo records were left 
 
 ---
 
-## 9. Build and lint
+## 10. Build and lint
 
 ```text
 npm run lint   → PASS
@@ -188,7 +210,7 @@ All routes compiled and all dynamic pages rendered.
 
 ---
 
-## 10. Temporary data cleanup
+## 11. Temporary data cleanup
 
 Confirmed after testing:
 
@@ -201,17 +223,18 @@ Demo records and existing classes were not removed.
 
 ---
 
-## 11. Known limitations and recommendations
+## 12. Known limitations and recommendations
 
 1. **Browser-level drag-and-drop was not automated.** The builder’s data operations, permissions, draft save, and publish flow were verified, but a final human click-through of node dragging, connection dragging, and auto-arrange is recommended.
-2. **AI responses vary.** The AI endpoints work, but content quality and response time depend on Groq.
-3. **AI content should be reviewed.** The assistant can make factual mistakes or suggest a resource that needs checking.
-4. **Stored themes are per browser.** They are not stored on the user account.
-5. **Production branch.** Production is currently served by `master` after fast-forwarding it to the feature branch commit. The fallback is `backup/pre-admin-panel`.
+2. **Forgot-password email delivery depends on Supabase email settings.** The reset flow is implemented, but a test request to `dev-admin@school.edu` was rejected by Supabase as an invalid address. A real LCUP mailbox and working SMTP/SPF/DKIM setup are needed for live delivery.
+3. **AI responses vary.** The AI endpoints work, but content quality and response time depend on Groq.
+4. **AI content should be reviewed.** The assistant can make factual mistakes or suggest a resource that needs checking.
+5. **Stored themes are per browser.** They are not stored on the user account.
+6. **Production branch.** Production is currently served by `master` after fast-forwarding it to the feature branch commit. The fallback is `backup/pre-admin-panel`.
 
 ---
 
-## 12. Final result
+## 13. Final result
 
 **System status: READY for a full manual walkthrough.**
 

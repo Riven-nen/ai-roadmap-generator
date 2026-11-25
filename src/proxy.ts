@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });
 
   const supabase = createServerClient(
@@ -25,6 +25,14 @@ export async function middleware(request: NextRequest) {
     }
   );
 
+  const redirectTo = (pathname: string) => {
+    const url = request.nextUrl.clone();
+    url.pathname = pathname;
+    const redirect = NextResponse.redirect(url);
+    response.cookies.getAll().forEach((cookie) => redirect.cookies.set(cookie));
+    return redirect;
+  };
+
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -45,15 +53,31 @@ export async function middleware(request: NextRequest) {
   }
 
   if (!user && !isAuthPage) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/login";
-    return NextResponse.redirect(url);
+    return redirectTo("/login");
   }
 
-  if (user && (isLoginPage || pathname === "/forgot-password")) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/";
-    return NextResponse.redirect(url);
+  if (!user) return response;
+
+  if (!pathname.startsWith("/api/")) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("must_change_password")
+      .eq("id", user.id)
+      .single();
+
+    const mustChangePassword = profile?.must_change_password === true;
+
+    if (mustChangePassword && pathname !== "/set-password") {
+      return redirectTo("/set-password");
+    }
+
+    if (!mustChangePassword && pathname === "/set-password") {
+      return redirectTo("/");
+    }
+  }
+
+  if (isLoginPage || pathname === "/forgot-password") {
+    return redirectTo("/");
   }
 
   return response;

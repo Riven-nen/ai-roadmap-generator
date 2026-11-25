@@ -733,7 +733,7 @@ export default function AddStudents() {
 
       {createdResults.length > 0 && (
         <p className={styles.initialHint}>
-          Tip: users should change their temporary password after their first sign-in.
+          New accounts are required to set their own password after their first sign-in.
         </p>
       )}
     </div>

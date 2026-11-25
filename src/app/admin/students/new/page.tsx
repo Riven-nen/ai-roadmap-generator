@@ -23,7 +23,7 @@ export default async function AddStudentsPage() {
             <h1 className={styles.title}>Add Users</h1>
             <p className={styles.subtitle}>
               Create student or professor accounts, one at a time or by CSV. Temporary passwords
-              are shown only once.
+              are shown only once, and users must set their own password on first sign-in.
             </p>
           </div>
         </div>
