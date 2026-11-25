@@ -205,3 +205,26 @@
   font-size: 0.75rem;
   color: var(--text-muted);
 }
+
+@media (max-width: 480px) {
+  .container {
+    padding: 14px;
+  }
+
+  .card {
+    padding: 28px 20px;
+    border-radius: 16px;
+  }
+
+  .logo {
+    margin-bottom: 24px;
+  }
+
+  .title {
+    font-size: 1.45rem;
+  }
+
+  .forgotRow {
+    margin-top: 4px;
+  }
+}

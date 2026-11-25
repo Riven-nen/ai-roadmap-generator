@@ -20,10 +20,7 @@ export default async function EditCourse({
     .from("profiles").select("role").eq("id", user.id).single();
   if (me?.role !== "admin") redirect("/");
 
-  const [courseRes, courseOptionsRes] = await Promise.all([
-    supabase.from("courses").select("*").eq("id", id).single(),
-    supabase.from("courses").select("code,title,category").order("code"),
-  ]);
+  const courseRes = await supabase.from("courses").select("*").eq("id", id).single();
 
   if (!courseRes.data) notFound();
 
@@ -40,12 +37,7 @@ export default async function EditCourse({
       </div>
 
       <Card>
-        <CourseForm
-          initial={courseRes.data}
-          courseOptions={(courseOptionsRes.data ?? []).filter(
-            (course) => course.category !== "General Education"
-          )}
-        />
+        <CourseForm initial={courseRes.data} />
       </Card>
     </div>
   );

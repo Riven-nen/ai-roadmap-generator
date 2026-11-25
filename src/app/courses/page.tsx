@@ -79,9 +79,7 @@ export default function CoursesPage() {
                   📅 Year {course.year_level} · Sem {course.semester}
                 </span>
               )}
-              {course.prerequisite_code && (
-                <span className={styles.prereqText}>🔗 Prereq: {course.prerequisite_code}</span>
-              )}
+
             </div>
 
             <Link href={`/roadmap/course/${course.id}`} className={styles.actionBtn}>

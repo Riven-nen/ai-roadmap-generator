@@ -70,7 +70,7 @@
   color: var(--text-muted);
   font-size: 0.95rem;
   line-height: 1.6;
-  margin-bottom: 32px;
+  margin-bottom: 24px;
   flex: 1;
 }
 
@@ -147,4 +147,37 @@
   height: 100%;
   background: linear-gradient(to right, var(--accent), var(--accent-strong));
   border-radius: 4px;
+}
+
+@media (max-width: 720px) {
+  .container {
+    padding: 24px 14px;
+    gap: 24px;
+  }
+
+  .title {
+    font-size: 1.9rem;
+  }
+
+  .subtitle {
+    font-size: 0.9rem;
+  }
+
+  .careerGrid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .careerCard {
+    padding: 18px;
+  }
+
+  .careerTitle {
+    font-size: 1.2rem;
+  }
+
+  .cardHeader {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
 }

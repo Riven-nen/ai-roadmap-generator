@@ -342,9 +342,7 @@ export default function CourseDetailPage() {
                     🏷️ {sectionInfo.section_code} · {sectionInfo.academic_year} · {sectionInfo.term}
                   </span>
                 )}
-                {course.prerequisite_code && (
-                  <span className={styles.metaChip}>🔗 Prerequisite: {course.prerequisite_code}</span>
-                )}
+
               </div>
             </div>
 

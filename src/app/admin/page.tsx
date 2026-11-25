@@ -167,7 +167,7 @@ export default async function AdminHome() {
       href: "/admin/courses",
       icon: "📚",
       title: "Subjects",
-      description: "Manage the subject catalog, prerequisites, and roadmaps.",
+      description: "Manage the subject catalog and subject roadmaps.",
     },
     {
       href: "/admin/sections",

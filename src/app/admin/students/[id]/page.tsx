@@ -72,6 +72,7 @@ export default async function StudentDetail({
       </Card>
 
       <Card title="Current Enrollments">
+        <div className={styles.tableWrap}>
         <table className={styles.table}>
           <thead>
             <tr>
@@ -98,6 +99,7 @@ export default async function StudentDetail({
             ))}
           </tbody>
         </table>
+        </div>
       </Card>
 
       <Card title="Enroll in a New Course">

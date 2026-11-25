@@ -142,7 +142,7 @@ Rules:
 - Match the node type. A module needs a module-level overview and outcomes. A topic needs teaching content. A material needs a description of the resource and why it matters. Coursework needs clear deliverables and instructions. A quiz needs a short description of what it assesses, not the questions themselves.
 - Build on the preceding nodes and do not repeat their content.
 - Use the course title, description, and outline to keep the material aligned with the course.
-- Do not invent prerequisite courses or claim resources exist unless you are confident the URL is real and stable.
+- Do not invent preceding roadmap nodes or claim resources exist unless you are confident the URL is real and stable.
 - Do not use Markdown headings, but bullet lists and bold terms inside content are fine.
 - Return valid JSON only. Do not wrap it in code fences.`;
 
@@ -156,7 +156,7 @@ Rules:
 Full roadmap outline:
 ${outline || "No other nodes yet."}
 
-Immediate preceding nodes (prerequisites):
+Immediate preceding roadmap nodes:
 ${preceding || "None. This is an introductory or root node."}
 
 Target node:

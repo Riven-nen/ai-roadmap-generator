@@ -5,8 +5,6 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import styles from "../admin.module.css";
 
-type CourseOption = { code: string; title: string };
-
 type CourseFormValues = {
   code: string;
   title: string;
@@ -19,15 +17,12 @@ type CourseFormValues = {
   icon_bg: string;
   year_level: number;
   semester: number;
-  prerequisite_code: string;
 };
 
 export default function CourseForm({
   initial,
-  courseOptions = [],
 }: {
   initial?: Partial<CourseFormValues> & { id?: string };
-  courseOptions?: CourseOption[];
 }) {
   const isEdit = Boolean(initial?.id);
   const [form, setForm] = useState<CourseFormValues>({
@@ -42,7 +37,6 @@ export default function CourseForm({
     icon_bg: initial?.icon_bg ?? "#f97316",
     year_level: initial?.year_level ?? 1,
     semester: initial?.semester ?? 1,
-    prerequisite_code: initial?.prerequisite_code ?? "",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -61,7 +55,6 @@ export default function CourseForm({
       ...form,
       year_level: Number(form.year_level) || 1,
       semester: Number(form.semester) || 1,
-      prerequisite_code: form.prerequisite_code || null,
     };
 
     const supabase = createClient();
@@ -78,10 +71,6 @@ export default function CourseForm({
     router.push("/admin/courses");
     router.refresh();
   }
-
-  const prerequisiteOptions = courseOptions.filter(
-    (option) => option.code !== initial?.code
-  );
 
   return (
     <form onSubmit={handleSubmit} className={styles.formGrid}>
@@ -147,22 +136,6 @@ export default function CourseForm({
           <option value={2}>2nd Semester</option>
           <option value={3}>Summer</option>
         </select>
-      </label>
-
-      <label className={`${styles.field} ${styles.fieldFull}`}>
-        <span className={styles.fieldLabel}>Prerequisite Course</span>
-        <select className={styles.input} value={form.prerequisite_code}
-          onChange={(e) => update("prerequisite_code", e.target.value)}>
-          <option value="">None (unlocks immediately)</option>
-          {prerequisiteOptions.map((option) => (
-            <option key={option.code} value={option.code}>
-              {option.code} — {option.title}
-            </option>
-          ))}
-        </select>
-        <span className={styles.fieldHint}>
-          Students must pass this course before the new course unlocks on the roadmap.
-        </span>
       </label>
 
       <label className={styles.field}>

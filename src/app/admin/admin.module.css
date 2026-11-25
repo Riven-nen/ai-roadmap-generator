@@ -185,6 +185,66 @@
   font-size: 0.8rem;
 }
 
+.tableWrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table {
+  min-width: 640px;
+}
+
+@media (max-width: 900px) {
+  .statsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .actionsGrid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .studentGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+}
+
+@media (max-width: 640px) {
+  .container {
+    gap: 20px;
+  }
+
+  .header {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .statsGrid,
+  .studentGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .formGrid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .fieldFull,
+  .formActions {
+    grid-column: span 1;
+  }
+
+  .actionCard {
+    padding: 22px;
+  }
+}
+
 .formActions {
   grid-column: span 2;
   display: flex;

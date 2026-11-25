@@ -13,23 +13,16 @@ export default async function NewCourse() {
     .from("profiles").select("role").eq("id", user.id).single();
   if (me?.role !== "admin") redirect("/");
 
-  const { data: courseOptions } = await supabase
-    .from("courses").select("code,title,category").order("code");
-
   return (
     <div className={styles.container}>
       <div>
         <BackButton fallbackHref="/admin/courses" className={styles.backLink} />
         <div className={styles.header}>
           <h1 className={styles.title}>Add Subject</h1>
-          <p className={styles.subtitle}>Create a new subject and set its roadmap prerequisite.</p>
+          <p className={styles.subtitle}>Create a new subject for the catalog.</p>
         </div>
       </div>
-      <CourseForm
-        courseOptions={(courseOptions ?? []).filter(
-          (course) => course.category !== "General Education"
-        )}
-      />
+      <CourseForm />
     </div>
   );
 }

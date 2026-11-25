@@ -67,26 +67,24 @@ The dashboard shows:
 
 Click **Analyze My Career Path** in the AI Academic Advisor card to generate advice.
 
-### 3.2 Roadmap page
+### 3.2 Enrolled subjects page
 
 1. Click **Roadmap** in the sidebar.
-2. The page shows the **BSIT Roadmap**.
-3. Use the legend to understand each color:
-   - **Completed** — passed or finished.
-   - **In Progress** — currently being taken.
-   - **Available** — open for you to take.
-   - **Failed / Retake** — failed and needs another attempt.
-   - **Locked** — you must finish a prerequisite first.
-4. Drag the canvas to move around.
-5. Scroll to zoom.
-6. Click a subject card to open its course roadmap.
+2. The page now shows a list of your **currently enrolled subjects**.
+3. Each subject card shows:
+   - Subject code and title
+   - Section, academic year, and term
+   - Subject progress bar
+   - Completed topics
+   - Current grade
+4. Click **Open subject** to view that subject’s topics and resources.
 
 ### 3.3 Course roadmap
 
-1. Open a subject from the roadmap or from the Subjects page.
+1. Open a subject from the enrolled subjects list or from the Subjects page.
 2. The header shows the subject code, title, credits, and your section (for example, BSIT 1A).
 3. The roadmap shows modules, topics, quizzes, materials, and coursework.
-4. Locked nodes cannot be opened until their prerequisites are completed.
+4. Locked topic nodes cannot be opened until the previous node in that subject is completed.
 5. Click a node to open its details.
 6. Inside the node you can:
    - Read the overview and learning objectives.
@@ -305,7 +303,6 @@ Use this page to spot missing professors, empty classes, and subjects without ro
    - Category
    - Year level
    - Semester
-   - Prerequisite
 5. The **Year level** and **Semester** fields are important. Classes use them automatically.
 6. Click **Build Roadmap** to edit the subject roadmap.
 7. Click **Classes** to see classes for that subject.
@@ -482,7 +479,7 @@ Example:
 |---|---|---|
 | `/login` | Everyone | Sign in |
 | `/` | Student | Dashboard and AI advisor |
-| `/roadmap` | Student | Main BSIT roadmap |
+| `/roadmap` | Student | List of currently enrolled subjects |
 | `/roadmap/course/[id]` | Student | Subject roadmap and AI tutor |
 | `/courses` | Everyone | Subject library |
 | `/discovery` | Student | Career paths |
@@ -504,7 +501,7 @@ Example:
 - **The graph is too small** — scroll to zoom, or click the fit-view control.
 - **A student cannot see a new roadmap change** — the professor must click **Publish changes**.
 - **A professor cannot open the builder** — confirm the professor is assigned to a class for that subject.
-- **A student is locked out of a topic** — finish the prerequisite node first.
+- **A student is locked out of a topic** — finish the previous topic node first.
 - **The theme is not changing** — the theme is stored per browser. Make sure the browser allows local storage.
 - **AI is slow or unavailable** — try again later. The AI depends on the Groq service.
 - **A CSV import fails** — check the required columns and use the downloadable template.

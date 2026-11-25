@@ -169,3 +169,88 @@
     padding: 18px 16px 48px;
   }
 }
+
+@media (max-width: 900px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-right: none;
+    border-bottom: 1px solid var(--sidebar-border);
+  }
+
+  .logoContainer {
+    margin-bottom: 0;
+    padding: 0;
+  }
+
+  .logoText {
+    font-size: 1rem;
+  }
+
+  .userProfile {
+    margin-bottom: 0;
+    padding: 5px 8px;
+    border-radius: 999px;
+  }
+
+  .avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 0.7rem;
+  }
+
+  .nav {
+    flex-direction: row;
+    flex-basis: 100%;
+    order: 3;
+    gap: 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+  }
+
+  .nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .navItem {
+    padding: 8px 10px;
+    font-size: 0.76rem;
+    white-space: nowrap;
+    border-radius: 999px;
+  }
+
+  .navItemActive {
+    border-left: none;
+    border-bottom: none;
+    background-color: rgba(var(--accent-rgb), 0.16);
+    padding-left: 10px;
+  }
+
+  .logoutBtn {
+    padding: 8px 10px;
+    font-size: 0.76rem;
+  }
+
+  .mainContent {
+    padding: 18px 14px 40px;
+  }
+}
+
+@media (max-width: 640px) {
+  .userInfo {
+    display: none;
+  }
+
+  .logoText {
+    display: none;
+  }
+}

@@ -15,7 +15,6 @@ export type Course = {
   icon_bg: string;
   year_level: number;
   semester: number;
-  prerequisite_code: string | null;
 };
 
 export type Enrollment = {
