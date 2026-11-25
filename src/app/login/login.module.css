@@ -134,6 +134,30 @@
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
+.passwordWrap {
+  position: relative;
+}
+
+.passwordWrap .input {
+  padding-right: 64px;
+}
+
+.revealBtn {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  padding: 6px 8px;
+  border-radius: 6px;
+  color: var(--accent-strong);
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.revealBtn:hover {
+  background-color: var(--bg-input);
+}
+
 .input:focus {
   border-color: var(--accent-purple);
   box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.15);

@@ -12,6 +12,7 @@ function LoginForm() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -68,16 +69,27 @@ function LoginForm() {
 
           <div className={styles.field}>
             <label className={styles.label} htmlFor="password">Password</label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              className={styles.input}
-              autoComplete="current-password"
-              required
-            />
+            <div className={styles.passwordWrap}>
+              <input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                className={styles.input}
+                autoComplete="current-password"
+                required
+              />
+              <button
+                type="button"
+                className={styles.revealBtn}
+                onClick={() => setShowPassword((visible) => !visible)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+                aria-pressed={showPassword}
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
             <div className={styles.forgotRow}>
               <Link href="/forgot-password" className={styles.inlineLink}>
                 Forgot password?
