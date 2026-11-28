@@ -20,13 +20,13 @@ export type ChartDatum = {
 };
 
 const COLORS = [
-  "#5f8f83",
-  "#4f88a8",
-  "#9874a6",
-  "#c47a55",
-  "#6d9465",
-  "#b07d3f",
-  "#7a8b99",
+  "var(--accent)",
+  "var(--accent-strong)",
+  "var(--success)",
+  "var(--warning)",
+  "var(--danger)",
+  "var(--text-muted)",
+  "var(--border-strong)",
 ];
 
 const tooltipStyle = {

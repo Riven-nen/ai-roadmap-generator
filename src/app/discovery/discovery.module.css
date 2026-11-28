@@ -1,7 +1,6 @@
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 40px 20px;
   display: flex;
   flex-direction: column;
   gap: 40px;
@@ -117,11 +116,6 @@
   font-weight: 500;
 }
 
-.reqScore {
-  color: var(--accent-strong);
-  font-weight: 700;
-}
-
 .reqScoreMet { color: var(--success-strong); font-weight: 700; }
 .reqScoreGap { color: var(--accent-strong); font-weight: 700; }
 
@@ -151,7 +145,6 @@
 
 @media (max-width: 720px) {
   .container {
-    padding: 24px 14px;
     gap: 24px;
   }
 

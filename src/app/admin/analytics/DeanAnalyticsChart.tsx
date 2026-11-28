@@ -62,16 +62,26 @@ export default function DeanAnalyticsChart({ enrollments }: { enrollments: Enrol
           layout="vertical"
           margin={{ top: 5, right: 30, left: 40, bottom: 5 }}
         >
-          <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" horizontal={false} />
-          <XAxis type="number" domain={[0, 100]} stroke="#64748b" tick={{ fill: "#64748b", fontSize: 12 }} />
-          <YAxis type="category" dataKey="subject" stroke="#64748b" width={150} tick={{ fill: "#64748b", fontSize: 12 }} />
-          <Tooltip content={<CustomTooltip />} cursor={{ fill: '#e2e8f0' }} />
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" horizontal={false} />
+          <XAxis
+            type="number"
+            domain={[0, 100]}
+            stroke="var(--text-muted)"
+            tick={{ fill: "var(--text-muted)", fontSize: 12 }}
+          />
+          <YAxis
+            type="category"
+            dataKey="subject"
+            stroke="var(--text-muted)"
+            width={150}
+            tick={{ fill: "var(--text-muted)", fontSize: 12 }}
+          />
+          <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(var(--accent-rgb), 0.08)" }} />
           <Bar dataKey="A" radius={[0, 4, 4, 0]}>
             {data.map((entry, index) => (
               <Cell
                 key={`cell-${index}`}
-                // If score is below 60, color it red (danger zone), otherwise orange
-                fill={entry.A < 60 ? "#dc2626" : "#f97316"}
+                fill={entry.A < 60 ? "var(--danger)" : "var(--warning)"}
               />
             ))}
           </Bar>

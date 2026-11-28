@@ -18,62 +18,11 @@
 }
 
 .highlight {
-  color: var(--accent-purple);
+  color: var(--accent-strong);
 }
 
 .subtitle {
   color: var(--text-muted);
-  margin-top: 4px;
-}
-
-.searchWrapper {
-  position: relative;
-}
-
-.searchInput {
-  background-color: var(--bg-input);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 10px 16px 10px 40px;
-  font-size: 0.875rem;
-  color: var(--text-main);
-  width: 280px;
-  outline: none;
-  transition: border-color 0.2s ease;
-}
-
-.searchInput:focus {
-  border-color: var(--accent-purple);
-}
-
-.searchIcon {
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--text-muted);
-}
-
-.statsGrid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 24px;
-}
-
-.statCardContent {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.statLabel {
-  color: var(--text-muted);
-  font-size: 0.875rem;
-}
-
-.statValue {
-  font-size: 1.5rem;
-  font-weight: 700;
   margin-top: 4px;
 }
 
@@ -83,131 +32,10 @@
   gap: 32px;
 }
 
-.pathsList {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  margin-top: 16px;
-}
-
-.pathHeader {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 8px;
-}
-
-.pathName {
-  font-weight: 600;
-}
-
-.pathNext {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-}
-
-.pathPercent {
-  font-size: 0.875rem;
-  font-weight: 700;
-  color: var(--accent-purple);
-}
-
-.progressBarBg {
-  height: 8px;
-  background-color: var(--border-color);
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.progressBarFill {
-  height: 100%;
-  border-radius: 4px;
-}
-
-.viewRoadmapBtn {
-  width: 100%;
-  margin-top: 32px;
-  padding: 12px;
-  background-color: var(--bg-input);
-  color: var(--text-main);
-  border-radius: 12px;
-  font-size: 0.875rem;
-  font-weight: 500;
-  transition: background-color 0.2s ease;
-}
-
-.viewRoadmapBtn:hover {
-  background-color: var(--border-color);
-}
-
-.recommendationsList {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-top: 16px;
-}
-
-.recItem {
-  background-color: var(--bg-subtle);
-  padding: 16px;
-  border-radius: 12px;
-  border: 1px solid var(--border-color);
-  transition: border-color 0.2s ease;
-  cursor: pointer;
-}
-
-.recItem:hover {
-  border-color: rgba(var(--accent-rgb), 0.5);
-}
-
-.recTitle {
-  font-weight: 600;
-}
-
-.recDesc {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  margin-top: 4px;
-}
-
-.recMeta {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 12px;
-}
-
-.recLevel {
-  font-size: 0.625rem;
-  padding: 2px 8px;
-  border-radius: 9999px;
-  border: 1px solid rgba(var(--ink-rgb), 0.3);
-  color: var(--accent-blue);
-  background-color: rgba(var(--ink-rgb), 0.1);
-}
-
-.recTime {
-  font-size: 0.625rem;
-  color: var(--text-muted);
-}
-
-.iconYellow { color: var(--accent-yellow); font-size: 1.5rem; }
-.iconPurple { color: var(--accent-purple); font-size: 1.5rem; }
-.iconBlue { color: var(--accent-blue); font-size: 1.5rem; }
-.iconGreen { color: var(--accent-green); font-size: 1.5rem; }
-
-.bgPink { background-color: var(--accent-pink); }
-.bgBlue { background-color: var(--accent-blue); }
-.bgGreen { background-color: var(--accent-green); }
-
 @media (max-width: 1000px) {
   .mainGrid {
     grid-template-columns: 1fr;
     gap: 20px;
-  }
-
-  .statsGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 14px;
   }
 }
 
@@ -227,17 +55,5 @@
 
   .subtitle {
     font-size: 0.84rem;
-  }
-
-  .searchInput {
-    width: 100%;
-  }
-
-  .searchWrapper {
-    width: 100%;
-  }
-
-  .statsGrid {
-    grid-template-columns: 1fr;
   }
 }

@@ -1,5 +1,4 @@
 .container {
-  padding: 40px;
   max-width: 1200px;
   margin: 0 auto;
   color: var(--text-main);
@@ -52,8 +51,10 @@
   padding-bottom: 8px;
 }
 
-.topicGroup {
-  margin-bottom: 16px;
+.topicList {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .topicCard {
@@ -246,4 +247,19 @@
 .submitBtn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .topicCard {
+    flex-direction: column;
+  }
+
+  .topicActions {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
 }

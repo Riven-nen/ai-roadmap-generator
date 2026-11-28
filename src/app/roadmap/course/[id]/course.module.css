@@ -526,3 +526,36 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+@media (max-width: 720px) {
+  .pageContainer {
+    padding: 10px;
+  }
+
+  .header {
+    padding: 14px 16px;
+  }
+
+  .headerMain {
+    align-items: flex-start;
+  }
+
+  .title {
+    font-size: 1.3rem;
+  }
+
+  .desc {
+    font-size: 0.82rem;
+  }
+
+  .finalExamBtn {
+    width: 100%;
+    padding: 10px 16px;
+    text-align: center;
+  }
+
+  .finalExamLocked {
+    width: 100%;
+    max-width: none;
+  }
+}

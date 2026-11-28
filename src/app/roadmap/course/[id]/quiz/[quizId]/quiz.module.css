@@ -213,3 +213,34 @@
 }
 
 .proctorBtn:hover { opacity: 0.9; }
+
+@media (max-width: 640px) {
+  .container {
+    padding: 22px 14px;
+  }
+
+  .quizTitle {
+    font-size: 1.5rem;
+  }
+
+  .quizDesc {
+    font-size: 0.9rem;
+  }
+
+  .questionCard {
+    padding: 18px;
+  }
+
+  .optionLabel {
+    padding: 12px;
+  }
+
+  .resultCard {
+    padding: 28px 20px;
+    margin: 40px auto;
+  }
+
+  .proctorModal {
+    padding: 22px;
+  }
+}

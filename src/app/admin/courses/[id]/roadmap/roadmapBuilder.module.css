@@ -269,7 +269,7 @@
   width: 10px !important;
   height: 10px !important;
   background: var(--accent) !important;
-  border: 2px solid #ffffff !important;
+  border: 2px solid var(--accent-contrast) !important;
   box-shadow: 0 0 0 1px rgba(var(--accent-rgb), 0.5);
 }
 

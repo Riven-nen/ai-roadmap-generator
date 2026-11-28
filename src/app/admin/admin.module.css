@@ -26,12 +26,6 @@
 .statLabel { color: var(--text-muted); font-size: 0.875rem; }
 .statValue { font-size: 2rem; font-weight: 700; margin-top: 8px; }
 
-.actionsGrid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 24px;
-}
-
 .actionLink { text-decoration: none; color: inherit; }
 
 .actionCard {
@@ -45,7 +39,6 @@
 
 .actionCard:hover { transform: translateY(-2px); }
 
-.actionIcon { font-size: 2rem; margin-bottom: 8px; }
 .actionTitle { font-size: 1.25rem; font-weight: 600; }
 .actionDesc { color: var(--text-muted); font-size: 0.875rem; }
 
@@ -70,6 +63,7 @@
 
 .table {
   width: 100%;
+  min-width: 640px;
   border-collapse: collapse;
 }
 
@@ -97,9 +91,9 @@
 .select {
   flex: 1;
   padding: 12px;
-  background-color: var(--bg-main);
+  background-color: var(--bg-subtle);
   border: 1px solid var(--border-color);
-  border-radius: 10px;
+  border-radius: 8px;
   color: var(--text-main);
   outline: none;
 }
@@ -109,8 +103,8 @@
   align-items: center;
   justify-content: center;
   padding: 12px 24px;
-  border-radius: 10px;
-  background: linear-gradient(to right, var(--accent-purple), var(--accent-blue));
+  border-radius: 8px;
+  background: linear-gradient(to right, var(--accent), var(--accent-strong));
   color: var(--accent-contrast);
   font-weight: 600;
   font-size: 0.875rem;
@@ -140,6 +134,12 @@
 .field { display: flex; flex-direction: column; gap: 6px; }
 .fieldFull { grid-column: span 2; }
 
+.formActions {
+  grid-column: span 2;
+  display: flex;
+  justify-content: flex-end;
+}
+
 .fieldLabel {
   font-size: 0.75rem;
   font-weight: 600;
@@ -150,22 +150,16 @@
 
 .input {
   padding: 12px;
-  background-color: var(--bg-main);
+  background-color: var(--bg-subtle);
   border: 1px solid var(--border-color);
-  border-radius: 10px;
+  border-radius: 8px;
   color: var(--text-main);
   font-family: inherit;
   font-size: 0.875rem;
   outline: none;
 }
 
-.input:focus { border-color: var(--accent-purple); }
-
-.fieldHint {
-  color: var(--text-muted);
-  font-size: 0.72rem;
-  line-height: 1.4;
-}
+.input:focus { border-color: var(--accent); }
 
 .formError {
   padding: 10px 14px;
@@ -190,18 +184,9 @@
   overflow-x: auto;
 }
 
-.table {
-  min-width: 640px;
-}
-
 @media (max-width: 900px) {
   .statsGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 14px;
-  }
-
-  .actionsGrid {
-    grid-template-columns: 1fr;
     gap: 14px;
   }
 
@@ -245,12 +230,6 @@
   }
 }
 
-.formActions {
-  grid-column: span 2;
-  display: flex;
-  justify-content: flex-end;
-}
-
 .backLink {
   display: inline-flex;
   align-items: center;
@@ -265,8 +244,4 @@
 
 .backLink:hover {
   color: var(--text-main);
-}
-
-.backArrow {
-  font-size: 1rem;
 }
