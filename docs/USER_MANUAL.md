@@ -75,9 +75,12 @@ Click **Analyze My Career Path** in the AI Academic Advisor card to generate adv
    - Subject code and title
    - Section, academic year, and term
    - Subject progress bar
-   - Completed topics
+   - Topics completed
+   - Quizzes passed
+   - Final exam status (**Ready**, **Locked**, **Passed**, **Retake**, or **Not set**)
    - Current grade
-4. Click **Open subject** to view that subject’s topics and resources.
+4. Hover the **Final exam** value to see how many topics are still missing when it is locked.
+5. Click **Open subject** to view that subject’s topics and resources.
 
 ### 3.3 Course roadmap
 
@@ -94,12 +97,16 @@ Click **Analyze My Career Path** in the AI Academic Advisor card to generate adv
 
 ### 3.4 Final exam
 
-If a final exam is available, a **Take Final Exam** button appears in the course header.
+If a final exam is available, the course header shows either a **Take Final Exam** button or a **Final exam locked** notice.
 
 - The section’s own final exam is used first.
 - If the section has no exam, the course-wide final exam is used.
+- You must complete **every topic** in the subject before the final exam unlocks.
+- The lock is enforced on the server, so opening the exam link directly does not bypass it.
 - Answer every question, then submit.
 - Your score and grade are saved automatically.
+
+Final exams also watch for tab switching. Leaving the exam tab is recorded. After three tab switches the attempt is locked for that session and you must contact your professor. The warning cannot replace a dedicated proctoring tool, but it discourages switching away during the exam.
 
 ### 3.5 Subjects page
 
@@ -244,6 +251,19 @@ The top bar shows:
 - **Save draft** keeps changes private.
 - **Publish changes** makes the draft visible to students.
 - If another editor changed the draft first, the system warns you to reload before saving again.
+
+### 4.11 Activity log
+
+1. Click **My Activity** in the sidebar, or **View full log** on the My Teaching page.
+2. The log lists the roadmap actions you performed:
+   - Draft opened
+   - Draft saved
+   - Roadmap published
+   - Draft deleted
+3. Each entry shows the subject, the action, the draft revision, and the date and time.
+4. The My Teaching page shows your five most recent actions.
+
+The log records actions taken through the app. It is not a replacement for a full audit system.
 
 ---
 
@@ -484,7 +504,8 @@ Example:
 | `/courses` | Everyone | Subject library |
 | `/discovery` | Student | Career paths |
 | `/profile` | Everyone | Profile, stats, theme |
-| `/teacher` | Professor | Assigned classes |
+| `/teacher` | Professor | Assigned classes and recent activity |
+| `/teacher/activity` | Professor | Full personal activity log |
 | `/admin` | Administrator | Admin panel |
 | `/admin/stats` | Administrator | Program statistics |
 | `/admin/courses` | Administrator | Subject management |
@@ -502,6 +523,9 @@ Example:
 - **A student cannot see a new roadmap change** — the professor must click **Publish changes**.
 - **A professor cannot open the builder** — confirm the professor is assigned to a class for that subject.
 - **A student is locked out of a topic** — finish the previous topic node first.
+- **The final exam says locked** — the student must finish every topic in the subject first. The card shows how many are still missing.
+- **A final exam locks during the attempt** — switching away from the exam tab three times locks that attempt. The professor must reopen it.
+- **My Activity is empty** — the log starts recording after the first draft save or publish.
 - **The theme is not changing** — the theme is stored per browser. Make sure the browser allows local storage.
 - **AI is slow or unavailable** — try again later. The AI depends on the Groq service.
 - **A CSV import fails** — check the required columns and use the downloadable template.

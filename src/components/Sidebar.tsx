@@ -23,6 +23,7 @@ const adminNavItems = [
 
 const professorNavItems = [
   { name: "My Teaching", href: "/teacher" },
+  { name: "My Activity", href: "/teacher/activity" },
   { name: "Profile", href: "/profile" },
 ];
 
@@ -69,7 +70,7 @@ export default function Sidebar({
       <nav className={styles.nav}>
         {navItems.map((item) => {
           const isActive =
-            item.href === "/" || item.href === "/admin"
+            item.href === "/" || item.href === "/admin" || item.href === "/teacher"
               ? pathname === item.href
               : pathname === item.href || pathname.startsWith(`${item.href}/`);
 

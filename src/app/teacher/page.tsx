@@ -3,8 +3,31 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import styles from "@/app/admin/admin.module.css";
 import sectionStyles from "@/app/admin/sections/sections.module.css";
+import activityStyles from "./activity/activity.module.css";
 
 type Course = { id: string; code: string; title: string };
+type ActivityLog = {
+  id: string;
+  action: string;
+  detail: string;
+  created_at: string;
+};
+
+const activityLabels: Record<string, string> = {
+  roadmap_published: "Roadmap published",
+  roadmap_draft_saved: "Draft saved",
+  roadmap_draft_created: "Draft opened",
+  roadmap_draft_deleted: "Draft deleted",
+};
+
+function formatActivityTime(value: string) {
+  return new Date(value).toLocaleString("en-US", {
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
+}
 type Section = {
   id: string;
   section_code: string;
@@ -35,17 +58,24 @@ export default async function TeacherHome() {
 
   const sectionIds = (assignments ?? []).map((assignment) => assignment.section_id);
 
-  const [sectionsRes, enrollmentsRes] = await Promise.all([
+  const [sectionsRes, enrollmentsRes, activityRes] = await Promise.all([
     supabase
       .from("sections")
       .select("id, section_code, academic_year, term, join_code, course:courses(id, code, title)")
       .in("id", sectionIds)
       .order("created_at"),
     supabase.from("enrollments").select("section_id").in("section_id", sectionIds),
+    supabase
+      .from("activity_logs")
+      .select("id, action, detail, created_at")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(5),
   ]);
 
   const sections = (sectionsRes.data ?? []) as unknown as Section[];
   const enrollments = enrollmentsRes.data ?? [];
+  const recentActivity = (activityRes.data ?? []) as ActivityLog[];
 
   const studentCounts = new Map<string, number>();
   for (const enrollment of enrollments) {
@@ -87,6 +117,42 @@ export default async function TeacherHome() {
           <p className={sectionStyles.statLabel}>Students</p>
           <p className={sectionStyles.statValue}>{totalStudents}</p>
         </div>
+      </div>
+
+      <div className={sectionStyles.card}>
+        <div className={styles.header}>
+          <div>
+            <h2 className={sectionStyles.cardTitle}>Recent activity</h2>
+            <p className={sectionStyles.cardHint}>
+              The latest roadmap changes you made across your subjects.
+            </p>
+          </div>
+          <Link href="/teacher/activity" className={sectionStyles.secondaryBtn}>
+            View full log
+          </Link>
+        </div>
+
+        {recentActivity.length === 0 ? (
+          <p className={sectionStyles.empty}>
+            No activity yet. Save or publish a roadmap and it will appear here.
+          </p>
+        ) : (
+          <div className={activityStyles.recentList}>
+            {recentActivity.map((log) => (
+              <div key={log.id} className={activityStyles.recentItem}>
+                <div className={activityStyles.recentMain}>
+                  <span className={activityStyles.recentAction}>
+                    {activityLabels[log.action] ?? log.action.replace(/_/g, " ")}
+                  </span>
+                  <span className={activityStyles.recentDetail}>{log.detail}</span>
+                </div>
+                <time className={activityStyles.recentTime} dateTime={log.created_at}>
+                  {formatActivityTime(log.created_at)}
+                </time>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {sections.length === 0 ? (

@@ -22,6 +22,7 @@ const studentNav = [
 
 const professorNav = [
   { name: "My Teaching", href: "/teacher" },
+  { name: "My Activity", href: "/teacher/activity" },
   { name: "Subjects", href: "/courses" },
   { name: "Profile", href: "/profile" },
 ];

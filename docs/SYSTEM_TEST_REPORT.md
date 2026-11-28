@@ -1,10 +1,10 @@
 # System Test Report
 
 **Project:** IT Roadmap / AI Roadmap Generator  
-**Test date:** November 24–25, 2026  
+**Test date:** November 24–28, 2026  
 **Environment:** Local Next.js server (`http://localhost:3001`) backed by Supabase  
 **Test level:** Route, API, database, RLS, AI, and build verification  
-**Result:** **31/31 core data/API tests passed**; all route and role checks passed after correcting test assertions.
+**Result:** **31/31 core data/API tests passed**, plus the new final-exam gate, per-subject stats, and professor activity-log checks.
 
 ---
 
@@ -77,12 +77,14 @@ The previous auth gate lived in `middleware.ts`. Next.js 16 uses `src/proxy.ts` 
 | Test | Expected | Result |
 |---|---|---|
 | Student dashboard `/` | Loads Knowledge Map and AI Academic Advisor | PASS |
-| Student roadmap `/roadmap` | Loads successfully | PASS |
+| Student subjects `/roadmap` | Loads enrolled-subject list | PASS |
 | Course roadmap `/roadmap/course/[id]` | Loads IT 101 successfully | PASS |
 | AI Discovery `/discovery` | Loads successfully | PASS |
 | Subject library `/courses` | Loads successfully | PASS |
 | Student profile `/profile` | Shows appearance, domain proficiency, program/year/section, academic year | PASS |
-| Student roadmap data | 26 subjects, 1 enrollment, 32 topics, 31 edges, 2 quizzes for the demo student | PASS |
+| Enrolled-subject stats | Card shows topics done, quizzes passed, final exam state, and grade | PASS |
+| Final exam lock display | Locked badge and topic count shown for incomplete subjects | PASS |
+| Student roadmap data | 1 enrollment, 32 topics, 1 topic quiz, final exam locked at 0/32 topics for the demo student | PASS |
 | Discovery data | 3 career paths and 10 career requirements available | PASS |
 | Student cannot self-enroll | 403 from RLS | PASS |
 | Student cannot edit a roadmap draft | Update ignored by RLS | PASS |
@@ -95,7 +97,11 @@ The previous auth gate lived in `middleware.ts`. Next.js 16 uses `src/proxy.ts` 
 
 | Test | Expected | Result |
 |---|---|---|
-| Professor dashboard `/teacher` | Shows assigned class and build link | PASS |
+| Professor dashboard `/teacher` | Shows assigned class, build link, and recent activity | PASS |
+| Professor activity page `/teacher/activity` | Loads the personal activity log | PASS |
+| Draft save writes activity log | `roadmap_draft_saved` row created | PASS |
+| Publish writes activity log | `roadmap_published` row created | PASS |
+| Activity log scoping | User sees own rows; admin policy can view all | PASS — RLS policy review |
 | Professor builder access | 200 | PASS |
 | Professor recognized for assigned subject | `true` | PASS |
 | Professor creates a roadmap draft | Success | PASS |
@@ -156,6 +162,27 @@ The previous auth gate lived in `middleware.ts`. Next.js 16 uses `src/proxy.ts` 
 |---|---|
 | Topic quiz submitted | Score 100, passed |
 | Topic progress row saved | `completed` |
+
+### Final exam completion gate (new)
+
+| Step | Result |
+|---|---|
+| Final exam submitted with 0/32 topics completed | Rejected — `Complete all 32 course topics before taking the final exam` |
+| Final exam submitted with 32/32 topics completed | Allowed |
+| Course page with incomplete topics | Shows **Final exam locked** and completed/total count |
+| Quiz page opened directly with incomplete topics | Shows **Final exam locked** instead of questions |
+| Server-side bypass attempt | Blocked inside `record_quiz_result` |
+| Status code for a blocked attempt | `22023` (mapped to HTTP 400) |
+
+### Final exam focus warning (new)
+
+| Step | Result |
+|---|---|
+| Tab switch detected during final exam | Warning overlay shows 1 of 3 |
+| Third tab switch | Exam locks for the current attempt |
+| Topic quizzes | No tab-switch warning |
+
+The browser tool was unavailable for pointer-level verification, so the focus warning was verified through code inspection and the page render path rather than a recorded browser session.
 
 ### Bug found and fixed
 
@@ -225,6 +252,7 @@ Confirmed after testing:
 - Temporary student/professor accounts: **0**
 - Temporary topic progress rows: **0**
 - Temporary courses/sections: **0**
+- Temporary activity-log rows: **0**
 
 Demo records and existing classes were not removed.
 

@@ -187,6 +187,46 @@
   transition: width 0.4s ease;
 }
 
+.subjectStats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.subjectStat {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-subtle);
+}
+
+.subjectStat strong {
+  color: var(--text-main);
+  font-size: 0.86rem;
+  font-weight: 800;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.subjectStat span {
+  color: var(--text-faint);
+  font-size: 0.58rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.subjectStat .statReady { color: var(--accent-strong); }
+.subjectStat .statLocked { color: var(--warning); }
+.subjectStat .statDone { color: var(--success-strong); }
+.subjectStat .statRetake { color: var(--danger-strong); }
+.subjectStat .statMuted { color: var(--text-muted); }
+
 .cardMeta {
   display: flex;
   justify-content: space-between;
@@ -194,6 +234,11 @@
   flex-wrap: wrap;
   color: var(--text-faint);
   font-size: 0.66rem;
+}
+
+.cardMeta span:last-child {
+  color: var(--text-main);
+  font-weight: 700;
 }
 
 .openLink {

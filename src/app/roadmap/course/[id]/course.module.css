@@ -45,6 +45,29 @@
 
 .finalExamBtn:hover { opacity: 0.9; }
 
+.finalExamLocked {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 1px dashed var(--border-strong);
+  background: var(--bg-subtle);
+  max-width: 260px;
+}
+
+.finalExamLockedLabel {
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.finalExamLockedHint {
+  color: var(--text-faint);
+  font-size: 0.7rem;
+  line-height: 1.4;
+}
+
 .progressWrap {
   margin-top: 12px;
   display: flex;

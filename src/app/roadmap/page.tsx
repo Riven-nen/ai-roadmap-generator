@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getFinalExamEligibility } from "@/lib/finalExam";
+import { isPassingGrade } from "@/lib/grading";
 import type { Course } from "@/types";
 import styles from "./roadmap.module.css";
 
@@ -25,6 +27,14 @@ type EnrollmentRow = {
 type EnrolledSubject = Omit<EnrollmentRow, "course" | "section"> & {
   course: Course;
   section: SectionInfo | null;
+};
+
+type CourseQuiz = {
+  id: string;
+  course_id: string;
+  topic_id: string | null;
+  section_id: string | null;
+  title: string;
 };
 
 function firstRelation<T>(value: T | T[] | null | undefined): T | null {
@@ -85,7 +95,7 @@ export default async function EnrolledSubjectsPage() {
 
   const courseIds = enrollments.map((enrollment) => enrollment.course_id);
 
-  const [topicsRes, progressRes] = await Promise.all([
+  const [topicsRes, progressRes, quizzesRes] = await Promise.all([
     courseIds.length > 0
       ? supabase.from("course_topics").select("id, course_id").in("course_id", courseIds)
       : Promise.resolve({ data: [] as Array<{ id: string; course_id: string }> }),
@@ -94,14 +104,32 @@ export default async function EnrolledSubjectsPage() {
       .select("topic_id,status")
       .eq("user_id", user.id)
       .eq("status", "completed"),
+    courseIds.length > 0
+      ? supabase
+          .from("quizzes")
+          .select("id, course_id, topic_id, section_id, title")
+          .in("course_id", courseIds)
+      : Promise.resolve({ data: [] as CourseQuiz[] }),
   ]);
 
   const totalTopicsByCourse = new Map<string, number>();
+  const topicIdsByCourse = new Map<string, string[]>();
   for (const topic of topicsRes.data ?? []) {
     totalTopicsByCourse.set(
       topic.course_id,
       (totalTopicsByCourse.get(topic.course_id) ?? 0) + 1
     );
+
+    const ids = topicIdsByCourse.get(topic.course_id) ?? [];
+    ids.push(topic.id);
+    topicIdsByCourse.set(topic.course_id, ids);
+  }
+
+  const quizzesByCourse = new Map<string, CourseQuiz[]>();
+  for (const quiz of (quizzesRes.data ?? []) as CourseQuiz[]) {
+    const courseQuizzes = quizzesByCourse.get(quiz.course_id) ?? [];
+    courseQuizzes.push(quiz);
+    quizzesByCourse.set(quiz.course_id, courseQuizzes);
   }
 
   const completedTopicIds = new Set(
@@ -121,9 +149,51 @@ export default async function EnrolledSubjectsPage() {
     .map((enrollment) => {
       const totalTopics = totalTopicsByCourse.get(enrollment.course_id) ?? 0;
       const completedTopics = completedTopicsByCourse.get(enrollment.course_id) ?? 0;
-      const topicProgress = totalTopics > 0 ? Math.round((completedTopics / totalTopics) * 100) : 0;
-      const progress = totalTopics > 0 ? topicProgress : enrollment.progress ?? 0;
+      const topicProgress =
+        totalTopics > 0 ? Math.round((completedTopics / totalTopics) * 100) : 0;
+      const trackedProgress =
+        totalTopics > 0 ? topicProgress : enrollment.progress ?? 0;
+      const progress = enrollment.status === "completed" ? 100 : trackedProgress;
       const status = statusLabel(enrollment.status, enrollment.grade);
+
+      const courseQuizzes = quizzesByCourse.get(enrollment.course_id) ?? [];
+      const topicQuizzes = courseQuizzes.filter((quiz) => quiz.topic_id);
+      const passedQuizCount = topicQuizzes.filter(
+        (quiz) => quiz.topic_id && completedTopicIds.has(quiz.topic_id)
+      ).length;
+
+      const finalExam =
+        courseQuizzes.find(
+          (quiz) => !quiz.topic_id && quiz.section_id === enrollment.section_id
+        ) ??
+        courseQuizzes.find((quiz) => !quiz.topic_id && !quiz.section_id) ??
+        null;
+
+      const eligibility = getFinalExamEligibility(
+        topicIdsByCourse.get(enrollment.course_id) ?? [],
+        completedTopicIds
+      );
+
+      const gradeFailed =
+        Boolean(enrollment.grade) && !isPassingGrade(enrollment.grade);
+
+      let finalExamLabel = "Not set";
+      let finalExamTone = styles.statMuted;
+      if (finalExam) {
+        if (gradeFailed) {
+          finalExamLabel = "Retake";
+          finalExamTone = styles.statRetake;
+        } else if (enrollment.status === "completed") {
+          finalExamLabel = "Passed";
+          finalExamTone = styles.statDone;
+        } else if (eligibility.eligible) {
+          finalExamLabel = "Ready";
+          finalExamTone = styles.statReady;
+        } else {
+          finalExamLabel = "Locked";
+          finalExamTone = styles.statLocked;
+        }
+      }
 
       return {
         ...enrollment,
@@ -131,6 +201,11 @@ export default async function EnrolledSubjectsPage() {
         completedTopics,
         progress: Math.min(100, Math.max(0, progress)),
         status,
+        quizCount: topicQuizzes.length,
+        passedQuizCount,
+        finalExamLabel,
+        finalExamTone,
+        finalExamRemaining: eligibility.remainingTopics,
       };
     })
     .sort((a, b) => {
@@ -210,13 +285,41 @@ export default async function EnrolledSubjectsPage() {
                 <span style={{ width: `${item.progress}%` }} />
               </div>
 
+              <div className={styles.subjectStats}>
+                <div className={styles.subjectStat}>
+                  <strong>
+                    {item.totalTopics > 0
+                      ? `${item.completedTopics}/${item.totalTopics}`
+                      : "—"}
+                  </strong>
+                  <span>Topics done</span>
+                </div>
+                <div className={styles.subjectStat}>
+                  <strong>
+                    {item.quizCount > 0
+                      ? `${item.passedQuizCount}/${item.quizCount}`
+                      : "—"}
+                  </strong>
+                  <span>Quizzes passed</span>
+                </div>
+                <div className={styles.subjectStat}>
+                  <strong
+                    className={item.finalExamTone}
+                    title={
+                      item.finalExamLabel === "Locked"
+                        ? `${item.finalExamRemaining} topic${item.finalExamRemaining === 1 ? "" : "s"} left`
+                        : undefined
+                    }
+                  >
+                    {item.finalExamLabel}
+                  </strong>
+                  <span>Final exam</span>
+                </div>
+              </div>
+
               <div className={styles.cardMeta}>
-                <span>
-                  {item.totalTopics > 0
-                    ? `${item.completedTopics}/${item.totalTopics} topics completed`
-                    : "No topics yet"}
-                </span>
-                <span>{item.grade ? `Grade: ${item.grade}` : "No grade yet"}</span>
+                <span>Grade</span>
+                <span>{item.grade ? item.grade : "Not graded"}</span>
               </div>
 
               <Link href={`/roadmap/course/${item.course.id}`} className={styles.openLink}>

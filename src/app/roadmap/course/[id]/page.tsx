@@ -10,6 +10,7 @@ import { createClient } from "@/lib/supabase/client";
 import BackButton from "@/components/BackButton";
 import { Course, CourseTopic, Quiz, RoadmapEdge } from "@/types";
 import { layoutRoadmapGraph } from "@/lib/roadmapLayout";
+import { getFinalExamEligibility } from "@/lib/finalExam";
 import { themeColor } from "@/lib/theme";
 import styles from "./course.module.css";
 import TopicModal from "./TopicModal";
@@ -37,6 +38,7 @@ export default function CourseDetailPage() {
   const [roadmapEdges, setRoadmapEdges] = useState<RoadmapEdge[]>([]);
   const [sectionId, setSectionId] = useState<string | null>(null);
   const [sectionInfo, setSectionInfo] = useState<SectionInfo | null>(null);
+  const [hasEnrollment, setHasEnrollment] = useState(false);
   const [progress, setProgress] = useState<Progress[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -99,6 +101,7 @@ export default function CourseDetailPage() {
       setRoadmapEdges((edgesResult.data || []) as RoadmapEdge[]);
       setSectionId(enrollment?.section_id ?? null);
       setSectionInfo(enrollmentSection);
+      setHasEnrollment(Boolean(enrollmentResult.data));
       setProgress(progressData);
       setLoading(false);
     }
@@ -309,6 +312,18 @@ export default function CourseDetailPage() {
   const topicProgressPercent = topics.length > 0
     ? Math.round((completedTopicCount / topics.length) * 100)
     : 0;
+  const finalExamEligibility = useMemo(
+    () =>
+      getFinalExamEligibility(
+        topics.map((topic) => topic.id),
+        new Set(
+          progress
+            .filter((entry) => entry.status === "completed")
+            .map((entry) => entry.topic_id)
+        )
+      ),
+    [progress, topics]
+  );
 
   if (loading) return <div style={{ color: "var(--text-main)", padding: 40 }}>Loading Course...</div>;
   if (loadError) return <div style={{ color: "var(--text-main)", padding: 40 }}>{loadError}</div>;
@@ -346,13 +361,23 @@ export default function CourseDetailPage() {
               </div>
             </div>
 
-            {finalExam && (
-              <Link
-                href={`/roadmap/course/${courseId}/quiz/${finalExam.id}`}
-                className={styles.finalExamBtn}
-              >
-                ⚠️ Take Final Exam
-              </Link>
+            {finalExam && hasEnrollment && (
+              finalExamEligibility.eligible ? (
+                <Link
+                  href={`/roadmap/course/${courseId}/quiz/${finalExam.id}`}
+                  className={styles.finalExamBtn}
+                >
+                  ⚠️ Take Final Exam
+                </Link>
+              ) : (
+                <div className={styles.finalExamLocked}>
+                  <span className={styles.finalExamLockedLabel}>🔒 Final exam locked</span>
+                  <span className={styles.finalExamLockedHint}>
+                    Complete every topic first ({finalExamEligibility.completedTopics}/
+                    {finalExamEligibility.totalTopics} done).
+                  </span>
+                </div>
+              )
             )}
           </div>
 
